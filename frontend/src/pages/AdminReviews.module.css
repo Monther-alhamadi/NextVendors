@@ -1,0 +1,156 @@
+/* AdminReviews - Premium Styling */
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #1E293B;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.pageSubtitle {
+  color: #64748B;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.loadingContainer {
+  padding: 3rem;
+  text-align: center;
+}
+
+.spinner {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loadingText {
+  color: #64748B;
+  font-weight: 500;
+}
+
+.emptyState {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.3;
+}
+
+.emptyText {
+  color: #64748B;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.reviewsGrid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.reviewCard {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 0.3s ease;
+}
+
+.reviewCard:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.reviewInfo {
+  flex: 1;
+}
+
+.productName {
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 0.25rem;
+}
+
+.reviewMeta {
+  display: flex;
+  gap: 1rem;
+  color: #64748B;
+  font-size: 0.875rem;
+}
+
+.stars {
+  color: #FBBF24;
+  font-size: 1.25rem;
+}
+
+.reviewText {
+  color: #475569;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.reviewActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.deleteButton {
+  padding: 0.5rem 1rem;
+  background: #FEE2E2;
+  color: #DC2626;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: #FECACA;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+
+  .reviewHeader {
+    flex-direction: column;
+  }
+
+  .reviewActions {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .deleteButton {
+    flex: 1;
+  }
+}

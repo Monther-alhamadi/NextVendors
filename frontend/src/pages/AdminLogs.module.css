@@ -1,0 +1,312 @@
+@import "../styles/design-tokens.css";
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+}
+
+.pageTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.refreshBtn {
+  background: white;
+  color: var(--text-main);
+  border: 1px solid var(--border-med);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-lg);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--dur-fast);
+}
+
+.refreshBtn:hover {
+  background: var(--bg-page);
+  border-color: var(--border-light);
+  transform: translateY(-1px);
+}
+
+/* Filters Card */
+.filterCard {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.searchGroup {
+  flex: 1;
+  min-width: 250px;
+}
+
+.filterLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.filterInput {
+  background: var(--bg-page);
+  border: 1px solid var(--border-med);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  outline: none;
+  font-weight: 600;
+  transition: all var(--dur-fast);
+  min-width: 150px;
+}
+
+.searchGroup .filterInput {
+  width: 100%;
+}
+
+.filterInput:focus {
+  background: white;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-subtle);
+}
+
+.filterActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.filterBtn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.filterBtn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+}
+
+.filterBtn.clear {
+  background: white;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-med);
+}
+
+.filterBtn.clear:hover {
+  background: var(--bg-page);
+  color: var(--text-main);
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+/* Logs Table */
+.tableCard {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.dataGrid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataGrid th {
+  background: var(--bg-page);
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.dataGrid td {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.dataGrid tbody tr {
+  transition: background-color var(--dur-fast);
+  cursor: pointer;
+}
+
+.dataGrid tbody tr:hover {
+  background: var(--bg-page);
+}
+
+.dataGrid tbody tr.selected {
+  background: var(--primary-subtle);
+}
+
+.timeCol {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.levelBadge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.levelError { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.levelWarning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.levelInfo { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+
+.sourceCol {
+  font-weight: 800;
+  color: var(--text-main);
+  font-size: 0.85rem;
+}
+
+.userCol {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.msgCol {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Detail Panel */
+.detailPanel {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--primary);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--bg-page);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.detailTitle {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  transition: all var(--dur-fast);
+}
+
+.closeBtn:hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--text-main);
+}
+
+.detailBody {
+  padding: 0;
+  background: #0f172a;
+}
+
+.jsonOutput {
+  margin: 0;
+  padding: 1.5rem;
+  color: #34d399; /* emerald-400 */
+  font-family: monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.emptyState {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.emptyText {
+  font-weight: 800;
+  font-size: 1.1rem;
+}

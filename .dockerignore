@@ -1,0 +1,16 @@
+node_modules
+dist
+frontend/node_modules
+backend/.venv
+__pycache__
+.venv
+*.pyc
+*.pyo
+.pytest_cache
+env
+.env
+*.log
+node_modules
+npm-debug.log*
+Dockerfile
+docker-compose*.yml

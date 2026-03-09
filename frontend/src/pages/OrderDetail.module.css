@@ -1,0 +1,247 @@
+@import "../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   ORDER DETAIL — Premium Order Tracking
+   ═══════════════════════════════════════════════════════════ */
+
+.page { max-width: var(--container-max); margin: 0 auto; padding: 32px var(--container-pad); }
+
+/* ── Breadcrumb ────────────────────────────────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  margin-bottom: 24px;
+}
+.breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--primary); }
+.breadcrumbSep { color: var(--border-medium); }
+.breadcrumbCurrent { color: var(--text-main); font-weight: 600; }
+
+/* ── Header ────────────────────────────────────────── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.headerLeft h1 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin: 0 0 6px;
+}
+.headerDate { color: var(--text-secondary); font-size: 0.85rem; }
+.backBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.84rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.backBtn:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Status Timeline ───────────────────────────────── */
+.timeline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.timelineStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.timelineDot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  background: var(--bg-page);
+  border: 2px solid var(--border-light);
+  color: var(--text-tertiary);
+  transition: all 0.3s;
+}
+.timelineDotActive {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+.timelineDotDone {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
+.timelineLabel {
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--text-secondary);
+}
+.timelineLabelActive { color: var(--primary); font-weight: 700; }
+.timelineLabelDone { color: #10b981; }
+
+/* Line between steps */
+.timelineLine {
+  position: absolute;
+  top: 42px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--border-light);
+  z-index: 1;
+}
+.timelineFill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, var(--primary));
+  border-radius: 2px;
+  transition: width 0.5s var(--ease-spring);
+}
+
+/* ── Content Grid ──────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* ── Content Card ──────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.cardHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-page);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Order Items ───────────────────────────────────── */
+.itemsList { padding: 0; }
+
+.orderItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.15s;
+}
+.orderItem:last-child { border-bottom: none; }
+.orderItem:hover { background: var(--bg-page); }
+
+.itemImage {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--bg-page);
+  flex-shrink: 0;
+  border: 1px solid var(--border-light);
+}
+
+.itemInfo { flex: 1; }
+.itemName { font-weight: 700; font-size: 0.92rem; color: var(--text-main); margin-bottom: 2px; }
+.itemQty { font-size: 0.8rem; color: var(--text-tertiary); }
+
+.itemPrice { font-weight: 800; color: var(--primary); font-size: 0.95rem; white-space: nowrap; }
+
+.itemAction { margin-inline-start: 8px; }
+.returnBtn {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+.returnBtn:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── Summary Card (sidebar) ────────────────────────── */
+.summaryCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.summaryBody { padding: 20px; }
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.summaryTotal {
+  border-top: 2px solid var(--border-light);
+  padding-top: 16px;
+  margin-top: 16px;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+/* Status badge (reuse) */
+.statusBadge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem; font-weight: 700;
+}
+.statusDot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.statusPending { background: #fff7ed; color: #c2410c; }
+.statusProcessing { background: #eff6ff; color: #2563eb; }
+.statusShipped { background: #ecfdf5; color: #059669; }
+.statusCompleted { background: #f0fdf4; color: #15803d; }
+.statusCancelled { background: #fef2f2; color: #b91c1c; }
+
+/* ── Loading / Error ───────────────────────────────── */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .timeline { flex-wrap: wrap; gap: 12px; }
+  .timelineLine { display: none; }
+  .header { flex-direction: column; gap: 12px; }
+}

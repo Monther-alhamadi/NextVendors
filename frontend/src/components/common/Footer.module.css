@@ -1,0 +1,357 @@
+@import "../../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER — Premium Store Footer
+   ═══════════════════════════════════════════════════════════ */
+
+.footer {
+  background: linear-gradient(180deg, var(--primary) 0%, #1a1154 100%);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 64px 0 0;
+  margin-top: 64px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200%;
+  height: 200px;
+  background: radial-gradient(ellipse at center, rgba(197, 160, 101, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Newsletter Section ─────────────────────────────── */
+.newsletter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 32px 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  margin-bottom: 48px;
+  backdrop-filter: blur(12px);
+}
+
+.nlText h3 {
+  font-family: var(--font-heading);
+  color: white;
+  font-size: 1.15rem;
+  margin: 0 0 6px;
+}
+
+.nlText p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.nlForm {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.nlInput {
+  padding: 10px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 260px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.nlInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.nlInput:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nlBtn {
+  padding: 10px 24px;
+  background: var(--accent);
+  color: var(--primary-dark, #1e1b4b);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.nlBtn:hover {
+  background: #d4b96a;
+  box-shadow: 0 4px 16px rgba(197, 160, 101, 0.3);
+}
+
+/* ── Grid ───────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+/* ── Column ─────────────────────────────────────────── */
+.colBrand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brandMark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandIcon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandLabel {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: white;
+}
+
+.brandDesc {
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  font-size: 0.88rem;
+  max-width: 280px;
+}
+
+/* ── Social Icons ── */
+.socialRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.socialLink {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.socialLink:hover {
+  background: var(--accent);
+  color: var(--primary-dark, #1e1b4b);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ── Links Column ── */
+.colTitle {
+  color: white;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.colTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  inset-inline-start: 0;
+  width: 24px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.colLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colLinks li a {
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s, padding-inline-start 0.2s;
+  display: inline-block;
+}
+
+.colLinks li a:hover {
+  color: var(--accent);
+  padding-inline-start: 4px;
+}
+
+.colLinks li span {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.88rem;
+}
+
+/* ── Payment Badges ─────────────────────────────────── */
+.paymentGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.payBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+.payBadge:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Bottom Bar ─────────────────────────────────────── */
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 20px;
+}
+
+.bottomLinks a {
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+
+.bottomLinks a:hover {
+  color: var(--accent);
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .newsletter {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+
+  .nlForm {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .nlInput {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding-top: 48px;
+    margin-top: 40px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 28px;
+  }
+
+  .colTitle::after {
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+  }
+
+  .brandDesc {
+    margin: 0 auto;
+  }
+
+  .socialRow {
+    justify-content: center;
+  }
+
+  .paymentGrid {
+    justify-content: center;
+  }
+
+  .bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .bottomLinks {
+    justify-content: center;
+  }
+}
+
+/* Hide on mobile if bottom nav present — prevent double padding */
+@media (max-width: 768px) {
+  .footer {
+    padding-bottom: 80px; /* space for MobileBottomNav */
+  }
+}

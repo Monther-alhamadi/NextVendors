@@ -1,0 +1,182 @@
+@import "./tokens.css";
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #0f172a;
+}
+.container {
+  max-width: var(--container-max);
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+/* Form and page-level UI */
+.form-grid {
+  display: grid;
+  gap: 12px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.form-group label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.form-control,
+input,
+select,
+textarea {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  font-size: 0.95rem;
+}
+.form-control:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.06);
+  border-color: var(--primary);
+}
+
+/* Alerts */
+.alert {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+.alert-danger {
+  background: #fff1f0;
+  color: var(--danger);
+}
+
+/* Skeleton helpers for loading states */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 25%,
+    rgba(0, 0, 0, 0.06) 50%,
+    rgba(0, 0, 0, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+.skeleton-text {
+  height: 16px;
+  width: 100%;
+  border-radius: 4px;
+}
+.skeleton-rect {
+  height: 160px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty state */
+.empty-state {
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+/* Product detail */
+.product-detail {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+}
+.product-images {
+  display: flex;
+  flex-direction: column;
+}
+.product-thumbs {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.product-thumb {
+  width: 80px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+}
+.product-info h2 {
+  margin: 6px 0 8px;
+}
+.product-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.product-inventory {
+  font-weight: 600;
+}
+.product-qty {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Cart page layout */
+.cart-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .product-detail {
+    grid-template-columns: 1fr;
+  }
+  .cart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+h1,
+h2 {
+  color: #0f172a;
+}
+/* Pages should rely on global .btn or component-level button classes. */
+/* simple responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+/* RTL support toggle: if body.dir === 'rtl' align text-right */
+body[dir="rtl"] {
+  direction: rtl;
+}
+body[dir="rtl"] .container {
+  text-align: right;
+}

@@ -1,0 +1,350 @@
+@import "../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   ORDERS PAGE — Premium Order History
+   ═══════════════════════════════════════════════════════════ */
+
+.page {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 32px var(--container-pad);
+}
+
+/* ── Page Header ───────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.headerLeft h1 {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  color: var(--primary);
+  margin: 0 0 4px;
+}
+
+.headerSub {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+/* ── Filter Tabs ───────────────────────────────────── */
+.filterTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.filterTabs::-webkit-scrollbar { display: none; }
+
+.filterTab {
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: var(--font-body);
+}
+
+.filterTab:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.filterTabActive {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filterCount {
+  margin-inline-start: 6px;
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+/* ── Empty State ───────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light);
+}
+
+.emptyIcon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.emptyTitle {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--text-main);
+  margin: 0 0 8px;
+}
+
+.emptyDesc {
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+  font-size: 0.95rem;
+}
+
+/* ── Orders List ───────────────────────────────────── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Order Card ────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-page);
+}
+
+.orderId {
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.orderDate {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
+/* ── Status Badge ──────────────────────────────────── */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.statusPending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.statusProcessing {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.statusShipped {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.statusCompleted {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.statusCancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── Card Body ─────────────────────────────────────── */
+.cardBody {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── Items Preview ─────────────────────────────────── */
+.itemsPreview {
+  display: flex;
+  gap: -8px;
+  flex-shrink: 0;
+}
+
+.itemThumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  border: 2px solid var(--bg-card);
+  object-fit: cover;
+  margin-inline-end: -8px;
+}
+
+.itemThumb:last-child {
+  margin-inline-end: 0;
+}
+
+.moreItems {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  border: 2px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+
+/* ── Order Details Row ─────────────────────────────── */
+.detailsRow {
+  flex: 1;
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detailLabel {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.detailValue {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.detailPrice {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+/* ── Card Actions ──────────────────────────────────── */
+.cardActions {
+  margin-inline-start: auto;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.viewBtn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* ── Skeleton ──────────────────────────────────────── */
+.skeleton {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  height: 120px;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page { padding: 20px 16px; }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .cardBody {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .detailsRow {
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .cardActions {
+    margin-inline-start: 0;
+    width: 100%;
+  }
+
+  .viewBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

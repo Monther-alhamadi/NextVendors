@@ -1,0 +1,30 @@
+fastapi==0.124.4
+uvicorn==0.22.0
+SQLAlchemy==1.4.49
+# psycopg2-binary removed to avoid build errors on Windows in dev
+# Use Pydantic v2 to match application schemas and tests
+pydantic==2.12.5
+starlette==0.50.0
+email-validator==2.0.0
+python-jose==3.3.0
+passlib[bcrypt]==1.7.4
+alembic==1.11.1
+redis==3.5.3
+python-dotenv==1.0.0
+slowapi==0.1.4
+python-multipart==0.0.8
+pytest==7.4.0
+python-json-logger==2.0.4
+pytest-asyncio==0.20.3
+httpx==0.24.1
+mypy==0.991
+black==24.3.0
+flake8==6.1.0
+ruff==0.14.9
+pre-commit==3.4.0
+# optional pure-python postgres driver for dev if you need postgres connection: pg8000
+pg8000==1.28.3
+# Optional dependency for PDF generation used by report utilities
+reportlab==4.0.0
+# Optional: If you want PostgreSQL support without native pg_config, use pg8000
+# For production use prefer psycopg2-binary with PostgreSQL installed

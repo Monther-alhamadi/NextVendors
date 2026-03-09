@@ -1,0 +1,144 @@
+@import "../../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   RECENTLY VIEWED — Horizontal scroll preview
+   ═══════════════════════════════════════════════════════════ */
+
+.container {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border-light);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleIcon {
+  color: var(--primary);
+}
+
+.clearBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.clearBtn:hover {
+  color: var(--danger);
+  text-decoration: underline;
+}
+
+/* ── Horizontal Scroll Track ─────────────────────────── */
+.scrollTrack {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px; /* space for scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-medium) transparent;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollTrack::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollTrack::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollTrack::-webkit-scrollbar-thumb {
+  background-color: var(--border-medium);
+  border-radius: 10px;
+}
+
+/* ── Mini Card ─────────────────────────────────────── */
+.card {
+  width: 160px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s;
+  scroll-snap-align: start;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.imageArea {
+  width: 100%;
+  height: 140px;
+  background: var(--bg-page);
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  padding: 12px;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vendor {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price {
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .card {
+    width: 140px;
+  }
+  .imageArea {
+    height: 120px;
+  }
+}

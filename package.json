@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "cd frontend && npm run dev"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^24.10.1",
+    "vite-plugin-compression": "^0.5.1"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.21",
+    "recharts": "^3.6.0"
+  }
+}

@@ -1,0 +1,74 @@
+
+services:
+  # ── Redis Cache ──────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+
+  # ── Backend Server ───────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: ecommerce-backend
+    ports:
+      - "8100:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONPATH=/app
+      - DEBUG=true
+      - DATABASE_URL=sqlite:///./dev.db
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - FRONTEND_URLS=http://localhost:5173,http://127.0.0.1:5173
+      - AUTO_CREATE_DB=true
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - ecommerce-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Frontend Development Server ──────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: ecommerce-frontend
+    ports:
+      - "5173:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_BASE_URL=/api/v1
+      - DOCKER_ENV=true
+    networks:
+      - ecommerce-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+volumes:
+  redis-data:
+
+networks:
+  ecommerce-network:
+    driver: bridge

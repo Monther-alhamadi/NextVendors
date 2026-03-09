@@ -1,0 +1,41 @@
+@import "../../styles/tokens.css";
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.badge_sale {
+  background: #fff0f0;
+  color: var(--danger);
+  border: 1px solid rgba(211, 47, 47, 0.08);
+}
+.badge_new {
+  background: rgba(30, 144, 255, 0.1);
+  color: var(--primary-600);
+  border: 1px solid rgba(30, 144, 255, 0.08);
+}
+.badge_default {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+.sale {
+  background: #fff0f0;
+  color: var(--danger);
+  border: 1px solid rgba(211, 47, 47, 0.08);
+}
+.new {
+  background: rgba(30, 144, 255, 0.1);
+  color: var(--primary-600);
+  border: 1px solid rgba(30, 144, 255, 0.08);
+}

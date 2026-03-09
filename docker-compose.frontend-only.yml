@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Frontend فقط - للاختبار السريع
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: ecommerce-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source code for hot reload
+      - ./frontend:/app
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      # استخدام API وهمية أو معطلة
+      - VITE_API_BASE_URL=http://localhost:8000
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+networks:
+  ecommerce-network:
+    driver: bridge

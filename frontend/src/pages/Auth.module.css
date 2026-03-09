@@ -1,0 +1,270 @@
+@import "../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   AUTH — Shared Login / Register Styles
+   ═══════════════════════════════════════════════════════════ */
+
+.authPage {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.authContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 900px;
+  width: 100%;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-light);
+  animation: fadeSlideUp 0.4s ease-out;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Visual Panel ──────────────────────────────────── */
+.visual {
+  position: relative;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark, #3730a3) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+.visual::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(197,160,101,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.visual::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  left: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+  pointer-events: none;
+}
+
+.visualContent {
+  z-index: 2;
+  max-width: 280px;
+}
+
+.visualIcon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.visualContent h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  margin: 0 0 12px;
+  color: white;
+}
+
+.visualContent p {
+  opacity: 0.8;
+  line-height: 1.7;
+  font-size: 0.92rem;
+}
+
+/* ── Form Wrapper ──────────────────────────────────── */
+.formWrapper {
+  padding: 40px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.authHeader {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.authHeader h1 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  color: var(--primary);
+  margin: 0 0 6px;
+}
+
+.authHeader p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Form ──────────────────────────────────────────── */
+.authForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  margin-bottom: 18px;
+}
+
+.adminNotice {
+  background: rgba(255, 193, 7, 0.1);
+  color: #d97706;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 193, 7, 0.15);
+}
+
+.authError {
+  color: var(--danger);
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: rgba(220, 38, 38, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+.authFooter {
+  margin-top: 24px;
+  font-size: 0.88rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.authFooter a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.authFooter a:hover { text-decoration: underline; }
+
+.divider {
+  margin: 0 12px;
+  color: var(--border-medium);
+}
+
+/* ── MFA Step ──────────────────────────────────────── */
+.mfaStep {
+  text-align: center;
+  animation: fadeSlideUp 0.3s ease-out;
+}
+
+.mfaIcon {
+  width: 72px;
+  height: 72px;
+  background: rgba(79, 70, 229, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 16px;
+}
+
+.mfaStep h2 {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  color: var(--text-main);
+  margin: 0 0 6px;
+}
+
+.mfaStep > p {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin: 0 0 24px;
+}
+
+.mfaInput {
+  width: 100%;
+  padding: 16px;
+  background: var(--bg-input);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.mfaInput:focus {
+  border-color: var(--primary);
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: color 0.2s;
+}
+
+.backBtn:hover {
+  color: var(--primary);
+}
+
+/* ── Password Strength ─────────────────────────────── */
+.strengthBar {
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s, background 0.3s;
+}
+
+.strengthWeak { background: #ef4444; width: 33%; }
+.strengthMedium { background: #f59e0b; width: 66%; }
+.strengthStrong { background: #10b981; width: 100%; }
+
+.strengthLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .authContainer { grid-template-columns: 1fr; }
+  .visual { display: none; }
+  .formWrapper { padding: 28px 24px; }
+}

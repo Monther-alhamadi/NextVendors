@@ -1,0 +1,139 @@
+@import "../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   PROFILE — Premium Account Dashboard
+   ═══════════════════════════════════════════════════════════ */
+
+.page { max-width: var(--container-max); margin: 0 auto; padding: 32px var(--container-pad); }
+
+/* ── Login Required ────────────────────────────────── */
+.loginRequired {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 50vh; text-align: center;
+}
+.loginCard {
+  background: var(--bg-card); padding: 48px 40px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-light);
+  max-width: 420px; width: 100%;
+}
+.loginCard h2 { margin: 0 0 12px; color: var(--primary); font-family: var(--font-heading); }
+.loginCard p { margin: 0 0 24px; color: var(--text-secondary); }
+
+/* ── Header ────────────────────────────────────────── */
+.header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 32px;
+}
+.headerTitle { font-family: var(--font-heading); font-size: 1.6rem; color: var(--primary); margin: 0 0 4px; }
+.headerSub { color: var(--text-secondary); font-size: 0.88rem; }
+.logoutBtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  background: transparent; border: 1.5px solid var(--danger);
+  border-radius: var(--radius-full);
+  color: var(--danger); font-weight: 600; font-size: 0.84rem;
+  cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+}
+.logoutBtn:hover { background: var(--danger); color: white; }
+
+/* ── User Card ─────────────────────────────────────── */
+.userCard {
+  display: flex; align-items: center; gap: 20px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark, #3730a3));
+  border-radius: var(--radius-xl);
+  margin-bottom: 32px; color: white;
+  position: relative; overflow: hidden;
+}
+.userCard::before {
+  content: ""; position: absolute; top: -30%; right: -10%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(197,160,101,0.15), transparent 70%);
+  pointer-events: none;
+}
+.avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; font-weight: 800; flex-shrink: 0;
+  border: 3px solid rgba(255,255,255,0.3);
+  font-family: var(--font-heading);
+}
+.userInfo { flex: 1; }
+.userName { font-size: 1.15rem; font-weight: 700; margin-bottom: 2px; }
+.userEmail { font-size: 0.85rem; opacity: 0.7; }
+.roleBadge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+
+/* ── Section Title ─────────────────────────────────── */
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem; color: var(--text-main);
+  margin: 0 0 20px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+/* ── Dashboard Grid ────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.dashCard {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--text-main);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.dashCard:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.dashCard:hover .dashArrow { opacity: 1; transform: translateX(0); }
+
+.dashIcon {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-page);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+}
+
+.dashContent h3 { margin: 0 0 2px; font-size: 0.95rem; font-weight: 700; }
+.dashContent p { margin: 0; font-size: 0.78rem; color: var(--text-tertiary); }
+
+.dashArrow {
+  position: absolute;
+  inset-inline-end: 16px;
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.2s;
+}
+
+/* ═══ Responsive ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page { padding: 20px 16px; }
+  .header { flex-direction: column; gap: 12px; }
+  .userCard { flex-direction: column; text-align: center; padding: 28px 20px; }
+  .grid { grid-template-columns: 1fr; }
+}

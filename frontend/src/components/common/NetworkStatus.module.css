@@ -1,0 +1,62 @@
+@import "../../styles/design-tokens.css";
+
+.networkStatus {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background: rgba(17, 24, 39, 0.9);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.visible {
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.offline {
+  border-color: #ef4444;
+}
+
+.online {
+  border-color: #10b981;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offline .icon {
+  color: #ef4444;
+}
+
+.online .icon {
+  color: #10b981;
+}
+
+.text {
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 768px) {
+  .networkStatus {
+    bottom: 5rem; /* Above mobile bottom nav */
+    width: max-content;
+    max-width: 90vw;
+  }
+}

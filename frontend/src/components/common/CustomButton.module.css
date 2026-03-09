@@ -1,0 +1,56 @@
+@import "../../styles/tokens.css";
+
+.customBtn {
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 120ms ease;
+}
+.icon {
+  display: inline-flex;
+  margin-inline-end: 8px; /* supports RTL automatically */
+}
+.primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+}
+.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+}
+.danger {
+  background: var(--danger);
+  color: var(--primary-contrast);
+}
+.outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-medium);
+}
+.sm {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+}
+.md {
+  font-size: 1rem;
+  padding: 8px 18px;
+}
+.lg {
+  font-size: 1.2rem;
+  padding: 12px 24px;
+}
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.loader {
+  font-size: 0.95em;
+  color: var(--muted);
+}
+.focusVisible:focus-visible {
+  box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.12);
+  outline: none;
+}

@@ -1,0 +1,7 @@
+C:\Users\hp\Desktop\projet2\ecommerce-store\backend\app\core\config.py:90: UserWarning: JWT_SECRET_KEY not set — using random key (dev only). Set JWT_SECRET_KEY env var for production.
+  settings = _create_settings()
+Traceback (most recent call last):
+  File "C:\Users\hp\Desktop\projet2\ecommerce-store\backend\scripts\seed_rbac.py", line 12, in <module>
+    from app.main import app as main_app  # Initialize all routes and mappers flawlessly
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'app.main'

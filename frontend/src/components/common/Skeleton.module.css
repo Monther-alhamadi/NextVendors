@@ -1,0 +1,49 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-page) 25%,
+    var(--bg-surface) 50%,
+    var(--bg-page) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite ease-in-out;
+  position: relative;
+  overflow: hidden;
+  opacity: 0.8;
+}
+
+.text {
+  border-radius: 4px;
+  margin-bottom: 0.5em;
+}
+
+.rect {
+  border-radius: var(--radius-md);
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Pulse alternative for low-end devices if needed */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: pulse 1.5s infinite ease-in-out;
+    background: var(--border-light);
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}

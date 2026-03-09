@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+# Notes:
+# - This compose file only provides a Redis instance for local development.
+# - Run `docker compose -f docker-compose.dev.yml up` to start Redis.
+# - Backend uses SQLite and can run locally. To test cache invalidation, set REDIS_URL to redis://localhost:6379

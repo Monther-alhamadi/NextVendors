@@ -1,0 +1,119 @@
+@import "../../styles/design-tokens.css";
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE BOTTOM NAV — Premium Fixed Navigation
+   ═══════════════════════════════════════════════════════════ */
+
+.bottomNav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bottomNav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-overlay);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-xs);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.06);
+    padding: 6px 0 env(safe-area-inset-bottom, 8px);
+    justify-content: space-around;
+    align-items: center;
+    height: 64px;
+  }
+
+  .navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 4px 12px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: var(--radius-md);
+  }
+
+  .navItem:active {
+    transform: scale(0.92);
+  }
+
+  .navItemActive {
+    color: var(--primary);
+  }
+
+  /* Active indicator dot */
+  .navItemActive::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+    animation: dotPop 0.3s var(--ease-spring);
+  }
+
+  @keyframes dotPop {
+    0% { transform: translateX(-50%) scale(0); }
+    60% { transform: translateX(-50%) scale(1.8); }
+    100% { transform: translateX(-50%) scale(1); }
+  }
+
+  .navIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s var(--ease-spring);
+  }
+
+  .navItemActive .navIcon {
+    transform: scale(1.1);
+  }
+
+  .navLabel {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    line-height: 1;
+  }
+
+  .cartBadge {
+    position: absolute;
+    top: -4px;
+    inset-inline-end: -8px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.5rem;
+    font-weight: 800;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    border: 2px solid var(--bg-card);
+    line-height: 1;
+    animation: badgePop 0.3s var(--ease-spring);
+  }
+
+  @keyframes badgePop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+}
