@@ -40,7 +40,20 @@
     "delete_success": "تم الحذف بنجاح",
     "optional": "اختياري",
     "global": "عالمي",
-    "name": "الاسم"
+    "name": "الاسم",
+    "clear": "Clear (Translation Needed)",
+    "close": "Close (Translation Needed)",
+    "confirm": "Confirm (Translation Needed)",
+    "copied": "Copied (Translation Needed)",
+    "copied_to_clipboard": "Copied To Clipboard (Translation Needed)",
+    "copy": "Copy (Translation Needed)",
+    "delete": "Delete (Translation Needed)",
+    "no_data": "No Data (Translation Needed)",
+    "processing": "Processing (Translation Needed)",
+    "refresh": "Refresh (Translation Needed)",
+    "send": "Send (Translation Needed)",
+    "unnamed_product": "Unnamed Product (Translation Needed)",
+    "update": "Update (Translation Needed)"
   },
   "nav": {
     "home": "الرئيسية",
@@ -56,15 +69,29 @@
     "logout": "تسجيل الخروج",
     "search_placeholder": "ابحث عن منتجات...",
     "notifications": "التنبيهات",
-    "messages": "الرسائل"
+    "messages": "الرسائل",
+    "login_required": "Login Required (Translation Needed)",
+    "quick_nav": "Quick Nav (Translation Needed)",
+    "vendor": "Vendor (Translation Needed)",
+    "wishlist": "Wishlist (Translation Needed)"
   },
   "footer": {
     "about": "من نحن",
     "quick_links": "روابط سريعة",
     "contact": "اتصل بنا",
-    "copyright": "جميع الحقوق محفوظة © 2025"
+    "copyright": "جميع الحقوق محفوظة © 2025",
+    "email_placeholder": "Email Placeholder (Translation Needed)",
+    "help_center": "Help Center (Translation Needed)",
+    "newsletter_desc": "Newsletter Desc (Translation Needed)",
+    "newsletter_title": "Newsletter Title (Translation Needed)",
+    "payment_methods": "Payment Methods (Translation Needed)",
+    "privacy": "Privacy (Translation Needed)",
+    "rights": "Rights (Translation Needed)",
+    "subscribe": "Subscribe (Translation Needed)",
+    "subscribed": "Subscribed (Translation Needed)",
+    "support": "Support (Translation Needed)",
+    "terms": "Terms (Translation Needed)"
   },
-
   "product": {
     "add_to_cart": "أضف إلى السلة",
     "added_to_cart": "تمت الإضافة للسلة",
@@ -110,7 +137,19 @@
     "linking": "جاري الربط...",
     "select_vendor_msg": "اختر مورداً",
     "linked_vendor_success": "تم ربط المورد بنجاح",
-    "link_vendor_failed": "فشل ربط المورد"
+    "link_vendor_failed": "فشل ربط المورد",
+    "add_image": "Add Image (Translation Needed)",
+    "availability": "Availability (Translation Needed)",
+    "buy_now": "Buy Now (Translation Needed)",
+    "buy_whatsapp": "Buy Whatsapp (Translation Needed)",
+    "details": "Details (Translation Needed)",
+    "left": "Left (Translation Needed)",
+    "main_image": "Main Image (Translation Needed)",
+    "only": "Only (Translation Needed)",
+    "recently_viewed": "Recently Viewed (Translation Needed)",
+    "set_primary": "Set Primary (Translation Needed)",
+    "share_product": "Share Product (Translation Needed)",
+    "share_text": "Share Text (Translation Needed)"
   },
   "cart": {
     "title": "سلة التسوق",
@@ -120,7 +159,11 @@
     "summary": "ملخص الطلب",
     "total": "الإجمالي",
     "checkout": "إتمام الطلب",
-    "secure": "دفع آمن 100%"
+    "secure": "دفع آمن 100%",
+    "discount": "Discount (Translation Needed)",
+    "free_shipping_msg": "Free Shipping Msg (Translation Needed)",
+    "free_shipping_unlocked": "Free Shipping Unlocked (Translation Needed)",
+    "subtotal": "Subtotal (Translation Needed)"
   },
   "checkout": {
     "title": "إتمام الطلب",
@@ -137,7 +180,11 @@
     "card_number": "رقم البطاقة",
     "expiry": "تاريخ الانتهاء",
     "cvc": "الرمز السري (CVC)",
-    "payment_authorized": "تم تفويض الدفع (محاكاة)"
+    "payment_authorized": "تم تفويض الدفع (محاكاة)",
+    "free": "Free (Translation Needed)",
+    "shipping": "Shipping (Translation Needed)",
+    "subtitle": "Subtitle (Translation Needed)",
+    "subtotal": "Subtotal (Translation Needed)"
   },
   "auth": {
     "login_title": "تسجيل الدخول",
@@ -151,7 +198,20 @@
     "have_account": "لديك حساب بالفعل؟",
     "register_now": "سجل الآن",
     "welcome_back": "مرحباً بعودتك",
-    "join_us": "انضم إلينا"
+    "join_us": "انضم إلينا",
+    "admin_login": "Admin Login (Translation Needed)",
+    "back_to_login": "Back To Login (Translation Needed)",
+    "invalid_2fa": "Invalid 2Fa (Translation Needed)",
+    "login_desc": "Login Desc (Translation Needed)",
+    "passwords_mismatch": "Passwords Mismatch (Translation Needed)",
+    "register_desc": "Register Desc (Translation Needed)",
+    "registration_unavailable": "Registration Unavailable (Translation Needed)",
+    "strength_medium": "Strength Medium (Translation Needed)",
+    "strength_strong": "Strength Strong (Translation Needed)",
+    "strength_weak": "Strength Weak (Translation Needed)",
+    "two_factor_desc": "Two Factor Desc (Translation Needed)",
+    "two_factor_title": "Two Factor Title (Translation Needed)",
+    "verify_login": "Verify Login (Translation Needed)"
   },
   "search_suggestions": {
     "undo": "تراجع",
@@ -183,7 +243,11 @@
     "empty": "قائمة الأمنيات فارغة",
     "browse": "تصفح المنتجات",
     "moved_to_cart": "تم النقل للسلة",
-    "clear": "مسح القائمة"
+    "clear": "مسح القائمة",
+    "all_moved": "All Moved (Translation Needed)",
+    "empty_desc": "Empty Desc (Translation Needed)",
+    "items_count": "Items Count (Translation Needed)",
+    "move_all": "Move All (Translation Needed)"
   },
   "filter": {
     "category": "الفئة",
@@ -191,7 +255,18 @@
     "max_price": "أعلى سعر",
     "apply": "تصفية",
     "clear": "مسح التصفية",
-    "placeholder_category": "مثال: ملابس"
+    "placeholder_category": "مثال: ملابس",
+    "active_filters": "Active Filters (Translation Needed)",
+    "all_categories": "All Categories (Translation Needed)",
+    "clear_all": "Clear All (Translation Needed)",
+    "filters": "Filters (Translation Needed)",
+    "in_stock_only": "In Stock Only (Translation Needed)",
+    "open": "Open (Translation Needed)",
+    "sort_label": "Sort Label (Translation Needed)",
+    "sort_newest": "Sort Newest (Translation Needed)",
+    "sort_popular": "Sort Popular (Translation Needed)",
+    "sort_price_asc": "Sort Price Asc (Translation Needed)",
+    "sort_price_desc": "Sort Price Desc (Translation Needed)"
   },
   "search": {
     "title": "نتائج البحث",
@@ -201,11 +276,16 @@
     "title": "تقييمات المنتج",
     "loading": "جاري تحميل التقييمات...",
     "empty": "لا توجد تقييمات لهذا المنتج.",
-    "stars": "نجوم"
+    "stars": "نجوم",
+    "no_reviews": "No Reviews (Translation Needed)",
+    "verified_purchase": "Verified Purchase (Translation Needed)"
   },
   "products": {
     "browse_title": "تصفح المنتجات",
-    "browse_subtitle": "اكتشف مجموعتنا الكاملة من المنتجات الحصرية."
+    "browse_subtitle": "اكتشف مجموعتنا الكاملة من المنتجات الحصرية.",
+    "all_loaded": "All Loaded (Translation Needed)",
+    "no_results": "No Results (Translation Needed)",
+    "no_results_desc": "No Results Desc (Translation Needed)"
   },
   "orders": {
     "title": "طلباتي",
@@ -225,62 +305,23 @@
     "back_to_orders": "العودة لطلباتي",
     "items": "العناصر",
     "status": "الحالة",
-    "address": "العنوان"
+    "address": "العنوان",
+    "report_issue": "Report Issue (Translation Needed)",
+    "return": "Return (Translation Needed)",
+    "total_orders": "Total Orders (Translation Needed)"
   },
-
   "categories": {
     "electronics": "إلكترونيات",
     "fashion": "أزياء",
-    "home": "منزل"
+    "home": "منزل",
+    "beauty": "Beauty (Translation Needed)"
   },
   "trust": {
     "authentic": "أصلي 100%",
-    "returns": "إرجاع مجاني"
+    "returns": "إرجاع مجاني",
+    "fast_shipping": "Fast Shipping (Translation Needed)"
   },
-  "home": {
-    "hero": {
-      "badge": "منصة التسوق الأكثر ثقة",
-      "title": "اكتشف <1>الفخامة</1><br/>في كل تفصيلة.",
-      "subtitle": "وجهتك الأولى للمنتجات الحصرية والمميزة. تسوق أحدث الصيحات العالمية بجودة لا تُضاهى وتوصيل يصل إليك في أسرع وقت.",
-      "shop_new": "تسوق الجديد",
-      "browse_collection": "تصفح المجموعة"
-    },
-    "flash_sale": {
-      "title": "تخفيضات الفلاش — حتى 70% خصم"
-    },
-    "categories": {
-      "eyebrow": "اكتشف",
-      "title": "تسوق حسب الفئة"
-    },
-    "features": {
-      "quality": "جودة لا تُضاهى",
-      "quality_desc": "كل منتج يمر بفحص دقيق لضمان أعلى معايير الجودة",
-      "delivery": "توصيل سريع خلال 24 ساعة",
-      "delivery_desc": "نوصل طلبك إلى باب منزلك بأسرع وقت ممكن",
-      "payment": "دفع آمن ومحمي 100%",
-      "payment_desc": "بياناتك محمية بأحدث تقنيات التشفير والأمان",
-      "returns": "إرجاع مجاني خلال 30 يوم",
-      "returns_desc": "غير راضٍ؟ أعد المنتج مجاناً دون أي أسئلة"
-    },
-    "trending": {
-      "eyebrow": "رائج الآن",
-      "title": "أبرز المنتجات",
-      "subtitle": "اختيارات مميزة لك بأفضل الأسعار",
-      "view_all": "عرض الكل"
-    },
-    "testimonials": {
-      "eyebrow": "آراء عملائنا",
-      "title": "يثقون بنا"
-    },
-    "newsletter": {
-      "eyebrow": "النشرة الإخبارية",
-      "title": "احصل على أفضل العروض أولاً",
-      "desc": "اشترك ليصلك إشعار فوري بكل العروض الحصرية والمنتجات الجديدة قبل الجميع.",
-      "placeholder": "عنوان بريدك الإلكتروني ...",
-      "subscribe": "اشترك مجاناً",
-      "success": "تم الاشتراك بنجاح! 🎉"
-    }
-  },
+  "home": "Home (Translation Needed)",
   "profile": {
     "login_required": "يرجى تسجيل الدخول للوصول إلى لوحة التحكم.",
     "login_desc": "سجل الدخول لإدارة حسابك وطلباتك.",
@@ -296,7 +337,9 @@
     "settings": "الإعدادات",
     "settings_desc": "تعديل المعلومات الشخصية وكلمة المرور",
     "vendor_desc": "إدارة المنتجات والمبيعات",
-    "admin_desc": "لوحة تحكم النظام"
+    "admin_desc": "لوحة تحكم النظام",
+    "messages_desc": "Messages Desc (Translation Needed)",
+    "support_desc": "Support Desc (Translation Needed)"
   },
   "addresses": {
     "title": "عناويني",
@@ -363,181 +406,85 @@
     "affiliate_performance_period": "أداء التسويق (آخر 7 أيام)",
     "visits": "زيارات",
     "no_orders_all_desc": "ستظهر طلبات العملاء هنا. استعد لتنفيذ طلبك الأول!",
-    "manage_reviews": "إدارة التقييمات"
+    "manage_reviews": "إدارة التقييمات",
+    "available_balance": "Available Balance (Translation Needed)",
+    "become_seller": "Become Seller (Translation Needed)",
+    "contact_vendor": "Contact Vendor (Translation Needed)",
+    "insufficient_balance": "Insufficient Balance (Translation Needed)",
+    "no_reviews": "No Reviews (Translation Needed)",
+    "no_reviews_desc": "No Reviews Desc (Translation Needed)",
+    "no_whatsapp": "No Whatsapp (Translation Needed)",
+    "payout_requested": "Payout Requested (Translation Needed)",
+    "registration_success": "Registration Success (Translation Needed)",
+    "reserving_stock": "Reserving Stock (Translation Needed)",
+    "seller_intro": "Seller Intro (Translation Needed)",
+    "store_description": "Store Description (Translation Needed)",
+    "store_description_placeholder": "Store Description Placeholder (Translation Needed)",
+    "store_logo_url": "Store Logo Url (Translation Needed)",
+    "store_name_placeholder": "Store Name Placeholder (Translation Needed)",
+    "submit_application": "Submit Application (Translation Needed)",
+    "write_reply": "Write Reply (Translation Needed)"
   },
-  "admin": {
-    "dashboard_title": "مركز قيادة المنصة",
-    "welcome_msg": "نظرة عامة على أداء ومقاييس المنصة",
-    "welcome_back": "مرحباً بك في لوحة التحكم",
-    "export_report": "تصدير تقرير",
-    "view_report": "عرض التقرير",
-    "live": "مباشر",
-    "gmv": "إجمالي المبيعات",
-    "total_revenue": "إجمالي الإيرادات (GMV)",
-    "total_orders": "إجمالي الطلبات",
-    "total_users": "إجمالي المستخدمين",
-    "total_products": "إجمالي المنتجات",
-    "active_vendors": "الموردين النشطين",
-    "revenue_vs_orders": "الإيرادات مقابل الطلبات",
-    "quick_actions": "إجراءات سريعة",
-    "manage_products": "إدارة المنتجات",
-    "manage_orders": "إدارة الطلبات",
-    "vendor_requests": "طلبات الموردين",
-    "system_settings": "إعدادات النظام",
-    "top_performing_vendors": "أفضل الموردين أداءً",
-    "view_all_reports": "عرض جميع التقارير",
-    "vendor": "المورد",
-    "sales": "المبيعات",
-    "revenue": "الإيرادات",
-    "status": "الحالة",
-    "active": "نشط",
-    "platform_health": "صحة المنصة",
-    "server_uptime": "توفير الخادم",
-    "api_latency": "زمن وصول API",
-    "business_intelligence": "ذكاء الأعمال",
-    "financial_indicators": "المؤشرات المالية",
-    "daily": "يومي",
-    "weekly": "أسبوعي",
-    "monthly": "شهري",
-    "yearly": "سنوي",
-    "platform_profit": "ربح المنصة",
-    "avg_order": "متوسط الطلب",
-    "site_name": "اسم الموقع",
-    "currency": "العملة",
-    "maintenance_mode": "وضع الصيانة",
-    "maintenance_desc": "تمكين وضع الصيانة على مستوى الموقع.",
-    "allow_registrations": "السماح بالتسجيل",
-    "db_connection": "اتصال قاعدة البيانات",
-    "uptime": "وقت التشغيل",
-    "system_status": "حالة النظام",
-    "trigger_backup": "بدء النسخ الاحتياطي",
-    "backup_success": "بدأ النسخ الاحتياطي بنجاح",
-    "database_tools": "أدوات قاعدة البيانات",
-    "security_settings": "إعدادات الأمان",
-    "two_factor_auth": "المصادقة الثنائية (2FA)",
-    "global_announcements": "الإعلانات العامة الشاملة",
-    "announcement_active": "تفعيل شريط الإعلان",
-    "announcement_text": "نص الشريط الإعلاني",
-    "announcement_variant": "نمط التصميم (اللون)",
-    "2fa_desc": "تأمين حسابك بكلمة مرور متغيرة.",
-    "enable_2fa": "تمكين 2FA",
-    "configure_2fa": "تكوين 2FA",
-    "platform_net": "صافي إيرادات المنصة",
-    "vendor_costs": "تكاليف الموردين",
-    "audit_log": "سجل العمليات",
-    "audit_log_viewer": "عارض سجل العمليات",
-    "timestamp": "الطابع الزمني",
-    "transaction_type": "نوع المعاملة",
-    "support_title": "مركز الدعم",
-    "all_tickets": "جميع التذاكر",
-    "priority": "الأولوية",
-    "reply_placeholder": "اكتب ردك هنا...",
-    "logistics_title": "الشحن والخدمات اللوجستية",
-    "logistics_subtitle": "إدارة المناطق الجغرافية وتكاليف التوصيل",
-    "carriers": "الناقلون",
-    "shipping_zones": "مناطق الشحن",
-    "carrier_name": "اسم الناقل",
-    "carrier_code": "رمز الناقل",
-    "zone_name": "اسم المنطقة",
-    "base_cost": "التكلفة الأساسية",
-    "cost_per_kg": "التكلفة لكل كجم",
-    "configure_api": "تكوين API",
-    "audit_desc": "تتبع الإجراءات والتغييرات الإدارية.",
-    "ledger_title": "دفتر الأستاذ المالي",
-    "ledger_subtitle": "سجل لجميع الائتمانات والخصوم والتسويات.",
-    "system": "النظام",
-    "vendors_title": "إدارة الموردين",
-    "vendors_subtitle": "عرض وإدارة جميع الموردين المسجلين.",
-    "create_vendor": "إنشاء مورد",
-    "vendor_created": "تم إنشاء المورد بنجاح",
-    "manual_payout": "سحب يدوي",
-    "payout_success": "تم تسجيل السحب بنجاح",
-    "new_vendor": "مورد جديد",
-    "plans_management": "خطط الموردين",
-    "tax_rates": "معدلات الضرائب",
-    "shipping_logistics": "الخدمات اللوجستية",
-    "tax_management": "إدارة الضرائب",
-    "tax_subtitle": "تكوين معدلات الضرائب حسب المنطقة",
-    "add_tax_rate": "إضافة معدل ضريبة",
-    "edit_tax_rate": "تعديل معدل ضريبة",
-    "active_rate": "معدل نشط",
-    "shipping_settings": "إعدادات اللوجستيات",
-    "shipping_subtitle": "إدارة مقدمي الخدمة ومناطق التوصيل الإقليمية",
-    "shipping_providers": "مقدمو الخدمة",
-    "active_zones": "مناطق التوصيل",
-    "add_zone": "إنشاء منطقة",
-    "available_providers": "ناقلو الشحن",
-    "environment": "البيئة",
-    "new_provider": "ناقل جديد",
-    "new_zone": "منطقة جديدة",
-    "select_connector": "اختر الموصل",
-    "countries_placeholder": "مثال: SA, AE, KW",
-    "no_providers": "لم يتم تكوين مزودي شحن بعد.",
-    "no_zones": "لم يتم تحديد مناطق شحن بعد.",
-    "add_provider": "إضافة مزود",
-    "vendor_code": "رمز المورد",
-    "contact_email": "البريد الإلكتروني للتواصل",
-    "owner_email": "بريد المالك",
-    "record_payout": "تسجيل سحب",
-    "current_balance": "الرصيد الحالي",
-    "payout_amount": "مبلغ السحب",
-    "confirm_payout": "تأكيد السحب",
-    "verification": "التحقق",
-    "billing_model": "نموذج الفوترة",
-    "commission_rate": "نسبة العمولة",
-    "subscription_title": "خطة الاشتراك",
-    "hybrid": "هجين (عمولة + اشتراك)",
-    "verified": "متحقق",
-    "unverified": "غير متحقق",
-    "view_document": "عرض الوثيقة",
-    "balance": "الرصيد",
-    "payout": "سحب",
-    "approve": "موافقة",
-    "reject": "رفض",
-    "pending": "قيد الانتظار",
-    "rejected": "مرفوض",
-    "users_title": "إدارة المستخدمين",
-    "users_subtitle": "عرض وإدارة جميع المستخدمين المسجلين.",
-    "search_users": "البحث عن مستخدمين...",
-    "confirm_delete_user": "هل أنت متأكد من حذف هذا المستخدم؟",
-    "user_deleted": "تم حذف المستخدم بنجاح",
-    "user_activated": "تم تفعيل المستخدم",
-    "user_deactivated": "تم إيقاف تفعيل المستخدم",
-    "user_suspended": "تم تعليق المستخدم",
-    "user_unsuspended": "تم إلغاء تعليق المستخدم",
-    "no_users": "لم يتم العثور على مستخدمين.",
-    "role": "الدور",
-    "activate": "تفعيل",
-    "deactivate": "تعطيل",
-    "suspend": "تعليق",
-    "unsuspend": "إلغاء التعليق",
-    "suspended": "معلق",
-    "inactive": "غير نشط",
-    "orders_overview_desc": "نظرة عامة على جميع الطلبات وحالتها.",
-    "export_csv": "تصدير CSV",
-    "customer_id": "معرف العميل",
-    "vendor_id": "معرف المورد",
-    "orders_selected": "طلبات محددة",
-    "mark_shipped": "تحديد كمشحون",
-    "mark_completed": "تحديد كمكتمل",
-    "no_orders_found": "لم يتم العثور على طلبات",
-    "import_products": "استيراد منتجات",
-    "import_desc": "استيراد منتجات من ملف CSV أو JSON",
-    "select_file": "اختر ملفاً للاستيراد",
-    "import_now": "استيراد الآن",
-    "import_failed": "فشل الاستيراد",
-    "items_created": "تم إنشاء {{count}} عنصر",
-    "import_from_url": "استيراد من رابط",
-    "import_url_desc": "الصق رابط منتج لاستيراده.",
-    "import_success_product": "تم استيراد {{name}} بنجاح",
-    "import": "استيراد",
-    "paid": "مدفوع",
-    "bulk_update_success": "تم تحديث الحالة بنجاح للطلبات المحددة"
-  },
-
+  "admin": "Admin (Translation Needed)",
   "validation": {
     "name_length": "يجب أن يكون الاسم حرفين على الأقل",
     "price_positive": "يجب أن يكون السعر رقماً غير سالب",
     "inventory_integer": "يجب أن يكون المخزون رقماً صحيحاً غير سالب"
+  },
+  "Admin role has all permissions by default": {
+    " You cannot modify it": {
+      "": " (Translation Needed)"
+    }
+  },
+  "Cannot delete fundamental system roles": {
+    "": " (Translation Needed)"
+  },
+  "Failed to create role": {
+    " Name might be taken": {
+      "": " (Translation Needed)"
+    }
+  },
+  "Failed to create ticket": "Failed To Create Ticket (Translation Needed)",
+  "Failed to delete role": {
+    "": " (Translation Needed)"
+  },
+  "Failed to update permission": {
+    "": " (Translation Needed)"
+  },
+  "T": "T (Translation Needed)",
+  "a": "A (Translation Needed)",
+  "app": {
+    "name": "Name (Translation Needed)"
+  },
+  "category": "Category (Translation Needed)",
+  "compare": {
+    "added": "Added (Translation Needed)",
+    "clear_all": "Clear All (Translation Needed)",
+    "empty_desc": "Empty Desc (Translation Needed)",
+    "empty_title": "Empty Title (Translation Needed)",
+    "items_added": "Items Added (Translation Needed)",
+    "removed": "Removed (Translation Needed)",
+    "title": "Title (Translation Needed)"
+  },
+  "dispute_order": "Dispute Order (Translation Needed)",
+  "error": {
+    "upload_failed": "Upload Failed (Translation Needed)"
+  },
+  "in_stock": "In Stock (Translation Needed)",
+  "limit": "Limit (Translation Needed)",
+  "maxPrice": "Maxprice (Translation Needed)",
+  "max_price": "Max Price (Translation Needed)",
+  "minPrice": "Minprice (Translation Needed)",
+  "min_price": "Min Price (Translation Needed)",
+  "orderId": "Orderid (Translation Needed)",
+  "ref": "Ref (Translation Needed)",
+  "sort_by": "Sort By (Translation Needed)",
+  "token": "Token (Translation Needed)",
+  "wallet": {
+    "topup_success": "Topup Success (Translation Needed)"
+  },
+  "أدخل رقم التتبع (اختياري)": "أدخل رقم التتبع (اختياري) (Translation Needed)",
+  "ميزة إضافة تاجر يدوياً قيد التطوير": {
+    "": " (Translation Needed)"
   }
 }
