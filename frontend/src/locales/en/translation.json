@@ -6,9 +6,9 @@
     "submit": "Submit",
     "cancel": "Cancel",
     "save": "Save",
+    "save_success": "Saved successfully",
     "save_changes": "Save Changes",
     "details": "Details",
-    "save_success": "Saved successfully",
     "save_product": "Save Product",
     "view_details": "View Details",
     "mark_all_read": "Mark all as read",
@@ -40,7 +40,20 @@
     "delete_success": "Deleted successfully",
     "optional": "Optional",
     "global": "Global",
-    "name": "Name"
+    "name": "Name",
+    "no_data": "No data available",
+    "open_menu": "Open Menu",
+    "close_menu": "Close Menu",
+    "increase": "Increase",
+    "decrease": "Decrease",
+    "switch_language": "Switch Language",
+    "all_tickets": "All Tickets",
+    "reply_placeholder": "Write your reply...",
+    "support_title": "Support Center",
+    "refresh": "Refresh",
+    "send": "Send",
+    "update": "Update",
+    "edit": "Edit"
   },
   "nav": {
     "home": "Home",
@@ -54,9 +67,13 @@
     "vendor_dashboard": "Vendor Dashboard",
     "become_seller": "Become a Seller",
     "logout": "Logout",
-    "search_placeholder": "Search products...",
+    "search_placeholder": "Search for products...",
     "notifications": "Notifications",
-    "messages": "Messages"
+    "messages": "Messages",
+    "login_required": "Login Required",
+    "quick_nav": "Quick Nav",
+    "vendor": "Vendor",
+    "wishlist": "Wishlist"
   },
   "footer": {
     "about": "About Us",
@@ -64,7 +81,6 @@
     "contact": "Contact Us",
     "copyright": "All Rights Reserved © 2025"
   },
-
   "product": {
     "add_to_cart": "Add to Cart",
     "added_to_cart": "Added to cart",
@@ -110,7 +126,9 @@
     "linking": "Linking...",
     "select_vendor_msg": "Select a vendor",
     "linked_vendor_success": "Vendor linked successfully",
-    "link_vendor_failed": "Failed to link vendor"
+    "link_vendor_failed": "Failed to link vendor",
+    "no_products_available": "No products available currently",
+    "card_render_error": "⚠️ Error displaying product"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -120,7 +138,13 @@
     "summary": "Order Summary",
     "total": "Total",
     "checkout": "Proceed to Checkout",
-    "secure": "100% Secure Payment"
+    "secure": "100% Secure Payment",
+    "discount": "Discount",
+    "free_shipping_msg": "Add {{amount}} {{currency}} for free shipping",
+    "free_shipping_unlocked": "Congratulations! Free shipping unlocked",
+    "subtotal": "Subtotal",
+    "coupon_code": "Coupon Code",
+    "coupon_placeholder": "E.g. SUMMER20"
   },
   "checkout": {
     "title": "Checkout",
@@ -137,7 +161,17 @@
     "card_number": "Card Number",
     "expiry": "Expiry",
     "cvc": "CVC",
-    "payment_authorized": "Payment Authorized (Simulation)"
+    "payment_authorized": "Payment authorized successfully",
+    "free": "Free",
+    "shipping": "Shipping",
+    "subtitle": "Complete your order",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "tax_with_percent": "Tax (15%)",
+    "affiliate_discount": "Partner Discount",
+    "recipient_info": "(Recipient: {{name}}, Phone: {{phone}})",
+    "confirm_title": "Order Confirmed!",
+    "success_generic": "Your order has been received successfully."
   },
   "auth": {
     "login_title": "Login",
@@ -151,224 +185,66 @@
     "have_account": "Already have an account?",
     "register_now": "Register Now",
     "welcome_back": "Welcome Back",
-    "join_us": "Join Us"
+    "join_us": "Join Us",
+    "verify_email_title": "Verify Email",
+    "verify_email_desc": "Please enter the 6-digit code sent to:",
+    "verify_proceed": "Verify & Proceed",
+    "resend_code": "Resend Code",
+    "resend_wait": "Resend in {{seconds}}s",
+    "back_to_login": "Back to Login",
+    "verify_title": "Security First",
+    "forgot_password_title": "Reset Password",
+    "forgot_password_desc": "Enter your email to receive a secure verification code.",
+    "send_reset_code": "Send Reset Code",
+    "new_password": "New Password",
+    "new_password_confirm": "Confirm New Password",
+    "reset_password": "Save New Password",
+    "passwords_mismatch": "Passwords do not match",
+    "registration_unavailable": "Registration is currently unavailable",
+    "strength_weak": "Weak",
+    "strength_medium": "Medium",
+    "strength_strong": "Strong",
+    "verification_required": "Please verify your email first.",
+    "check_email_otp": "A verification code has been sent to your email.",
+    "invalid_2fa": "Invalid 2FA code",
+    "verification_success": "Account verified successfully! You can now login.",
+    "invalid_code": "Invalid code",
+    "otp_resent": "Verification code resent successfully.",
+    "email_updated": "Email updated and new code sent.",
+    "remember_me": "Remember me",
+    "admin_login": "Admin Access Portal",
+    "resend_cooldown": "Resend in",
+    "two_factor_title": "Two-Factor Authentication",
+    "two_factor_desc": "Enter the 6-digit code from your app",
+    "verify_login": "Verify & Login",
+    "reset_password_title": "Reset Password",
+    "password_reset_success": "Password reset successfully. Please login.",
+    "password_reset_failed": "Reset failed. Check the link or try again."
   },
-  "search_suggestions": {
-    "undo": "Undo",
-    "add_failed": "Failed to add",
-    "added": "added to cart"
-  },
-  "error_boundary": {
-    "title": "Unexpected Error",
-    "desc": "Try reloading the page or contact support. Technical details are logged."
-  },
-  "contact": {
-    "title": "Contact Us",
-    "message": "Message",
-    "send": "Send",
-    "success": "Thanks! Your message has been sent."
-  },
-  "about": {
-    "title": "About Us",
-    "desc": "This is a sample ecommerce project created for demonstration."
-  },
-  "legal": {
-    "privacy_title": "Privacy Policy",
-    "privacy_desc": "This is a default privacy policy page. Put details about how the app handles user data here.",
-    "terms_title": "Terms of Service",
-    "terms_desc": "This is a default terms of service page. Replace the content here with appropriate legal content before publishing."
-  },
-  "wishlist": {
-    "title": "Wishlist",
-    "empty": "Your wishlist is empty",
-    "browse": "Browse Products",
-    "moved_to_cart": "Moved to cart",
-    "clear": "Clear List"
-  },
-  "filter": {
-    "category": "Category",
-    "min_price": "Min Price",
-    "max_price": "Max Price",
-    "apply": "Filter",
-    "clear": "Clear Filters",
-    "placeholder_category": "e.g., Clothing"
-  },
-  "search": {
-    "title": "Search Results",
-    "loading": "Searching..."
-  },
-  "reviews": {
-    "title": "Product Reviews",
-    "loading": "Loading reviews...",
-    "empty": "No reviews for this product.",
-    "stars": "Stars"
-  },
-  "products": {
-    "browse_title": "Browse Products",
-    "browse_subtitle": "Discover our complete collection of exclusive products."
-  },
-  "orders": {
-    "title": "My Orders",
-    "empty_title": "No Previous Orders",
-    "empty_desc": "You haven't placed any orders yet.",
-    "order_id": "Order #",
-    "status_pending": "Pending",
-    "status_processing": "Processing",
-    "status_shipped": "Shipped",
-    "status_completed": "Completed",
-    "status_cancelled": "Cancelled",
-    "date": "Date",
-    "items_count": "Items Count",
-    "total": "Total",
-    "detail_title": "Order Details",
-    "ordered_at": "Ordered on",
-    "back_to_orders": "Back to Orders",
-    "items": "Items",
-    "status": "Status",
-    "address": "Address"
-  },
-
-  "categories": {
-    "electronics": "Electronics",
-    "fashion": "Fashion",
-    "home": "Home"
-  },
-  "trust": {
-    "authentic": "100% Authentic",
-    "returns": "Free Returns"
-  },
-  "home": {
-    "hero": {
-      "badge": "Most Trusted Shopping Platform",
-      "title": "Discover <1>Luxury</1><br/>in every detail.",
-      "subtitle": "Your premier destination for exclusive products. Shop the latest global trends with unmatched quality.",
-      "shop_new": "Shop New",
-      "browse_collection": "Browse Collection"
-    },
-    "flash_sale": {
-      "title": "Flash Sale — Up to 70% Off"
-    },
-    "categories": {
-      "eyebrow": "Discover",
-      "title": "Shop by Category"
-    },
-    "features": {
-      "quality": "Unmatched Quality",
-      "quality_desc": "Every product undergoes strict inspection for top standards.",
-      "delivery": "Fast 24-Hour Delivery",
-      "delivery_desc": "We deliver to your doorstep as quickly as possible.",
-      "payment": "100% Secure Payment",
-      "payment_desc": "Your data is protected by the latest encryption tech.",
-      "returns": "Free 30-Day Returns",
-      "returns_desc": "Not satisfied? Return it for free, no questions asked."
-    },
-    "trending": {
-      "eyebrow": "Trending Now",
-      "title": "Featured Products",
-      "subtitle": "Exclusive picks for you at best prices",
-      "view_all": "View All"
-    },
-    "testimonials": {
-      "eyebrow": "Customer Reviews",
-      "title": "They Trust Us"
-    },
-    "newsletter": {
-      "eyebrow": "Newsletter",
-      "title": "Get the Best Offers First",
-      "desc": "Subscribe for instant notifications on exclusive deals and new products.",
-      "placeholder": "Your email address ...",
-      "subscribe": "Subscribe for Free",
-      "success": "Subscribed successfully! 🎉"
-    }
-  },
-  "profile": {
-    "login_required": "Please login to access your dashboard.",
-    "login_desc": "Login to manage your account and orders.",
-    "welcome": "Welcome",
-    "welcome_sub": "Manage your account and orders from here",
-    "member": "Member",
-    "admin": "Admin",
-    "quick_access": "Quick Access",
-    "orders_desc": "Track your past and current orders",
-    "addresses": "Addresses",
-    "addresses_desc": "Manage shipping and delivery addresses",
-    "wishlist_desc": "Products you saved for later",
-    "settings": "Settings",
-    "settings_desc": "Edit personal info and password",
-    "vendor_desc": "Manage products and sales",
-    "admin_desc": "System Control Panel"
-  },
-  "addresses": {
-    "title": "My Addresses",
-    "add_new": "Add New Address",
-    "label": "Label (e.g. Home)",
-    "added_success": "Address added successfully",
-    "deleted_success": "Address deleted",
-    "empty": "No addresses saved",
-    "default": "Default"
-  },
-  "vendor": {
-    "access_denied": "Access Denied",
-    "not_registered": "You are not registered as a vendor.",
-    "dashboard_title": "Vendor Command Center",
-    "welcome": "Welcome back",
-    "total_sales": "Total Sales",
-    "active_products": "Active Products",
-    "pending_orders": "Pending Orders",
-    "rating": "Store Rating",
-    "add_product": "Add Product",
-    "quick_actions": "Quick Actions",
-    "manage_products": "Manage Products",
-    "fulfill_orders": "Fulfill Orders",
-    "wallet": "My Wallet",
-    "store_settings": "Store Settings",
-    "shipping_policies": "Shipping & Policies",
-    "recent_orders": "Recent Orders",
-    "no_orders": "No recent orders",
-    "affiliate_coupons": "Affiliate & Coupons",
-    "my_products": "My Products",
-    "add_new": "Add New",
-    "product_added_success": "Product added successfully",
-    "add_new_product": "Add New Product",
-    "orders": "Manage Orders",
-    "verification_document": "Verification Document (ID/Commercial Register)",
-    "pickup_address": "Business Address / Warehouse",
-    "pickup_address_desc": "Used for calculating shipping origin or returns.",
-    "shipping_policy_label": "Shipping Policy",
-    "shipping_policy_desc": "Explain your shipping methods, times, and costs.",
-    "return_policy_label": "Return Policy",
-    "return_policy_desc": "Define your rules for returns and refunds.",
-    "return_policy_placeholder": "e.g. Returns accepted within 14 days...",
-    "pickup_address_placeholder": "123 Commerce St, City, Country...",
-    "shipping_policy_placeholder": "e.g. Orders are shipped within 24 hours...",
-    "back_to_dashboard": "Back to Dashboard",
-    "process": "Process",
-    "ship": "Ship",
-    "complete": "Complete",
-    "store_name": "Store Name",
-    "description_label": "Store Description",
-    "description_placeholder": "Tell customers about your store...",
-    "logo_url_label": "Store Logo URL",
-    "payout_request_success": "Payout request submitted!",
-    "transaction_history": "Transaction History",
-    "funds_hold_desc": "Funds are held for up to 7 days after delivery.",
-    "affiliate_link_copied": "Affiliate Link Copied! 📋",
-    "coupon_code": "Coupon Code",
-    "discount": "Discount",
-    "marketer_name": "Marketer Name",
-    "used_count": "Used",
-    "track_desc": "Optional: Track who referred the sale.",
-    "no_notifications": "No notifications yet",
-    "revenue_trends": "Revenue Trends (Last 30 Days)",
-    "affiliate_performance_period": "Affiliate Performance (Last 7 Days)",
-    "visits": "Visits",
-    "no_orders_all_desc": "Customer orders will appear here. Get ready to fulfill your first request!",
-    "manage_reviews": "Manage Reviews"
+  "dashboard": {
+    "compare_prev_period": "Compared to previous period",
+    "time_now": "Just now",
+    "time_mins_ago": "{{count}} mins ago",
+    "time_hours_ago": "{{count}} hours ago",
+    "time_days_ago": "{{count}} days ago",
+    "period_daily": "Daily",
+    "period_weekly": "Weekly",
+    "period_monthly": "Monthly",
+    "period_yearly": "Yearly",
+    "kpi_gmv": "Total Sales (GMV)",
+    "kpi_profit": "Platform Profit",
+    "kpi_orders": "Total Orders",
+    "kpi_avg_order": "Avg Order Value",
+    "sales": "Sales",
+    "vendors_count": "Active Vendors",
+    "users_count": "Total Users",
+    "no_sales_data": "No sales data available for this period.",
+    "recent_activity": "Recent Activity",
+    "no_recent_activity": "No recent activity found."
   },
   "admin": {
-    "dashboard_title": "Platform Command Center",
-    "welcome_msg": "Overview of platform performance and metrics",
-    "welcome_back": "Welcome back to the dashboard",
+    "dashboard_title": "Unified Command Center",
+    "dashboard_subtitle": "Real-time overview of platform growth and metrics",
     "export_report": "Export Report",
     "view_report": "View Report",
     "live": "Live",
@@ -394,8 +270,6 @@
     "platform_health": "Platform Health",
     "server_uptime": "Server Uptime",
     "api_latency": "API Latency",
-    "business_intelligence": "Business Intelligence",
-    "financial_indicators": "Financial Indicators",
     "daily": "Daily",
     "weekly": "Weekly",
     "monthly": "Monthly",
@@ -528,9 +402,25 @@
     "import_success_product": "Successfully imported {{name}}",
     "import": "Import",
     "paid": "Paid",
-    "bulk_update_success": "Status updated successfully for selected orders"
+    "bulk_update_success": "Status updated successfully for selected orders",
+    "confirm_delete_product": "Are you sure you want to delete this product?",
+    "status_in_review": "In Review",
+    "products_desc_2": "Full control over catalog, review, and editing.",
+    "create_product": "Add New Product",
+    "all_products": "All Products",
+    "pending_approval": "Pending Approval",
+    "search_products": "Search by product name, ID or store...",
+    "export": "Export",
+    "col_product": "Product",
+    "col_store_vendor": "Store / Vendor",
+    "action_approve_direct": "Approve Directly",
+    "action_reject": "Reject",
+    "action_edit_deep": "Deep Edit",
+    "action_delete_full": "Delete Fully",
+    "reject_product": "Reject Product:",
+    "reject_reason_ph": "Please write the rejection reason to clarify to the merchant...",
+    "confirm_reject": "Confirm Rejection"
   },
-
   "validation": {
     "name_length": "Name must be at least 2 characters",
     "price_positive": "Price must be a non-negative number",

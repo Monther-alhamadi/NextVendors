@@ -1,6 +1,4 @@
 import sys
-from .shipping_provider import ShippingProvider
-from .shipping_zone import ShippingZone
 from .base import SQLAlchemyBaseModel
 from sqlalchemy.orm import relationship
 
@@ -10,9 +8,12 @@ from sqlalchemy.orm import relationship
 __all__ = ["SQLAlchemyBaseModel"]
 
 
+import importlib
+import traceback
+
 def _try_import(name: str):
     try:
-        module = __import__(f".{name}", globals(), locals(), [name])
+        module = importlib.import_module(f".{name}", package=__name__)
         globals().update(
             {
                 k: getattr(module, k)
@@ -21,7 +22,17 @@ def _try_import(name: str):
             }
         )
         return True
-    except Exception:
+    except ModuleNotFoundError as e:
+        # If the specific model we're trying to import is missing, ignore it silently.
+        # This is expected for optional/new modules in local development.
+        if name in str(e):
+             return False
+        print(f"ERROR importing {name}:")
+        traceback.print_exc()
+        return False
+    except Exception as e:
+        print(f"ERROR importing {name}:")
+        traceback.print_exc()
         return False
 
 
@@ -53,6 +64,18 @@ _try_import("shipping_provider")
 _try_import("product_category")  # side-effect registration
 _try_import("refresh_token")
 _try_import("refresh_token_audit")
+_try_import("affiliate")
+if _try_import("affiliate"):
+    __all__.append("Affiliate")
+
+_try_import("affiliate_coupon")
+if _try_import("affiliate_coupon"):
+    __all__.append("AffiliateCoupon")
+
+_try_import("affiliate_stats")
+if _try_import("affiliate_stats"):
+    __all__.append("AffiliateStats")
+
 _try_import("order_item")
 _try_import("order")
 _try_import("return_request")

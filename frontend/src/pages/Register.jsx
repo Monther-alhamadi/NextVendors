@@ -36,14 +36,14 @@ export default function Register() {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError(t("auth.passwords_mismatch") || "كلمات المرور غير متطابقة");
+      setError(t("auth.passwords_mismatch"));
       return;
     }
 
     setLoading(true);
     try {
       if (!authService.register) {
-        setError(t("auth.registration_unavailable") || "التسجيل غير متاح حالياً");
+        setError(t("auth.registration_unavailable"));
         return;
       }
       await authService.register(username, password);
@@ -65,7 +65,7 @@ export default function Register() {
         <div className={styles.formWrapper}>
           <div className={styles.authHeader}>
             <h1>{t("auth.register_title")}</h1>
-            <p>{t("auth.register_desc") || t("auth.register_title")}</p>
+            <p>{t("auth.register_desc")}</p>
           </div>
 
           <form onSubmit={handleSubmit} className={styles.authForm}>
@@ -102,10 +102,10 @@ export default function Register() {
                   color: strength === "weak" ? "#ef4444" : strength === "medium" ? "#f59e0b" : "#10b981"
                 }}>
                   {strength === "weak"
-                    ? (t("auth.strength_weak") || "ضعيفة")
+                    ? t("auth.strength_weak")
                     : strength === "medium"
-                    ? (t("auth.strength_medium") || "متوسطة")
-                    : (t("auth.strength_strong") || "قوية")}
+                    ? t("auth.strength_medium")
+                    : t("auth.strength_strong")}
                 </div>
               </div>
             )}

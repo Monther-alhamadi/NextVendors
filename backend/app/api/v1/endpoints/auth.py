@@ -31,57 +31,113 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
         )
-    # Check for existing username/email using modern SQLAlchemy select when possible
+    # Check for existing username/email
     from sqlalchemy import select
-
     stmt = (
         select(User)
         .where((User.username == user_in.username) | (User.email == user_in.email))
         .limit(1)
     )
-    try:
-        existing = db.scalars(stmt).first()
-    except Exception:
-        try:
-            existing = (
-                db.query(User)
-                .filter(
-                    (User.username == user_in.username) | (User.email == user_in.email)
-                )
-                .first()
-            )
-        except Exception:
-            existing = None
+    existing = db.scalars(stmt).first()
     if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="اسم المستخدم أو البريد الإلكتروني مستخدم مسبقًا.",
-        )
+        if existing.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="اسم المستخدم أو البريد الإلكتروني مستخدم مسبقًا.",
+            )
+        else:
+            # Allow re-registration for unverified users by clearing the old record
+            db.delete(existing)
+            db.commit()
+            db.flush()
+        
     user = service.register_user(
         username=user_in.username, email=user_in.email, password=user_in.password
     )
-    # تسجيل الحدث
-    import logging
-
-    logging.getLogger("auth").info(
-        f"تم تسجيل مستخدم جديد: {user.username} ({user.email})"
-    )
     
-    # Send welcome email via BackgroundTask
+    # Send OTP email via Thread (Background)
+    # In a real app, use FastAPI BackgroundTasks or Celery
     try:
-        from app.services.email_service import send_welcome_email
-        from fastapi import BackgroundTasks
-        # Since BackgroundTasks isn't a dependency here we can just execute without blocking
-        # but to be truly async we should add BackgroundTasks to the route signature.
-        # However, to avoid breaking existing clients that don't pass dependencies, 
-        # we'll execute it synchronously if SMTP is off (dev), or wrap it safely.
+        from app.services.email_service import send_otp_email
         import threading
-        threading.Thread(target=send_welcome_email, args=(user.email, user.username)).start()
+        # We need the OTP code from the user object (now saved in DB)
+        threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
     except Exception as e:
-        logging.getLogger("auth").error(f"Failed to queue welcome email: {e}")
+        import logging
+        logging.getLogger("auth").error(f"Failed to send OTP email: {e}")
 
-    # Return the created user object so response_model=UserResponse validates
     return user
+
+
+@router.post("/verify-email")
+def verify_email(data: schemas.UserVerifyEmailRequest, db: Session = Depends(get_db)):
+    service = UserService(db)
+    try:
+        success = service.verify_email(data.email, data.code)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="رمز التحقق غير صحيح.",
+            )
+        return {"message": "تم تفعيل الحساب بنجاح. يمكنك الآن تسجيل الدخول."}
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(ve),
+        )
+
+
+@router.post("/resend-otp")
+@limiter.limit("3/minute")
+def resend_otp(request: Request, data: schemas.UserResendOTPRequest, db: Session = Depends(get_db)):
+    service = UserService(db)
+    try:
+        user = service.resend_otp_email(data.email)
+        # Send OTP email via Thread
+        from app.services.email_service import send_otp_email
+        import threading
+        threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
+        return {"message": "تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني."}
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(ve),
+        )
+
+
+@router.post("/update-unverified-email")
+def update_email(data: schemas.UserUpdateUnverifiedEmailRequest, db: Session = Depends(get_db)):
+    service = UserService(db)
+    try:
+        user = service.update_unverified_email(data.old_email, data.new_email)
+        # Send OTP email via Thread
+        from app.services.email_service import send_otp_email
+        import threading
+        threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
+        return {"message": "تم تحديث البريد الإلكتروني وإرسال رمز جديد."}
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(ve),
+        )
+
+
+@router.post("/update-email")
+@limiter.limit("3/minute")
+def update_email(request: Request, data: schemas.UserUpdateEmailRequest, db: Session = Depends(get_db)):
+    service = UserService(db)
+    try:
+        user = service.update_unverified_email(data.old_email, data.new_email)
+        # Send OTP email to NEW email via Thread
+        from app.services.email_service import send_otp_email
+        import threading
+        threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
+        return {"message": "تم تحديث البريد الإلكتروني وإرسال رمز تحقق جديد."}
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(ve),
+        )
 
 
 @router.post("/login")
@@ -107,12 +163,22 @@ def login(
             user = service.login_user(username, password)
         except ValueError as ve:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(ve))
+        
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="بيانات الدخول غير صحيحة",
             )
         
+        # Verification Check
+        if not getattr(user, "is_verified", False):
+            # In some systems we allow login but restricted access. 
+            # Here, we'll force verification.
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="يرجى تفعيل بريدك الإلكتروني أولاً.",
+            )
+
         if getattr(user, "is_suspended", False):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -380,28 +446,55 @@ def forgot_password(
     db: Session = Depends(get_db),
 ):
     """
-    Send a password reset email with a short-lived JWT token.
-    Always returns 200 to prevent email enumeration attacks.
+    Initiate a password reset via OTP. Always returns 200.
     """
     import logging
-    from datetime import timedelta
-    from jose import jwt as jose_jwt
-
     logger = logging.getLogger("auth.forgot")
     email = (data.get("email") or "").strip().lower()
 
     if not email:
         raise HTTPException(status_code=400, detail="البريد الإلكتروني مطلوب")
 
-    # Always return success to prevent email enumeration
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        logger.info("Password reset requested for non-existent email: %s", email)
-        return {"status": "ok", "message": "إذا كان البريد مسجلاً لدينا، ستصلك تعليمات إعادة التعيين."}
+    service = UserService(db)
+    user = service.initiate_password_reset(email)
+    
+    if user:
+        # Send OTP email with the new code
+        try:
+            from app.services.email_service import send_otp_email
+            import threading
+            threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
+            logger.info("Password reset OTP sent to: %s", user.email)
+        except Exception as e:
+            logger.error("Failed to send password reset OTP email: %s", e)
 
-    # Generate a short-lived JWT token for password reset (30 min)
-    from datetime import datetime, timezone
-    expire = datetime.now(timezone.utc) + timedelta(minutes=30)
+    return {"status": "ok", "message": "إذا كان البريد مسجلاً لدينا، ستصلك رسالة تحمل رمز التحقق."}
+
+
+@router.post("/verify-reset-otp")
+@limiter.limit("5/minute")
+def verify_reset_otp(
+    request: Request,
+    data: schemas.UserVerifyEmailRequest,
+    db: Session = Depends(get_db),
+):
+    """
+    Verify OTP for password reset. If valid, return a short-lived reset token.
+    """
+    service = UserService(db)
+    user = service.verify_password_reset_otp(data.email, data.code)
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="رمز التحقق غير صحيح أو منتهي الصلاحية.",
+        )
+        
+    # Generate a short-lived JWT token for password reset (15 min)
+    from datetime import datetime, timedelta, timezone
+    from jose import jwt as jose_jwt
+    
+    expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     reset_payload = {
         "sub": str(user.id),
         "email": user.email,
@@ -411,49 +504,8 @@ def forgot_password(
     reset_token = jose_jwt.encode(
         reset_payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
     )
-
-    # Send email with reset link
-    try:
-        from app.services.email_service import send_email
-        import threading
-
-        # Build the reset URL — uses FRONTEND_URLS if available
-        frontend_base = "http://localhost:5173"
-        if settings.FRONTEND_URLS:
-            frontend_base = settings.FRONTEND_URLS.split(",")[0].strip()
-        reset_url = f"{frontend_base}/reset-password?token={reset_token}"
-
-        subject = f"إعادة تعيين كلمة المرور — {settings.APP_NAME}"
-        html_content = f"""
-        <html>
-            <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; direction: rtl; text-align: right;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 12px;">
-                    <h2 style="color: #6366f1;">إعادة تعيين كلمة المرور</h2>
-                    <p>مرحباً <strong>{user.username}</strong>,</p>
-                    <p>تلقينا طلباً لإعادة تعيين كلمة المرور الخاصة بحسابك. اضغط الزر أدناه لإعادة التعيين:</p>
-                    <p style="text-align: center; margin: 24px 0;">
-                        <a href="{reset_url}" 
-                           style="display: inline-block; padding: 12px 32px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                            إعادة تعيين كلمة المرور
-                        </a>
-                    </p>
-                    <p style="font-size: 0.9em; color: #666;">هذا الرابط صالح لمدة 30 دقيقة فقط. إذا لم تطلب إعادة التعيين، تجاهل هذا البريد.</p>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 0.8em; color: #999;">{settings.APP_NAME}</p>
-                </div>
-            </body>
-        </html>
-        """
-        threading.Thread(
-            target=send_email,
-            args=(user.email, subject, html_content),
-            kwargs={"environment": {}},
-        ).start()
-        logger.info("Password reset email queued for user: %s", user.email)
-    except Exception as e:
-        logger.error("Failed to send password reset email: %s", e)
-
-    return {"status": "ok", "message": "إذا كان البريد مسجلاً لدينا، ستصلك تعليمات إعادة التعيين."}
+    
+    return {"status": "ok", "reset_token": reset_token}
 
 
 @router.post("/reset")

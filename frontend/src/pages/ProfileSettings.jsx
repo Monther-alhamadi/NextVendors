@@ -12,7 +12,7 @@ export default function ProfileSettings() {
   return (
     <PageContainer>
       <div className="settings-header">
-        <Link to="/profile" className="back-link">← {t('vendor.back_to_dashboard')}</Link>
+        <Link to="/profile" className="back-link">← {t('dashboard.back_to_dashboard') || t('vendor.back_to_dashboard')}</Link>
         <h1>{t('profile.settings')}</h1>
         <p className="subtitle">{t('profile.settings_desc')}</p>
       </div>
@@ -21,11 +21,11 @@ export default function ProfileSettings() {
         <div className="form-section">
           <h2>{t('profile.welcome_sub')}</h2>
           <div className="field">
-             <label>{t('profile.member')} الاسم</label>
+             <label>{t('common.name')}</label>
              <input type="text" value={user?.username || ""} readOnly />
           </div>
           <div className="field">
-             <label>{t('admin.contact_email')}</label>
+             <label>{t('common.email')}</label>
              <input type="email" value={user?.email || ""} readOnly />
           </div>
         </div>
