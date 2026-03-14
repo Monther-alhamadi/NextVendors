@@ -15,7 +15,7 @@ import useRecentStore from "../store/recentStore";
 import ShareModal from "../components/common/ShareModal";
 import RecentlyViewed from "../components/product/RecentlyViewed";
 import { getLocalizedField } from "../utils/localization";
-import { formatPrice } from "../utils/format";
+import { formatPrice } from "../utils/formatters";
 import s from "./ProductDetail.module.css";
 
 export default function ProductDetail() {

@@ -18,6 +18,11 @@ export const formatCurrency = (amount, currencyCode = 'SAR', currencySymbol = 'Ø
 };
 
 /**
+ * Alias for formatCurrency specifically for product prices.
+ */
+export const formatPrice = formatCurrency;
+
+/**
  * Formats a date string.
  */
 export const formatDate = (dateString) => {
