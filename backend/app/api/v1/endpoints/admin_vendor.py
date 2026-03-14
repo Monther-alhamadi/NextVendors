@@ -45,6 +45,19 @@ def ban_vendor(
 ):
     return AdminVendorService.toggle_ban(db, vendor_id, request.ban, current_user.id)
 
+@router.get("/{vendor_id}/audit-logs")
+def get_vendor_audit_logs(
+    vendor_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("manage_vendors"))
+):
+    from app.models.audit_log import SystemAuditLog
+    logs = db.query(SystemAuditLog).filter(
+        SystemAuditLog.target_type == "vendor",
+        SystemAuditLog.target_id == str(vendor_id)
+    ).order_by(SystemAuditLog.created_at.desc()).all()
+    return logs
+
 @router.get("/ads")
 def list_vendor_ads(
     db: Session = Depends(get_db),

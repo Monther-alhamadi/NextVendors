@@ -30,6 +30,11 @@ export async function banVendor(vendorId, ban) {
     return resp.data;
 }
 
+export async function getVendorAuditLogs(vendorId) {
+    const resp = await api.get(`/admin/vendors/${vendorId}/audit-logs`);
+    return resp.data;
+}
+
 export async function createVendor(data) {
   const r = await api.post("/vendors/", data);
   return r.data;

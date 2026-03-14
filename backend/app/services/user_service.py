@@ -12,8 +12,25 @@ class UserService(CRUDService[User]):
     # Business-specific
     def register_user(self, username: str, email: str, password: str) -> User:
         hashed = get_password_hash(password)
-        user = User(username=username, email=email, password_hash=hashed)
-        return self.create(user)
+        from app.services.otp_service import otp_service
+        user = User(username=username, email=email, password_hash=hashed, is_active=True, is_verified=False)
+        self.db.add(user)
+        self.db.flush() # Get user ID
+        # Generate OTP
+        otp_service.create_otp(self.db, user.id)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
+
+    def verify_email(self, email: str, code: str) -> bool:
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == email)
+        user = self.db.scalars(stmt).first()
+        if not user:
+            return False
+        
+        from app.services.otp_service import otp_service
+        return otp_service.verify_otp(self.db, user.id, code)
 
     def login_user(self, username_or_email: str, password: str) -> Optional[User]:
         q = self.db.query(User).filter(
@@ -41,6 +58,67 @@ class UserService(CRUDService[User]):
             pass
 
         return user
+
+    def resend_otp_email(self, email: str) -> User:
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == email)
+        user = self.db.scalars(stmt).first()
+        if not user:
+            raise ValueError("المستخدم غير موجود.")
+        if user.is_verified:
+            raise ValueError("الحساب مفعل بالفعل.")
+            
+        from app.services.otp_service import otp_service
+        otp_service.create_otp(self.db, user.id)
+        self.db.commit()
+        return user
+
+    def update_unverified_email(self, old_email: str, new_email: str) -> User:
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == old_email)
+        user = self.db.scalars(stmt).first()
+        if not user:
+            raise ValueError("المستخدم غير موجود.")
+        if user.is_verified:
+            raise ValueError("الحساب مفعل بالفعل، لا يمكن تغيير البريد الإلكتروني هنا.")
+        
+        # Check if new email exists
+        stmt_new = select(User).where(User.email == new_email)
+        existing = self.db.scalars(stmt_new).first()
+        if existing:
+            raise ValueError("البريد الإلكتروني الجديد مستخدم بالفعل.")
+            
+        user.email = new_email
+        # Trigger new OTP automatically
+        from app.services.otp_service import otp_service
+        otp_service.create_otp(self.db, user.id)
+        self.db.commit()
+        return user
+
+    def initiate_password_reset(self, email: str) -> Optional[User]:
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == email)
+        user = self.db.scalars(stmt).first()
+        if not user:
+            return None
+            
+        from app.services.otp_service import otp_service
+        otp_service.create_otp(self.db, user.id)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
+
+    def verify_password_reset_otp(self, email: str, code: str) -> Optional[User]:
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == email)
+        user = self.db.scalars(stmt).first()
+        if not user:
+            return None
+        
+        from app.services.otp_service import otp_service
+        if otp_service.verify_otp(self.db, user.id, code):
+            return user
+        return None
 
     def change_password(self, user_id: int, new_password: str) -> bool:
         user = self.get_by_id(user_id)

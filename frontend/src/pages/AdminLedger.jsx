@@ -83,7 +83,7 @@ export default function AdminLedger() {
                     <td colSpan={6}>
                        <div className={styles.emptyState}>
                           <Library size={48} className="mb-4 opacity-30" />
-                          <p>لا توجد أي حركات مالية مطابقة للبحث.</p>
+                          <p>{t('auto_301ba0', t('auto_301ba0', 'لا توجد أي حركات مالية مطابقة للبحث.'))}</p>
                        </div>
                     </td>
                   </tr>

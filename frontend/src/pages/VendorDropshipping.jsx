@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import api from '../services/api';
 import { useToast } from '../components/common/ToastProvider';
+import { Search, Package, Check, ArrowRight } from 'lucide-react';
 import s from './VendorDropshipping.module.css';
 
 export default function VendorDropshipping() {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,13 +25,16 @@ export default function VendorDropshipping() {
       const { data } = await api.get('/dropshipping/search', { params: { keyword } });
       if (data.success && data.data && data.data.list) {
         setProducts(data.data.list);
+        if (data.data.list.length === 0) {
+          setError(t("vendor.ds_no_matching_products", "لم يتم العثور على منتجات مطابقة."));
+        }
       } else {
         setProducts([]);
-        if (!data.data.list) setError("لم يتم العثور على منتجات مطابقة.");
+        setError(t("vendor.ds_no_matching_products", "لم يتم العثور على منتجات مطابقة."));
       }
     } catch (err) {
       console.error(err);
-      setError("حدث خطأ أثناء محاولة الاتصال بمزود الجملة. يرجى المحاولة لاحقاً.");
+      setError(t('vendor.ds_err_connect_supplier', 'حدث خطأ أثناء محاولة الاتصال بمزود الجملة. يرجى المحاولة لاحقاً.'));
     } finally {
       setLoading(false);
     }
@@ -41,104 +47,90 @@ export default function VendorDropshipping() {
 
     setImportingIds(prev => ({ ...prev, [product.pid]: true }));
     try {
-      // Send the request to import to backend
-      await api.post(`/dropshipping/import/${product.pid}?suggested_retail_price=${suggestedPrice}`);
+      await api.post(`/dropshipping/import/${product.pid}`, null, { 
+        params: { suggested_retail_price: suggestedPrice } 
+      });
       
       setImportedIds(prev => ({ ...prev, [product.pid]: true }));
-      toast.push({ message: "تمت إضافة المنتج إلى متجرك بنجاح!", type: "success" });
+      toast.push({ 
+        message: t('vendor.ds_import_success', 'تم استيراد المنتج بنجاح إلى متجرك!'), 
+        type: 'success' 
+      });
     } catch (err) {
       console.error(err);
-      toast.push({ message: "حدث خطأ أثناء استيراد المنتج.", type: "error" });
+      toast.push({ 
+        message: err.response?.data?.detail || t('common.error', 'فشل استيراد المنتج'), 
+        type: 'error' 
+      });
     } finally {
       setImportingIds(prev => ({ ...prev, [product.pid]: false }));
     }
   };
 
   return (
-    <div className={s.page}>
-      
-      {/* Educational Onboarding Hero */}
-      <div className={s.onboardingHero}>
-        <span className={s.heroIcon}>🌍</span>
-        <h1 className={s.heroTitle}>استيراد المنتجات (الدروب شيبينج) بدون رأس مال</h1>
-        <p className={s.heroText}>
-          مرحباً بك في أسواق الجملة العالمية! ابحث عن أي منتج تريده (ساعات، إلكترونيات، ملابس)، وسنقوم نحن 
-          بحقن <span className={s.highlight}>صوره وتفاصيله بضغطة زر إلى متجرك.</span> لن تحتاج لدفع ثمنه إلا بعد أن يأتيك مشترٍ ويدفع لك أولاً!
-        </p>
-      </div>
+    <div className={s.container}>
+      <header className={s.header}>
+        <div className={s.headerTitle}>
+          <Package className={s.titleIcon} size={24} />
+          <h1 className={s.title}>{t('vendor.dropshipping_title', 'البحث واستيراد منتجات الدروب شيبنج')}</h1>
+        </div>
+        <p className={s.subtitle}>{t('vendor.dropshipping_subtitle', 'ابحث عن آلاف المنتجات من الموردين العالميين وأضفها لمتجرك بضغطة زر.')}</p>
+      </header>
 
-      {/* Main Search Interface */}
-      <form className={s.searchContainer} onSubmit={handleSearch}>
-        <input 
-          type="text" 
-          className={s.searchInput}
-          placeholder="ابحث بالإنجليزية، مثلاً: Smart Watch أو Wireless Earbuds..."
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          required
-        />
-        <button type="submit" className={s.searchBtn} disabled={loading}>
-          {loading ? <div className={s.spinner} /> : "بحث واستكشاف"}
+      <form onSubmit={handleSearch} className={s.searchSection}>
+        <div className={s.searchBox}>
+          <Search className={s.searchIcon} size={20} />
+          <input 
+            type="text" 
+            placeholder={t('vendor.ds_search_placeholder', 'ابحث عن منتجات (مثلاً: ساعات، حقائب...)')} 
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            className={s.input}
+          />
+        </div>
+        <button type="submit" className={s.btnPrimary} disabled={loading}>
+          {loading ? t('common.searching', 'جاري البحث...') : t('common.search', 'بحث')}
         </button>
       </form>
 
-      {/* Feedback States */}
-      {error && <div className={s.errorState}>{error}</div>}
-      {products.length === 0 && !loading && !error && (
-        <div className={s.emptyState}>
-          أدخل اسم المنتج الذي ترغب ببيعه للبدء بالتصفح...
-        </div>
-      )}
+      {error && <div className={s.errorMessage}>{error}</div>}
 
-      {/* Product Grid */}
-      <div className={s.grid}>
-        {products.map(product => {
-          const cost = parseFloat(product.sellPrice) || 0;
-          const retail = cost * 1.3; // 30% Markup
-          const profit = retail - cost;
-
+      <div className={s.resultsGrid}>
+        {products.map((product) => {
           const isImporting = importingIds[product.pid];
           const isImported = importedIds[product.pid];
-
+          
           return (
-            <div key={product.pid} className={s.card}>
-              <div className={s.imageWrap}>
-                {product.productImage ? (
-                  <img src={product.productImage} alt={product.productNameEn} className={s.image} />
-                ) : (
-                  <div className={s.image}>بدون صورة</div>
-                )}
+            <div key={product.pid} className={s.productCard}>
+              <div className={s.productImage}>
+                <img src={product.productImg} alt={product.productName} />
               </div>
-              
-              <div className={s.cardBody}>
-                <h3 className={s.productName} title={product.productNameEn}>
-                  {product.productNameEn || product.productName}
-                </h3>
-                
-                <div className={s.finances}>
-                  <div className={s.financeRow}>
-                    <span className={s.label}>التكلفة من المورد:</span>
-                    <span className={s.costValue}>${cost.toFixed(2)}</span>
+              <div className={s.productInfo}>
+                <h3 className={s.productName}>{product.productName}</h3>
+                <div className={s.priceRow}>
+                  <div className={s.priceItem}>
+                    <span className={s.priceLabel}>{t('vendor.ds_cost', 'تكلفة الاستيراد:')}</span>
+                    <span className={s.productPrice}>{product.sellPrice || '0'} {t('common.currency', 'ر.س')}</span>
                   </div>
-                  <div className={s.financeRow}>
-                    <span className={s.label}>سعر البيع المقترح:</span>
-                    <span className={s.retailValue}>${retail.toFixed(2)}</span>
-                  </div>
-                  <div className={s.financeRow}>
-                    <span className={s.profitLabel}>ربحك المتوقع:</span>
-                    <span className={s.profitValue}>+${profit.toFixed(2)}</span>
+                  <ArrowRight size={14} className={s.priceArrow} />
+                  <div className={s.priceItem}>
+                    <span className={s.priceLabel}>{t('vendor.ds_suggested', 'سعر البيع المقترح:')}</span>
+                    <span className={s.suggestedPrice}>{(parseFloat(product.sellPrice) * 1.3).toFixed(2)} {t('common.currency', 'ر.س')}</span>
                   </div>
                 </div>
-
-                <button 
-                  className={`${s.importBtn} ${isImported ? s.importBtnSuccess : ''}`}
-                  onClick={() => handleImport(product)}
-                  disabled={isImporting || isImported}
-                >
-                  {isImporting ? <div className={s.spinner} style={{width: 16, height: 16, borderWidth: 2}} /> : 
-                   isImported ? "✅ تمت الإضافة لمتجرك" : "🚀 أضف إلى متجري"}
-                </button>
-                <p className={s.tooltip}>لن تدفع شيئاً الآن</p>
+                
+                <div className={s.actionWrapper}>
+                  <button 
+                    className={`${s.importBtn} ${isImported ? s.importBtnSuccess : ''}`}
+                    onClick={() => handleImport(product)}
+                    disabled={isImporting || isImported}
+                  >
+                    {isImporting ? <div className={s.spinner} /> : 
+                     isImported ? <><Check size={16} /> {t("vendor.ds_added_to_store", "تمت الإضافة لمتجرك")}</> : 
+                     t("vendor.ds_add_to_store", "أضف إلى متجري")}
+                  </button>
+                  <p className={s.tooltip}>{t('vendor.ds_wont_pay_now', 'لن تدفع شيئاً الآن')}</p>
+                </div>
               </div>
             </div>
           );

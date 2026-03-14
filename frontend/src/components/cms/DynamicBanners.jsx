@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../common/ToastProvider";
-import { listWidgets, createWidget, updateWidget, deleteWidget, toggleWidget } from "../../services/adminService";
-import { PlusCircle, Trash2, Edit2, X, Save, LayoutTemplate, GripVertical, Eye, EyeOff } from "lucide-react";
+import { listWidgets, createWidget, updateWidget, deleteWidget } from "../../services/adminService";
+import { PlusCircle, Trash2, Edit2, X, Save, LayoutTemplate, Eye, EyeOff } from "lucide-react";
 import styles from "./DynamicBanners.module.css";
 
 const EMPTY_FORM = {
@@ -15,18 +15,6 @@ const EMPTY_FORM = {
   content: { image_url: "", link_url: "", alt_text: "", subtitle: "" },
 };
 
-const DEVICE_OPTIONS = [
-  { value: "all", label: "الكل" },
-  { value: "desktop", label: "سطح المكتب فقط" },
-  { value: "mobile", label: "الجوال فقط" },
-];
-
-const PAGE_OPTIONS = [
-  { value: "home", label: "الصفحة الرئيسية" },
-  { value: "products", label: "صفحة المنتجات" },
-  { value: "all", label: "جميع الصفحات" },
-];
-
 export default function DynamicBanners() {
   const { t } = useTranslation();
   const toast = useToast();
@@ -38,6 +26,18 @@ export default function DynamicBanners() {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
+  const DEVICE_OPTIONS = [
+    { value: "all", label: t('common.all', 'الكل') },
+    { value: "desktop", label: t('common.desktop_only', 'سطح المكتب فقط') },
+    { value: "mobile", label: t('common.mobile_only', 'الجوال فقط') },
+  ];
+
+  const PAGE_OPTIONS = [
+    { value: "home", label: t('common.home', 'الصفحة الرئيسية') },
+    { value: "products", label: t('nav.products', 'صفحة المنتجات') },
+    { value: "all", label: t('common.all_pages', 'جميع الصفحات') },
+  ];
+
   const loadBanners = useCallback(async () => {
     setLoading(true);
     try {
@@ -46,7 +46,7 @@ export default function DynamicBanners() {
       // Filter to only banner-type widgets
       setBanners(allWidgets.filter(w => w.type === "banner_carousel" || w.type === "banner" || w.type === "slider"));
     } catch {
-      toast.push({ message: t("common.error", "حدث خطأ أثناء التحميل"), type: "error" });
+      toast.push({ message: t("common.error"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -82,7 +82,7 @@ export default function DynamicBanners() {
 
   async function handleSave() {
     if (!form.content.image_url?.trim() && !form.title?.trim()) {
-      toast.push({ message: "الرجاء إدخال عنوان ورابط الصورة على الأقل", type: "warning" });
+      toast.push({ message: t("admin.banners.req_fields", "الرجاء إدخال عنوان ورابط الصورة"), type: "warning" });
       return;
     }
     setSaving(true);
@@ -98,10 +98,10 @@ export default function DynamicBanners() {
       };
       if (editingBanner) {
         await updateWidget(editingBanner.id, payload);
-        toast.push({ message: "تم تحديث البانر بنجاح", type: "success" });
+        toast.push({ message: t("admin.banners.update_success"), type: "success" });
       } else {
         await createWidget(payload);
-        toast.push({ message: "تم إنشاء البانر بنجاح", type: "success" });
+        toast.push({ message: t("admin.banners.create_success"), type: "success" });
       }
       closeModal();
       await loadBanners();
@@ -115,7 +115,7 @@ export default function DynamicBanners() {
   async function handleDelete(id) {
     try {
       await deleteWidget(id);
-      toast.push({ message: "تم حذف البانر", type: "success" });
+      toast.push({ message: t("admin.banners.delete_success"), type: "success" });
       setDeleteConfirm(null);
       loadBanners();
     } catch {
@@ -138,23 +138,22 @@ export default function DynamicBanners() {
         <div className={styles.headerLeft}>
           <div className={styles.headerIcon}><LayoutTemplate size={24} /></div>
           <div>
-            <h1 className={styles.title}>{t("admin.dynamic_banners", "إدارة البانرات الديناميكية")}</h1>
+            <h1 className={styles.title}>{t("admin.dynamic_banners_title", "إدارة البانرات الديناميكية")}</h1>
             <p className={styles.subtitle}>{t("admin.banners_subtitle", "تحكم في البانرات المعروضة في الصفحات المختلفة")}</p>
           </div>
         </div>
         <button className={styles.btnPrimary} onClick={openCreate}>
-          <PlusCircle size={16} />
-          {t("admin.new_banner", "إنشاء بانر جديد")}
+          <PlusCircle size={16} /> {t("admin.banners.create_new", "إنشاء بانر جديد")}
         </button>
       </div>
 
       {loading ? (
-        <div className={styles.loading}>جارٍ تحميل البانرات...</div>
+        <div className={styles.loading}>{t("common.loading", "جارٍ التحميل...")}</div>
       ) : banners.length === 0 ? (
         <div className={styles.emptyState}>
           <LayoutTemplate size={48} opacity={0.25} />
-          <p>لا توجد بانرات بعد. أنشئ بانرك الأول!</p>
-          <button className={styles.btnPrimary} onClick={openCreate}><PlusCircle size={16} /> إنشاء بانر</button>
+          <p>{t("admin.banners.empty", "لا توجد بانرات بعد.")}</p>
+          <button className={styles.btnPrimary} onClick={openCreate}><PlusCircle size={16} /> {t("admin.banners.create_banner", "إنشاء بانر")}</button>
         </div>
       ) : (
         <div className={styles.bannerGrid}>
@@ -174,26 +173,21 @@ export default function DynamicBanners() {
                 </div>
               </div>
               <div className={styles.cardBody}>
-                <h3 className={styles.cardTitle}>{banner.title || "بانر بدون عنوان"}</h3>
+                <h3 className={styles.cardTitle}>{banner.title || t("admin.banners.untitled", "بانر بدون عنوان")}</h3>
                 <div className={styles.cardMeta}>
                   <span>{PAGE_OPTIONS.find(p => p.value === banner.page)?.label || banner.page}</span>
                   <span>•</span>
                   <span>{DEVICE_OPTIONS.find(d => d.value === banner.device)?.label || banner.device}</span>
                 </div>
-                {banner.content?.link_url && (
-                  <a href={banner.content.link_url} target="_blank" rel="noreferrer" className={styles.linkPreview}>
-                    {banner.content.link_url.substring(0, 40)}...
-                  </a>
-                )}
               </div>
               <div className={styles.cardActions}>
-                <button className={styles.actionToggle} onClick={() => handleToggle(banner)} title={banner.is_active ? "إخفاء" : "إظهار"}>
+                <button className={styles.actionToggle} onClick={() => handleToggle(banner)} title={banner.is_active ? t("common.hide") : t("common.show")}>
                   {banner.is_active ? <Eye size={15} /> : <EyeOff size={15} />}
                 </button>
-                <button className={styles.actionEdit} onClick={() => openEdit(banner)} title="تعديل">
+                <button className={styles.actionEdit} onClick={() => openEdit(banner)} title={t("common.edit")}>
                   <Edit2 size={15} />
                 </button>
-                <button className={styles.actionDelete} onClick={() => setDeleteConfirm(banner.id)} title="حذف">
+                <button className={styles.actionDelete} onClick={() => setDeleteConfirm(banner.id)} title={t("common.delete")}>
                   <Trash2 size={15} />
                 </button>
               </div>
@@ -207,30 +201,30 @@ export default function DynamicBanners() {
         <div className={styles.overlay} onClick={closeModal}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>{editingBanner ? "تعديل البانر" : "إنشاء بانر جديد"}</h2>
+              <h2>{editingBanner ? t('admin.banners.edit_banner', 'تعديل البانر') : t("admin.banners.create_new", "إنشاء بانر جديد")}</h2>
               <button className={styles.modalClose} onClick={closeModal}><X size={20} /></button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.field}>
-                <label>عنوان البانر</label>
-                <input className={styles.input} placeholder="مثال: عرض الصيف" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+                <label>{t("admin.banners.banner_title", "عنوان البانر")}</label>
+                <input className={styles.input} placeholder={t("admin.banners.title_ph", "مثال: عرض الصيف")} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
               </div>
               <div className={styles.row2}>
                 <div className={styles.field}>
-                  <label>الصفحة المستهدفة</label>
+                  <label>{t("admin.banners.target_page", "الصفحة المستهدفة")}</label>
                   <select className={styles.input} value={form.page} onChange={e => setForm(f => ({ ...f, page: e.target.value }))}>
                     {PAGE_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                   </select>
                 </div>
                 <div className={styles.field}>
-                  <label>الجهاز المستهدف</label>
+                  <label>{t("admin.banners.target_device", "الجهاز المستهدف")}</label>
                   <select className={styles.input} value={form.device} onChange={e => setForm(f => ({ ...f, device: e.target.value }))}>
                     {DEVICE_OPTIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                   </select>
                 </div>
               </div>
               <div className={styles.field}>
-                <label>رابط صورة البانر *</label>
+                <label>{t("admin.banners.img_url", "رابط صورة البانر *")}</label>
                 <input className={styles.input} placeholder="https://..." value={form.content.image_url} onChange={e => setContentField("image_url", e.target.value)} />
               </div>
               {form.content.image_url && (
@@ -240,31 +234,31 @@ export default function DynamicBanners() {
               )}
               <div className={styles.row2}>
                 <div className={styles.field}>
-                  <label>رابط الضغط (اختياري)</label>
+                  <label>{t("admin.banners.link_url", "رابط الضغط (اختياري)")}</label>
                   <input className={styles.input} placeholder="https://..." value={form.content.link_url} onChange={e => setContentField("link_url", e.target.value)} />
                 </div>
                 <div className={styles.field}>
-                  <label>رقم الترتيب</label>
+                  <label>{t("common.order", "رقم الترتيب")}</label>
                   <input className={styles.input} type="number" min={0} value={form.position} onChange={e => setForm(f => ({ ...f, position: e.target.value }))} />
                 </div>
               </div>
               <div className={styles.field}>
-                <label>نص بديل للصورة (SEO)</label>
-                <input className={styles.input} placeholder="وصف الصورة..." value={form.content.alt_text} onChange={e => setContentField("alt_text", e.target.value)} />
+                <label>{t("admin.banners.alt_text", "نص بديل للصورة (SEO)")}</label>
+                <input className={styles.input} placeholder={t("admin.banners.alt_ph", "وصف الصورة...")} value={form.content.alt_text} onChange={e => setContentField("alt_text", e.target.value)} />
               </div>
               <div className={styles.field}>
-                <label>نص ترويجي (اختياري)</label>
-                <input className={styles.input} placeholder="وفر حتى 50%..." value={form.content.subtitle} onChange={e => setContentField("subtitle", e.target.value)} />
+                <label>{t("admin.banners.subtitle_text", "نص ترويجي (اختياري)")}</label>
+                <input className={styles.input} placeholder={t("admin.banners.subtitle_ph", "وفر حتى 50%...")} value={form.content.subtitle} onChange={e => setContentField("subtitle", e.target.value)} />
               </div>
               <label className={styles.checkRow}>
                 <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} />
-                <span>تفعيل البانر فوراً</span>
+                <span>{t("admin.banners.activate_now", "تفعيل البانر فوراً")}</span>
               </label>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.btnSecondary} onClick={closeModal}>إلغاء</button>
+              <button className={styles.btnSecondary} onClick={closeModal}>{t("common.cancel")}</button>
               <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
-                <Save size={16} />{saving ? "جارٍ الحفظ..." : "حفظ البانر"}
+                <Save size={16} />{saving ? t("common.saving") : t("admin.banners.save")}
               </button>
             </div>
           </div>
@@ -276,11 +270,11 @@ export default function DynamicBanners() {
         <div className={styles.overlay} onClick={() => setDeleteConfirm(null)}>
           <div className={styles.confirmBox} onClick={e => e.stopPropagation()}>
             <Trash2 size={32} color="#ef4444" />
-            <h3>تأكيد الحذف</h3>
-            <p>هل أنت متأكد من حذف هذا البانر؟</p>
+            <h3>{t("common.confirm_delete")}</h3>
+            <p>{t("admin.banners.delete_warn")}</p>
             <div className={styles.confirmActions}>
-              <button className={styles.btnSecondary} onClick={() => setDeleteConfirm(null)}>إلغاء</button>
-              <button className={styles.btnDanger} onClick={() => handleDelete(deleteConfirm)}>حذف</button>
+              <button className={styles.btnSecondary} onClick={() => setDeleteConfirm(null)}>{t("common.cancel")}</button>
+              <button className={styles.btnDanger} onClick={() => handleDelete(deleteConfirm)}>{t("common.delete")}</button>
             </div>
           </div>
         </div>

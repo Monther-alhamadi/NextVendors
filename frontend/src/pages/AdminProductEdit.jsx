@@ -84,14 +84,14 @@ export default function AdminProductEdit() {
     
     // Basic validation
     const newErrors = {};
-    if (!name.trim()) newErrors.name = "اسم المنتج مطلوب";
-    if (!price || price <= 0) newErrors.price = "السعر يجب أن يكون أكبر من صفر";
-    if (inventory === "" || inventory < 0) newErrors.inventory = "الكمية غير صحيحة";
+    if (!name.trim()) newErrors.name = t("admin.product_edit.err_name", "اسم المنتج مطلوب");
+    if (!price || price <= 0) newErrors.price = t("admin.product_edit.err_price", "السعر يجب أن يكون أكبر من صفر");
+    if (inventory === "" || inventory < 0) newErrors.inventory = t("admin.product_edit.err_inventory", "الكمية غير صحيحة");
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setActiveTab("basic");
-      toast.push({ message: "يرجى تصحيح الأخطاء في النموذج", type: "error" });
+      toast.push({ message: t("admin.product_edit.err_fix_form", "يرجى تصحيح الأخطاء في النموذج"), type: "error" });
       return;
     }
 
@@ -137,7 +137,7 @@ export default function AdminProductEdit() {
                {id === "new" ? t('admin.create_product', 'إضافة منتج جديد') : `${t('admin.edit_product', 'تعديل المنتج')} #${id}`}
              </h1>
              <p className={styles.pageSubtitle}>
-               {id === "new" ? 'قم بتعبئة تفاصيل المنتج لرفعه على المنصة' : 'يمكنك تعديل معلومات المنتج، الصور، والأسعار'}
+               {id === "new" ? t('admin.product_edit.subtitle_new', 'قم بتعبئة تفاصيل المنتج لرفعه على المنصة') : t('admin.product_edit.subtitle_edit', 'يمكنك تعديل معلومات المنتج، الصور، والأسعار')}
              </p>
            </div>
         </div>
@@ -146,14 +146,14 @@ export default function AdminProductEdit() {
              className={`${styles.actionBtn} ${styles.secondaryBtn}`}
              onClick={() => navigate('/admin/products')}
            >
-             <X size={18} /> إلغاء
+             <X size={18} /> {t("common.cancel", "إلغاء")}
            </button>
            <button 
              className={`${styles.actionBtn} ${styles.primaryBtn}`}
              onClick={handleSave}
              disabled={saving}
            >
-             <Save size={18} /> {saving ? 'جاري الحفظ...' : 'حفظ المنتج'}
+             <Save size={18} /> {saving ? t('common.saving', 'جاري الحفظ...') : t('admin.product_edit.save_product', 'حفظ المنتج')}
            </button>
         </div>
       </div>
@@ -163,19 +163,19 @@ export default function AdminProductEdit() {
            className={`${styles.tabBtn} ${activeTab === 'basic' ? styles.active : ''}`}
            onClick={() => setActiveTab('basic')}
          >
-           <Info size={18} /> المعلومات الأساسية
+           <Info size={18} /> {t("admin.product_edit.tab_basic", "المعلومات الأساسية")}
          </button>
          <button 
            className={`${styles.tabBtn} ${activeTab === 'media' ? styles.active : ''}`}
            onClick={() => setActiveTab('media')}
          >
-           <ImageIcon size={18} /> الصور والوسائط ({images.length})
+           <ImageIcon size={18} /> {t("admin.product_edit.tab_media", "الصور والوسائط")} ({images.length})
          </button>
          <button 
            className={`${styles.tabBtn} ${activeTab === 'advanced' ? styles.active : ''}`}
            onClick={() => setActiveTab('advanced')}
          >
-           <Settings size={18} /> خيارات متقدمة
+           <Settings size={18} /> {t("admin.product_edit.tab_advanced", "خيارات متقدمة")}
          </button>
       </div>
 
@@ -184,40 +184,40 @@ export default function AdminProductEdit() {
             {activeTab === 'basic' && (
                <div className={styles.card}>
                   <div className={styles.cardHeader}>
-                     <h3 className={styles.cardTitle}><Tag size={20} /> تفاصيل المنتج</h3>
+                     <h3 className={styles.cardTitle}><Tag size={20} /> {t("admin.product_edit.product_details", "تفاصيل المنتج")}</h3>
                   </div>
                   
                   <div className={styles.fieldGroup}>
-                     <label className={styles.fieldLabel}>اسم المنتج *</label>
+                     <label className={styles.fieldLabel}>{t("admin.product_edit.product_name", "اسم المنتج")} *</label>
                      <input 
                        type="text" 
                        className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
                        value={name}
                        onChange={e => setName(e.target.value)}
-                       placeholder="مثال: حذاء رياضي نايك أير ماكس"
+                       placeholder={t("admin.product_edit.name_ph", "مثال: حذاء رياضي نايك أير ماكس")}
                      />
                      {errors.name && <span className={styles.errorText}>{errors.name}</span>}
                   </div>
 
                   <div className={styles.fieldGroup}>
-                     <label className={styles.fieldLabel}>التصنيف</label>
+                     <label className={styles.fieldLabel}>{t("admin.product_edit.category", "التصنيف")}</label>
                      <input 
                        type="text" 
                        className={styles.input}
                        value={category}
                        onChange={e => setCategory(e.target.value)}
-                       placeholder="مثال: أحذية رياضية"
+                       placeholder={t("admin.product_edit.category_ph", "مثال: أحذية رياضية")}
                      />
                   </div>
 
                   <div className={styles.fieldGroup}>
-                     <label className={styles.fieldLabel}>الوصف التفصيلي</label>
+                     <label className={styles.fieldLabel}>{t("admin.product_edit.description", "الوصف التفصيلي")}</label>
                      <textarea 
                        className={styles.input}
                        style={{ minHeight: '150px', resize: 'vertical' }}
                        value={description}
                        onChange={e => setDescription(e.target.value)}
-                       placeholder="اكتب وصفاً جذاباً ومفصلاً للمنتج يوضح ميزاته وفوائده..."
+                       placeholder={t("admin.product_edit.desc_ph", "اكتب وصفاً جذاباً ومفصلاً للمنتج يوضح ميزاته وفوائده...")}
                      />
                   </div>
                </div>
@@ -226,7 +226,7 @@ export default function AdminProductEdit() {
             {activeTab === 'media' && (
                <div className={styles.card}>
                    <div className={styles.cardHeader}>
-                     <h3 className={styles.cardTitle}><ImageIcon size={20} /> معرض الصور</h3>
+                     <h3 className={styles.cardTitle}><ImageIcon size={20} /> {t("admin.product_edit.image_gallery", "معرض الصور")}</h3>
                    </div>
                    
                    <div className={styles.mediaGrid}>
@@ -245,12 +245,12 @@ export default function AdminProductEdit() {
                            {uploading ? (
                                <div style={{ textAlign: 'center' }}>
                                  <span className="block mb-2">{uploadProgress}%</span>
-                                 <span style={{ fontSize: '0.8rem' }}>جاري الرفع...</span>
+                                 <span style={{ fontSize: '0.8rem' }}>{t('common.uploading', 'جاري الرفع...')}</span>
                                </div>
                            ) : (
                                <>
                                   <UploadCloud size={24} style={{ marginBottom: '0.5rem' }} />
-                                  <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>إضافة صورة</span>
+                                  <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{t('admin.product_edit.add_image', 'إضافة صورة')}</span>
                                </>
                            )}
                            <input 
@@ -270,10 +270,10 @@ export default function AdminProductEdit() {
             {activeTab === 'advanced' && (
                 <div className={styles.card}>
                    <div className={styles.cardHeader}>
-                     <h3 className={styles.cardTitle}><Settings size={20} /> إعدادات SEO ومحركات البحث</h3>
+                     <h3 className={styles.cardTitle}><Settings size={20} /> {t("admin.product_edit.seo_settings", "إعدادات SEO ومحركات البحث")}</h3>
                    </div>
                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                      هذه الميزة قيد التطوير وستتوفر قريباً للتحكم في عنوان الـ Meta ووصف الصفحة.
+                      {t("admin.product_edit.seo_wip", "هذه الميزة قيد التطوير وستتوفر قريباً للتحكم في عنوان الـ Meta ووصف الصفحة.")}
                    </p>
                 </div>
             )}
@@ -282,11 +282,11 @@ export default function AdminProductEdit() {
          <div className={styles.sideCol}>
              <div className={styles.card}>
                   <div className={styles.cardHeader}>
-                     <h3 className={styles.cardTitle}><DollarSign size={20} /> التسعير والمخزون</h3>
+                     <h3 className={styles.cardTitle}><DollarSign size={20} /> {t("admin.product_edit.pricing_inventory", "التسعير والمخزون")}</h3>
                   </div>
 
                   <div className={styles.fieldGroup}>
-                     <label className={styles.fieldLabel}>سعر البيع ({t('common.currency', 'ر.س')}) *</label>
+                     <label className={styles.fieldLabel}>{t("admin.product_edit.sale_price", "سعر البيع")} ({t('common.currency', 'ر.س')}) *</label>
                      <input 
                        type="number" 
                        step="0.01"
@@ -298,7 +298,7 @@ export default function AdminProductEdit() {
                   </div>
 
                   <div className={styles.fieldGroup}>
-                     <label className={styles.fieldLabel}>الكمية المتوفرة (المخزون) *</label>
+                     <label className={styles.fieldLabel}>{t("admin.product_edit.available_qty", "الكمية المتوفرة (المخزون)")} *</label>
                      <div style={{ position: 'relative' }}>
                         <Box size={18} color="var(--text-muted)" style={{ position: 'absolute', top: '50%', right: '1rem', transform: 'translateY(-50%)' }} />
                         <input 

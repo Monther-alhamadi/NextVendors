@@ -16,11 +16,8 @@ const resources = {
   },
 };
 
-console.log('Loaded AR Resources:', translationAR);
-console.log('Loaded Admin Block:', translationAR?.admin);
 
-
-i18n
+ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({

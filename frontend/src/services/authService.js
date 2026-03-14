@@ -44,6 +44,36 @@ export async function register(username, email, password) {
   return resp.data;
 }
 
+export async function verifyEmail(email, code) {
+  const resp = await api.post("/auth/verify-email", { email, code });
+  return resp.data;
+}
+
+export async function resendOtp(email) {
+  const resp = await api.post("/auth/resend-otp", { email });
+  return resp.data;
+}
+
+export async function updateEmail(old_email, new_email) {
+  const resp = await api.post("/auth/update-email", { old_email, new_email });
+  return resp.data;
+}
+
+export async function forgotPassword(email) {
+  const resp = await api.post("/auth/forgot", { email });
+  return resp.data;
+}
+
+export async function verifyResetOtp(email, code) {
+  const resp = await api.post("/auth/verify-reset-otp", { email, code });
+  return resp.data;
+}
+
+export async function resetPassword(token, password) {
+  const resp = await api.post("/auth/reset", { token, password });
+  return resp.data;
+}
+
 export function isAuthenticated() {
   if (typeof document === "undefined") return false;
   // Simple check for access token cookie or local usage

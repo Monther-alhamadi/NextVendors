@@ -1,11 +1,16 @@
 import sys
 import os
-import pytest
+from pathlib import Path
 
-# Ensure required runtime dependencies are present and compatible before
-# tests that import FastAPI are collected. This provides a clear message
-# instead of an ImportError during test collection when versions mismatch.
+# Ensure backend folder is importable as top-level package 'app' during tests
+root = os.path.dirname(os.path.abspath(__file__))
+if root not in sys.path:
+    sys.path.insert(0, root)
+
+import pytest
 import importlib
+import app.models  # noqa: F401
+from app.core.database import init_db
 
 try:
     pydantic = importlib.import_module("pydantic")
@@ -55,12 +60,7 @@ try:
 except Exception:
     FASTAPI_OK = False
 
-# Ensure backend folder is importable as top-level package 'app' during tests
-root = os.path.dirname(os.path.abspath(__file__))
-if root not in sys.path:
-    sys.path.insert(0, root)
-import app.models  # noqa: F401  # load models so Base.metadata has all tables for tests
-from app.core.database import init_db
+# Path was moved to top of file
 
 # Ensure a fresh test schema exists before pytest collects/runs tests.
 init_db()

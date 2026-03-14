@@ -172,7 +172,7 @@ export default function AdminShipping() {
                   </div>
                   <div className={`${styles.formGroup} ${styles.fullW}`}>
                       <label className={styles.label}>{t('common.countries', 'الدول المشمولة')}</label>
-                      <input className={styles.input} placeholder="مثال: SA, AE, KW... (افصل بينها بفاصلة)" required value={zoneForm.countries} onChange={e => setZoneForm({...zoneForm, countries: e.target.value})} />
+                      <input className={styles.input} placeholder={t('auto_bf04bd', t('auto_bf04bd', 'مثال: SA, AE, KW... (افصل بينها بفاصلة)'))} required value={zoneForm.countries} onChange={e => setZoneForm({...zoneForm, countries: e.target.value})} />
                   </div>
                   <div className={styles.formGroup}>
                       <label className={styles.label}>{t('admin.base_cost', 'التكلفة الأساسية')}</label>

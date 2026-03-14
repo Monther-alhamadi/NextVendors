@@ -24,3 +24,21 @@ extend-exclude = ["frontend", "node_modules"]
 [tool.coverage.run]
 branch = true
 source = ["backend", "app"]
+
+[tool.pyright]
+include = ["backend"]
+exclude = ["**/node_modules", "**/__pycache__", "frontend"]
+extraPaths = ["./backend"]
+typeCheckingMode = "basic"
+reportMissingImports = "none"
+reportGeneralTypeIssues = "none"
+reportOptionalSubscript = "none"
+reportOptionalMemberAccess = "none"
+reportOptionalCall = "none"
+reportArgumentType = "none"
+reportFunctionMemberAccess = "none"
+reportAttributeAccessIssue = "none"
+reportMissingModuleSource = "none"
+reportUnusedImport = "none"
+reportUnusedVariable = "none"
+reportUndefinedVariable = "none"

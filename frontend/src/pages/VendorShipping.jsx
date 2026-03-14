@@ -35,7 +35,7 @@ export default function VendorShipping() {
         }
     } catch (e) {
         console.error(e);
-        toast.push({ message: t('common.error', 'حدث خطأ في تحميل البيانات'), type: "error" });
+        toast.push({ message: t("common.error_loading_data"), type: "error" });
     } finally {
         setLoading(false);
     }
@@ -46,9 +46,9 @@ export default function VendorShipping() {
       setSaving(true);
       try {
           await updateMyVendorProfile(formData);
-          toast.push({ message: t('common.save_success', 'تم حفظ بيانات الشحن بنجاح!'), type: "success" });
+          toast.push({ message: t("common.save_success"), type: "success" });
       } catch (e) {
-          toast.push({ message: e.response?.data?.detail || t('common.error', 'حدث خطأ أثناء الحفظ'), type: "error" });
+          toast.push({ message: e.response?.data?.detail || t("common.error"), type: "error" });
       } finally {
           setSaving(false);
       }
@@ -65,8 +65,8 @@ export default function VendorShipping() {
   return (
     <div className={s.page}>
       <div className={s.header}>
-        <h1 className={s.title}>{t('vendor.shipping_policies', 'سياسات وعناوين الشحن')}</h1>
-        <p className={s.subtitle}>أدر تفاصيل الشحن الخاصة بمتجرك وتوضيح سياساتك للعملاء.</p>
+        <h1 className={s.title}>{t("vendor.shipping_policies")}</h1>
+        <p className={s.subtitle}>{t("vendor.shipping_policies_desc")}</p>
       </div>
       
       <div className={s.formWrap}>
@@ -76,15 +76,15 @@ export default function VendorShipping() {
                     <div className={s.sectionHeader}>
                         <div className={s.iconWrap}><MapPin size={24} /></div>
                         <div>
-                            <h2 className={s.sectionTitle}>{t('vendor.pickup_address', 'عنوان المستودع / الاستلام')}</h2>
-                            <p className={s.sectionDesc}>{t('vendor.pickup_address_desc', 'العنوان الذي سيتم استلام الطلبات منه بواسطة شركات الشحن')}</p>
+                            <h2 className={s.sectionTitle}>{t("vendor.pickup_address")}</h2>
+                            <p className={s.sectionDesc}>{t("vendor.pickup_address_desc")}</p>
                         </div>
                     </div>
                     <textarea 
                         className={s.textarea}
                         value={formData.address}
                         onChange={e => setFormData({...formData, address: e.target.value})}
-                        placeholder={t('vendor.pickup_address_placeholder', 'أدخل العنوان بالتفصيل...')}
+                        placeholder={t("vendor.pickup_address_placeholder")}
                     />
                 </section>
 
@@ -92,15 +92,15 @@ export default function VendorShipping() {
                     <div className={s.sectionHeader}>
                         <div className={s.iconWrap}><Truck size={24} /></div>
                         <div>
-                            <h2 className={s.sectionTitle}>{t('vendor.shipping_policy_label', 'سياسة الشحن')}</h2>
-                            <p className={s.sectionDesc}>{t('vendor.shipping_policy_desc', 'حدد أوقات وطرق الشحن التي توفرها للعملاء')}</p>
+                            <h2 className={s.sectionTitle}>{t("vendor.shipping_policy_label")}</h2>
+                            <p className={s.sectionDesc}>{t("vendor.shipping_policy_desc")}</p>
                         </div>
                     </div>
                     <textarea 
                         className={`${s.textarea} ${s.textareaLarge}`}
                         value={formData.shipping_policy}
                         onChange={e => setFormData({...formData, shipping_policy: e.target.value})}
-                        placeholder={t('vendor.shipping_policy_placeholder', 'مثال: يتم شحن الطلبات خلال 2-3 أيام عمل...')}
+                        placeholder={t("vendor.shipping_policy_placeholder")}
                     />
                 </section>
 
@@ -108,15 +108,15 @@ export default function VendorShipping() {
                     <div className={s.sectionHeader}>
                         <div className={s.iconWrap}><RefreshCw size={24} /></div>
                         <div>
-                            <h2 className={s.sectionTitle}>{t('vendor.return_policy_label', 'سياسة الاسترجاع والحماية')}</h2>
-                            <p className={s.sectionDesc}>{t('vendor.return_policy_desc', 'وضح شروط الاسترجاع للعملاء لضمان حقوق الطرفين')}</p>
+                            <h2 className={s.sectionTitle}>{t("vendor.return_policy_label")}</h2>
+                            <p className={s.sectionDesc}>{t("vendor.return_policy_desc")}</p>
                         </div>
                     </div>
                     <textarea 
                         className={`${s.textarea} ${s.textareaLarge}`}
                         value={formData.return_policy}
                         onChange={e => setFormData({...formData, return_policy: e.target.value})}
-                        placeholder={t('vendor.return_policy_placeholder', 'مثال: يمكنك استرجاع المنتج خلال 14 يوم إذا...')}
+                        placeholder={t("vendor.return_policy_placeholder")}
                     />
                 </section>
             </div>
@@ -128,7 +128,7 @@ export default function VendorShipping() {
                     ) : (
                       <>
                         <Save size={18} />
-                        {t('common.save', 'حفظ التعديلات')}
+                        {t("common.save")}
                       </>
                     )}
                 </button>

@@ -13,11 +13,11 @@ const STATUS_MAP = {
 };
 
 const FILTER_TABS = [
-  { key: "all", labelKey: "orders.filter_all" },
-  { key: "pending", labelKey: "orders.filter_pending" },
-  { key: "processing", labelKey: "orders.filter_processing" },
-  { key: "completed", labelKey: "orders.filter_completed" },
-  { key: "cancelled", labelKey: "orders.filter_cancelled" },
+  { key: "all", labelKey: "common.all" },
+  { key: "pending", labelKey: "orders.status_pending" },
+  { key: "processing", labelKey: "orders.status_processing" },
+  { key: "completed", labelKey: "orders.status_completed" },
+  { key: "cancelled", labelKey: "orders.status_cancelled" },
 ];
 
 function translateStatus(status, t) {
@@ -75,7 +75,7 @@ export default function Orders() {
           <h1>{t("orders.title")}</h1>
           <p className={styles.headerSub}>
             {orders.length > 0
-              ? `${orders.length} ${t("orders.total_orders") || "طلب"}`
+              ? `${orders.length} ${t("common.items_count")}`
               : t("orders.empty_title")}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function Orders() {
               className={`${styles.filterTab} ${activeFilter === key ? styles.filterTabActive : ""}`}
               onClick={() => setActiveFilter(key)}
             >
-              {t(labelKey, key.charAt(0).toUpperCase() + key.slice(1))}
+              {t(labelKey)}
               <span className={styles.filterCount}>({getCount(key)})</span>
             </button>
           ))}
@@ -104,7 +104,7 @@ export default function Orders() {
           <h3 className={styles.emptyTitle}>{t("orders.empty_title")}</h3>
           <p className={styles.emptyDesc}>{t("orders.empty_desc")}</p>
           <Link to="/products" className={styles.viewBtn}>
-            {t("home.hero.shop_new") || "تسوق الآن"}
+            {t("home.hero.shop_now") || t("home.flash_sale.shop_now")}
           </Link>
         </div>
       ) : (
@@ -167,7 +167,7 @@ export default function Orders() {
                   {/* Action */}
                   <div className={styles.cardActions}>
                     <Link to={`/support?dispute_order=${o.id}`} className={styles.reportBtn} style={{ color: 'var(--danger)', fontWeight: '600', textDecoration: 'none', marginRight: 'auto' }}>
-                      {t("orders.report_issue") || "الإبلاغ عن مشكلة"}
+                      {t("orders.report_issue")}
                     </Link>
                     <Link to={`/orders/${o.id}`} className={styles.viewBtn}>
                       {t("common.view_details")} →

@@ -5,25 +5,6 @@ import { listWidgets, createWidget, updateWidget, deleteWidget } from "../../ser
 import { PlusCircle, Trash2, Edit2, X, Save, Grid, Eye, EyeOff, Star } from "lucide-react";
 import styles from "./CategoryShowcase.module.css";
 
-const WIDGET_TYPES = [
-  { value: "categories_bar", label: "شريط الأقسام" },
-  { value: "product_grid", label: "شبكة المنتجات المميزة" },
-  { value: "flash_sale", label: "تخفيضات فلاش" },
-  { value: "custom_html", label: "محتوى HTML مخصص" },
-];
-
-const PAGE_OPTIONS = [
-  { value: "home", label: "الصفحة الرئيسية" },
-  { value: "products", label: "صفحة المنتجات" },
-  { value: "all", label: "جميع الصفحات" },
-];
-
-const DEVICE_OPTIONS = [
-  { value: "all", label: "الكل" },
-  { value: "desktop", label: "سطح المكتب" },
-  { value: "mobile", label: "الجوال" },
-];
-
 const EMPTY_FORM = {
   title: "",
   type: "categories_bar",
@@ -45,6 +26,25 @@ export default function CategoryShowcase() {
   const [saving, setSaving] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
+  const WIDGET_TYPES = [
+    { value: "categories_bar", label: t('admin.showcase.types.categories', 'شريط الأقسام') },
+    { value: "product_grid", label: t('admin.showcase.types.grid', 'شبكة المنتجات المميزة') },
+    { value: "flash_sale", label: t('admin.showcase.types.flash', 'تخفيضات فلاش') },
+    { value: "custom_html", label: t('admin.showcase.types.html', 'محتوى HTML مخصص') },
+  ];
+
+  const PAGE_OPTIONS = [
+    { value: "home", label: t('common.home', 'الصفحة الرئيسية') },
+    { value: "products", label: t('nav.products', 'صفحة المنتجات') },
+    { value: "all", label: t('common.all', 'جميع الصفحات') },
+  ];
+
+  const DEVICE_OPTIONS = [
+    { value: "all", label: t('common.all', 'الكل') },
+    { value: "desktop", label: t('common.desktop', 'سطح المكتب') },
+    { value: "mobile", label: t('common.mobile', 'الجوال') },
+  ];
+
   const loadWidgets = useCallback(async () => {
     setLoading(true);
     try {
@@ -53,7 +53,7 @@ export default function CategoryShowcase() {
       // Show all widgets except banner types (those are in DynamicBanners)
       setWidgets(all.filter(w => w.type !== "banner_carousel" && w.type !== "slider" && w.type !== "banner"));
     } catch {
-      toast.push({ message: t("common.error", "حدث خطأ"), type: "error" });
+      toast.push({ message: t("common.error"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function CategoryShowcase() {
 
   async function handleSave() {
     if (!form.title.trim()) {
-      toast.push({ message: "عنوان الودجت مطلوب", type: "warning" });
+      toast.push({ message: t("admin.showcase.title_req", "عنوان الودجت مطلوب"), type: "warning" });
       return;
     }
     setSaving(true);
@@ -101,10 +101,10 @@ export default function CategoryShowcase() {
       };
       if (editingWidget) {
         await updateWidget(editingWidget.id, payload);
-        toast.push({ message: "تم تحديث الودجت بنجاح", type: "success" });
+        toast.push({ message: t("admin.showcase.update_success"), type: "success" });
       } else {
         await createWidget(payload);
-        toast.push({ message: "تم إنشاء الودجت بنجاح", type: "success" });
+        toast.push({ message: t("admin.showcase.create_success"), type: "success" });
       }
       closeModal();
       await loadWidgets();
@@ -118,7 +118,7 @@ export default function CategoryShowcase() {
   async function handleDelete(id) {
     try {
       await deleteWidget(id);
-      toast.push({ message: "تم حذف الودجت", type: "success" });
+      toast.push({ message: t("admin.showcase.delete_success"), type: "success" });
       setDeleteConfirm(null);
       loadWidgets();
     } catch { toast.push({ message: t("common.error"), type: "error" }); }
@@ -148,12 +148,12 @@ export default function CategoryShowcase() {
         <div className={styles.headerLeft}>
           <div className={styles.headerIcon}><Grid size={24} /></div>
           <div>
-            <h1 className={styles.title}>{t("admin.category_showcase", "ودجت الصفحات والأقسام")}</h1>
+            <h1 className={styles.title}>{t("admin.category_showcase_title", "ودجت الصفحات والأقسام")}</h1>
             <p className={styles.subtitle}>{t("admin.showcase_subtitle", "تحكم في العناصر والأقسام التفاعلية المعروضة في صفحات المتجر")}</p>
           </div>
         </div>
         <button className={styles.btnPrimary} onClick={openCreate}>
-          <PlusCircle size={16} /> {t("admin.new_widget", "إضافة ودجت جديد")}
+          <PlusCircle size={16} /> {t("admin.showcase.add_widget", "إضافة ودجت جديد")}
         </button>
       </div>
 
@@ -173,12 +173,12 @@ export default function CategoryShowcase() {
       </div>
 
       {loading ? (
-        <div className={styles.loading}>جارٍ التحميل...</div>
+        <div className={styles.loading}>{t("common.loading", "جارٍ التحميل...")}</div>
       ) : widgets.length === 0 ? (
         <div className={styles.empty}>
           <Grid size={48} opacity={0.25} />
-          <p>لا توجد ودجت بعد. ابدأ بإضافة عناصر لصفحاتك!</p>
-          <button className={styles.btnPrimary} onClick={openCreate}><PlusCircle size={16} /> إضافة ودجت</button>
+          <p>{t("admin.showcase.empty", "لا توجد ودجت بعد. ابدأ بإضافة عناصر لصفحاتك!")}</p>
+          <button className={styles.btnPrimary} onClick={openCreate}><PlusCircle size={16} /> {t("admin.showcase.add_widget_btn", "إضافة ودجت")}</button>
         </div>
       ) : (
         <div className={styles.sections}>
@@ -186,7 +186,7 @@ export default function CategoryShowcase() {
             <div key={page} className={styles.section}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>{pageLabel(page)}</h2>
-                <span className={styles.sectionCount}>{items.length} ودجت</span>
+                <span className={styles.sectionCount}>{items.length} {t("admin.showcase.widget_word", "ودجت")}</span>
               </div>
               <div className={styles.widgetList}>
                 {items
@@ -200,18 +200,18 @@ export default function CategoryShowcase() {
                         <div className={styles.widgetName}>{widget.title}</div>
                         <div className={styles.widgetMeta}>
                           <span className={styles.typePill}>{typeLabel(widget.type)}</span>
-                          <span className={styles.metaItem}>الترتيب: {widget.position ?? 0}</span>
+                          <span className={styles.metaItem}>{t("common.order", "الترتيب")}: {widget.position ?? 0}</span>
                           <span className={styles.metaItem}>{DEVICE_OPTIONS.find(d => d.value === widget.device)?.label || widget.device}</span>
                         </div>
                       </div>
                     </div>
                     <div className={styles.widgetActions}>
-                      <button className={`${styles.actionBtn} ${styles.toggleBtn}`} onClick={() => handleToggle(widget)} title={widget.is_active ? "إخفاء" : "إظهار"}>
+                      <button className={`${styles.actionBtn} ${styles.toggleBtn}`} onClick={() => handleToggle(widget)} title={widget.is_active ? t("common.hide", "إخفاء") : t("common.show", "إظهار")}>
                         {widget.is_active ? <Eye size={14} /> : <EyeOff size={14} />}
-                        <span>{widget.is_active ? "نشط" : "مخفي"}</span>
+                        <span>{widget.is_active ? t("common.active", "نشط") : t("common.hidden", "مخفي")}</span>
                       </button>
                       <button className={`${styles.actionBtn} ${styles.editBtn}`} onClick={() => openEdit(widget)}>
-                        <Edit2 size={14} /> <span>تعديل</span>
+                        <Edit2 size={14} /> <span>{t("common.edit", "تعديل")}</span>
                       </button>
                       <button className={`${styles.actionBtn} ${styles.deleteBtn}`} onClick={() => setDeleteConfirm(widget.id)}>
                         <Trash2 size={14} />
@@ -225,28 +225,27 @@ export default function CategoryShowcase() {
         </div>
       )}
 
-      {/* Modal */}
       {showModal && (
         <div className={styles.overlay} onClick={closeModal}>
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>{editingWidget ? "تعديل الودجت" : "إضافة ودجت جديد"}</h2>
+              <h2>{editingWidget ? t('admin.showcase.edit_widget', 'تعديل الودجت') : t("admin.showcase.add_widget", "إضافة ودجت جديد")}</h2>
               <button className={styles.modalClose} onClick={closeModal}><X size={20} /></button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.field}>
-                <label>عنوان الودجت *</label>
-                <input className={styles.input} placeholder="مثال: أقسام الصفحة الرئيسية" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+                <label>{t("admin.showcase.widget_title", "عنوان الودجت")} *</label>
+                <input className={styles.input} placeholder={t("admin.showcase.title_ph", "مثال: أقسام الصفحة الرئيسية")} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
               </div>
               <div className={styles.row2}>
                 <div className={styles.field}>
-                  <label>نوع الودجت</label>
+                  <label>{t("admin.showcase.widget_type", "نوع الودجت")}</label>
                   <select className={styles.input} value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
                     {WIDGET_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
                   </select>
                 </div>
                 <div className={styles.field}>
-                  <label>الصفحة المستهدفة</label>
+                  <label>{t("admin.showcase.target_page", "الصفحة المستهدفة")}</label>
                   <select className={styles.input} value={form.page} onChange={e => setForm(f => ({ ...f, page: e.target.value }))}>
                     {PAGE_OPTIONS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                   </select>
@@ -254,43 +253,43 @@ export default function CategoryShowcase() {
               </div>
               <div className={styles.row2}>
                 <div className={styles.field}>
-                  <label>الجهاز المستهدف</label>
+                  <label>{t("admin.showcase.target_device", "الجهاز المستهدف")}</label>
                   <select className={styles.input} value={form.device} onChange={e => setForm(f => ({ ...f, device: e.target.value }))}>
                     {DEVICE_OPTIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                   </select>
                 </div>
                 <div className={styles.field}>
-                  <label>رقم الترتيب</label>
+                  <label>{t("admin.showcase.order_num", "رقم الترتيب")}</label>
                   <input className={styles.input} type="number" min={0} value={form.position} onChange={e => setForm(f => ({ ...f, position: e.target.value }))} />
                 </div>
               </div>
               {(form.type === "categories_bar" || form.type === "product_grid") && (
                 <div className={styles.row2}>
                   <div className={styles.field}>
-                    <label>أقصى عدد عناصر</label>
+                    <label>{t("admin.showcase.max_items", "أقصى عدد عناصر")}</label>
                     <input className={styles.input} type="number" min={1} max={24} value={form.content.max_items} onChange={e => setForm(f => ({ ...f, content: { ...f.content, max_items: parseInt(e.target.value) } }))} />
                   </div>
                   <div className={styles.field}>
-                    <label>ألوان التمييز</label>
+                    <label>{t("admin.showcase.highlight_color", "ألوان التمييز")}</label>
                     <input className={styles.input} type="color" value={form.content.highlight_color || "#6366f1"} onChange={e => setForm(f => ({ ...f, content: { ...f.content, highlight_color: e.target.value } }))} />
                   </div>
                 </div>
               )}
               {form.type === "custom_html" && (
                 <div className={styles.field}>
-                  <label>كود HTML</label>
+                  <label>{t("admin.showcase.html_code", "كود HTML")}</label>
                   <textarea className={styles.textarea} rows={6} placeholder="<div>...</div>" value={form.content.html || ""} onChange={e => setForm(f => ({ ...f, content: { ...f.content, html: e.target.value } }))} />
                 </div>
               )}
               <label className={styles.checkRow}>
                 <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} />
-                <span>تفعيل الودجت فوراً</span>
+                <span>{t("admin.showcase.activate_now", "تفعيل الودجت فوراً")}</span>
               </label>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.btnSecondary} onClick={closeModal}>إلغاء</button>
+              <button className={styles.btnSecondary} onClick={closeModal}>{t("common.cancel", "إلغاء")}</button>
               <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
-                <Save size={16} />{saving ? "جارٍ الحفظ..." : "حفظ الودجت"}
+                <Save size={16} />{saving ? t("common.saving", "جارٍ الحفظ...") : t("admin.showcase.save", "حفظ الودجت")}
               </button>
             </div>
           </div>
@@ -301,11 +300,11 @@ export default function CategoryShowcase() {
         <div className={styles.overlay} onClick={() => setDeleteConfirm(null)}>
           <div className={styles.confirmBox} onClick={e => e.stopPropagation()}>
             <Trash2 size={32} color="#ef4444" />
-            <h3>تأكيد الحذف</h3>
-            <p>سيتم حذف هذا الودجت نهائياً من جميع الصفحات.</p>
+            <h3>{t("common.confirm_delete", "تأكيد الحذف")}</h3>
+            <p>{t("admin.showcase.delete_warn", "سيتم حذف هذا الودجت نهائياً من جميع الصفحات.")}</p>
             <div className={styles.confirmActions}>
-              <button className={styles.btnSecondary} onClick={() => setDeleteConfirm(null)}>إلغاء</button>
-              <button className={styles.btnDanger} onClick={() => handleDelete(deleteConfirm)}>حذف</button>
+              <button className={styles.btnSecondary} onClick={() => setDeleteConfirm(null)}>{t("common.cancel", "إلغاء")}</button>
+              <button className={styles.btnDanger} onClick={() => handleDelete(deleteConfirm)}>{t("common.delete", "حذف")}</button>
             </div>
           </div>
         </div>

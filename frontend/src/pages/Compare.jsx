@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { getLocalizedField } from "../utils/localization";
 import useCompareStore from "../store/compareStore";
 import cartStore from "../store/cartStore";
 import { useToast } from "../components/common/ToastProvider";
@@ -8,7 +9,7 @@ import styles from "./Compare.module.css";
 
 export default function Compare() {
   const { items, removeItem, clear } = useCompareStore();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useToast();
 
   const handleAddToCart = (product) => {
@@ -56,14 +57,14 @@ export default function Compare() {
                   >
                     ✕
                   </button>
-                  <Link to={`/products/${p.id}`} className={styles.imageArea}>
+                   <Link to={`/products/${p.id}`} className={styles.imageArea}>
                     <img 
                       src={p.image || p.images?.[0] || "/placeholder.png"} 
-                      alt={p.name} 
+                      alt={getLocalizedField(p, "name", i18n.language)} 
                     />
                   </Link>
                   <Link to={`/products/${p.id}`} className={styles.productName}>
-                    {p.name}
+                    {getLocalizedField(p, "name", i18n.language)}
                   </Link>
                   <button className={styles.cartBtn} onClick={() => handleAddToCart(p)}>
                     🛒 {t("product.add_to_cart")}
@@ -87,7 +88,7 @@ export default function Compare() {
               <td>{t("product.category") || "القسم"}</td>
               {items.map((p) => (
                 <td key={p.id} style={{ textAlign: "center" }}>
-                  {p.category_name || p.category_id || "-"}
+                  {getLocalizedField(p, "category_name", i18n.language) || getLocalizedField(p.category, "name", i18n.language) || p.category_id || "-"}
                 </td>
               ))}
             </tr>
@@ -118,13 +119,16 @@ export default function Compare() {
             {/* Description Row */}
             <tr>
               <td>{t("product.description")}</td>
-              {items.map((p) => (
-                <td key={p.id} className={styles.descData}>
-                  {p.description ? (
-                     <span>{p.description.replace(/<[^>]*>/g, '').substring(0, 150)}{p.description.length > 150 ? "..." : ""}</span>
-                  ) : "-"}
-                </td>
-              ))}
+              {items.map((p) => {
+                const desc = getLocalizedField(p, "description", i18n.language);
+                return (
+                  <td key={p.id} className={styles.descData}>
+                    {desc ? (
+                       <span>{desc.replace(/<[^>]*>/g, '').substring(0, 150)}{desc.length > 150 ? "..." : ""}</span>
+                    ) : "-"}
+                  </td>
+                );
+              })}
             </tr>
 
           </tbody>

@@ -53,7 +53,7 @@ def list_categories(request: Request, db: Session = Depends(get_db)):
 
     from app.models.product import Product as ProductModel
     rows = (
-        db.query(ProductModel.category)
+        db.query(ProductModel.category, ProductModel.category_en)
         .filter(
             ProductModel.status == "published",
             ProductModel.moderation_status == "approved",
@@ -63,7 +63,7 @@ def list_categories(request: Request, db: Session = Depends(get_db)):
         .distinct()
         .all()
     )
-    result = [r[0] for r in rows if r[0]]
+    result = [{"name": r[0], "name_en": r[1]} for r in rows if r[0]]
 
     # ── Cache store ──
     set_cache_ns(CACHE_NS, cache_key, json.dumps(result, default=str),

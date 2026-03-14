@@ -58,10 +58,10 @@ export default function VendorOrders() {
 
   const getStatusConfig = (status) => {
     switch(status) {
-      case 'pending': return { icon: <Clock size={18} />, colorClass: s.colPending, label: 'قيد الانتظار' };
-      case 'processing': return { icon: <PackageOpen size={18} />, colorClass: s.colProcessing, label: 'قيد التجهيز' };
-      case 'shipped': return { icon: <Truck size={18} />, colorClass: s.colShipped, label: 'تم الشحن' };
-      case 'completed': return { icon: <CheckCircle size={18} />, colorClass: s.colCompleted, label: 'مكتمل' };
+      case 'pending': return { icon: <Clock size={18} />, colorClass: s.colPending, label: t('orders.status_pending', 'قيد الانتظار') };
+      case 'processing': return { icon: <PackageOpen size={18} />, colorClass: s.colProcessing, label: t('orders.status_processing', 'قيد التجهيز') };
+      case 'shipped': return { icon: <Truck size={18} />, colorClass: s.colShipped, label: t('orders.status_shipped', 'تم الشحن') };
+      case 'completed': return { icon: <CheckCircle size={18} />, colorClass: s.colCompleted, label: t('orders.status_completed', 'مكتمل') };
       default: return { icon: <Clock size={18} />, colorClass: s.colPending, label: status };
     }
   };
@@ -78,10 +78,10 @@ export default function VendorOrders() {
            {order.shipping_address?.full_name?.charAt(0) || 'C'}
         </div>
         <div className={s.customerDetails}>
-           <span className={s.customerName}>{order.shipping_address?.full_name || 'عميل'}</span>
+           <span className={s.customerName}>{order.shipping_address?.full_name || t('orders.customer_fallback', 'عميل')}</span>
            <span className={s.customerCity}>
              <MapPin size={10} />
-             {order.shipping_address?.city || 'غير محدد'}
+             {order.shipping_address?.city || t('orders.city_unspecified', 'غير محدد')}
            </span>
         </div>
       </div>
@@ -102,19 +102,19 @@ export default function VendorOrders() {
               onClick={() => handleStatusChange(order.id, 'processing')}
               disabled={updating === order.id}
             >
-              {updating === order.id ? '...' : 'تجهيز الطلب'}
+              {updating === order.id ? '...' : t('orders.action_start_processing', 'تجهيز الطلب')}
             </button>
          )}
          {order.status === 'processing' && (
             <button 
               className={`${s.actionBtn} ${s.primary}`}
               onClick={() => {
-                  const track = prompt('أدخل رقم التتبع (اختياري)');
+                  const track = prompt(t('orders.prompt_tracking', 'أدخل رقم التتبع (اختياري)'));
                   handleStatusChange(order.id, 'shipped', track);
               }}
               disabled={updating === order.id}
             >
-              {updating === order.id ? '...' : 'شحن'}
+              {updating === order.id ? '...' : t('orders.action_ship', 'شحن')}
             </button>
          )}
          {order.status === 'shipped' && (
@@ -123,12 +123,12 @@ export default function VendorOrders() {
               onClick={() => handleStatusChange(order.id, 'completed')}
               disabled={updating === order.id}
             >
-              {updating === order.id ? '...' : 'اكتمال'}
+              {updating === order.id ? '...' : t('orders.action_complete', 'اكتمال')}
             </button>
          )}
          {order.status === 'completed' && (
             <div style={{ color: 'var(--clr-green-600)', fontSize: '10px', fontWeight: 800, textAlign: 'center', width: '100%' }}>
-              ✅ متوفر لدى العميل
+              ✅ {t('orders.status_delivered_customer', 'متوفر لدى العميل')}
             </div>
          )}
       </div>
@@ -140,7 +140,7 @@ export default function VendorOrders() {
       <div className={s.header}>
         <div>
           <h1 className={s.title}>{t('vendor.orders', 'الطلبات')}</h1>
-          <p className={s.subtitle}>نظام إدارة الطلبات من التجهيز إلى الشحن.</p>
+          <p className={s.subtitle}>{t('vendor.orders_subtitle', 'نظام إدارة الطلبات من التجهيز إلى الشحن.')}</p>
         </div>
         
         <div className={s.viewTabs}>
@@ -148,13 +148,13 @@ export default function VendorOrders() {
             className={`${s.viewTab} ${viewMode === 'kanban' ? s.active : ''}`}
             onClick={() => setViewMode('kanban')}
           >
-            <LayoutGrid size={16} /> لوحة كانبان
+            <LayoutGrid size={16} /> {t('orders.kanban_view', 'لوحة كانبان')}
           </button>
           <button 
             className={`${s.viewTab} ${viewMode === 'list' ? s.active : ''}`}
             onClick={() => setViewMode('list')}
           >
-            <List size={16} /> القائمة
+            <List size={16} /> {t('orders.list_view', 'القائمة')}
           </button>
         </div>
       </div>
@@ -183,7 +183,7 @@ export default function VendorOrders() {
                    ))}
                    {list.length === 0 && (
                       <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                        لا يوجد طلبات هنا
+                        {t('orders.no_orders_col', 'لا يوجد طلبات هنا')}
                       </div>
                    )}
                 </div>
@@ -196,12 +196,12 @@ export default function VendorOrders() {
            <table className={s.table}>
               <thead>
                 <tr>
-                   <th>رقم الطلب</th>
-                   <th>التاريخ</th>
-                   <th>العميل</th>
-                   <th>المنتجات</th>
-                   <th>الحالة</th>
-                   <th>إجراءات</th>
+                   <th>{t('orders.col_order_num', 'رقم الطلب')}</th>
+                   <th>{t('orders.col_date', 'التاريخ')}</th>
+                   <th>{t('orders.col_customer', 'العميل')}</th>
+                   <th>{t('orders.col_items', 'المنتجات')}</th>
+                   <th>{t('orders.col_status', 'الحالة')}</th>
+                   <th>{t('orders.col_actions', 'إجراءات')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -210,7 +210,7 @@ export default function VendorOrders() {
                     <td style={{ fontFamily: 'monospace', fontWeight: 'bold' }}>#{order.order_id || order.id}</td>
                     <td style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{new Date(order.created_at).toLocaleDateString()}</td>
                     <td>
-                      <div style={{ fontWeight: 600 }}>{order.shipping_address?.full_name || 'عميل'}</div>
+                      <div style={{ fontWeight: 600 }}>{order.shipping_address?.full_name || t('orders.customer_fallback', 'عميل')}</div>
                       <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{order.shipping_address?.city}</div>
                     </td>
                     <td>
@@ -233,13 +233,13 @@ export default function VendorOrders() {
                     </td>
                     <td>
                        {order.status === 'pending' && (
-                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'processing')}>تجهيز</button>
+                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'processing')}>{t('orders.action_start_processing_short', 'تجهيز')}</button>
                        )}
                        {order.status === 'processing' && (
-                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'shipped')}>شحن</button>
+                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'shipped')}>{t('orders.action_ship_short', 'شحن')}</button>
                        )}
                        {order.status === 'shipped' && (
-                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'completed')}>مكتمل</button>
+                          <button className={s.listActionBtn} onClick={() => handleStatusChange(order.id, 'completed')}>{t('orders.action_complete_short', 'مكتمل')}</button>
                        )}
                        {order.status === 'completed' && <span>-</span>}
                     </td>

@@ -30,8 +30,8 @@ export default function Profile() {
     { key: "addresses", link: "/profile/addresses", icon: "📍", label: t("profile.addresses"), desc: t("profile.addresses_desc") },
     { key: "wishlist", link: "/wishlist", icon: "❤️", label: t("nav.wishlist"), desc: t("profile.wishlist_desc") },
     { key: "settings", link: "/profile/settings", icon: "⚙️", label: t("profile.settings"), desc: t("profile.settings_desc") },
-    { key: "messages", link: "/messages", icon: "💬", label: t("nav.messages"), desc: t("profile.messages_desc") || t("nav.messages") },
-    { key: "support", link: "/support", icon: "🎧", label: t("footer.support") || "الدعم", desc: t("profile.support_desc") || "تواصل معنا" },
+    { key: "messages", link: "/messages", icon: "💬", label: t("nav.messages"), desc: t("profile.messages_desc") },
+    { key: "support", link: "/support", icon: "🎧", label: t("common.support_title"), desc: t("profile.support_desc") },
   ];
 
   return (
@@ -56,11 +56,43 @@ export default function Profile() {
           <span className={styles.roleBadge}>
             {user?.role === "admin" ? `⚡ ${t("profile.admin")}` : `👤 ${t("profile.member")}`}
           </span>
+          {user?.is_vendor && (
+            <span className={`${styles.roleBadge} ${styles.vendorBadge}`}>
+              🏪 {t("nav.vendor_dashboard")}
+            </span>
+          )}
         </div>
       </div>
 
+      {/* ── Vendor Lifecycle Quick Action ── */}
+      {!user?.is_vendor ? (
+        <div className={styles.vendorPromo}>
+          <div className={styles.promoContent}>
+            <h3>{t("profile.start_selling") || "هل تريد البدء في البيع؟"}</h3>
+            <p>{t("profile.start_selling_desc") || "انضم إلى آلاف التجار وابدأ في تنمية تجارتك معنا اليوم."}</p>
+          </div>
+          <Link to="/become-vendor">
+            <CustomButton variant="accent" size="lg">
+              {t("nav.become_vendor") || "كن بائعاً الآن"}
+            </CustomButton>
+          </Link>
+        </div>
+      ) : (
+        <div className={`${styles.vendorPromo} ${styles.vendorActive}`}>
+          <div className={styles.promoContent}>
+            <h3>{t("profile.vendor_hub") || "مركز التاجر"}</h3>
+            <p>{t("profile.vendor_hub_desc") || "إدارة منتجاتك، طلباتك، وتقارير أرباحك من مكان واحد."}</p>
+          </div>
+          <Link to="/vendor">
+            <CustomButton variant="primary" size="lg">
+              {t("nav.vendor_dashboard")}
+            </CustomButton>
+          </Link>
+        </div>
+      )}
+
       {/* ── Quick Access ── */}
-      <h2 className={styles.sectionTitle}>{t("profile.quick_access") || "وصول سريع"}</h2>
+      <h2 className={styles.sectionTitle}>{t("profile.quick_access")}</h2>
 
       <div className={styles.grid}>
         {actions.map((action) => (

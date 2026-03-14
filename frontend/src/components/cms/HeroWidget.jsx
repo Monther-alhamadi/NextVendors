@@ -59,7 +59,7 @@ export function HeroWidget({ config }) {
   return (
     <section 
       className="hero-section" 
-      aria-label="قسم الترحيب"
+      aria-label={t('common.welcome_section', 'قسم الترحيب')}
       style={bgColor !== '#0a0d2e' ? { background: bgColor } : undefined}
     >
       <div className="hero-aurora" aria-hidden="true" />
@@ -113,7 +113,7 @@ export function HeroWidget({ config }) {
             color: 'rgba(255,255,255,0.55)',
             fontSize: 'var(--text-sm)',
           }}>
-            {['🏆 +50,000 عميل راضٍ', '⭐ تقييم 4.9/5', '🚚 توصيل مجاني فوق 200 ر.س'].map(item => (
+            {[t('auto_ee1f6e', '🏆 +50,000 عميل راضٍ'), t('auto_a594c8', '⭐ تقييم 4.9/5'), t('auto_271fa3', '🚚 توصيل مجاني فوق 200 ر.س')].map(item => (
               <span key={item} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{item}</span>
             ))}
           </div>

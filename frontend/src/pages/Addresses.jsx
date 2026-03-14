@@ -18,7 +18,7 @@ export default function Addresses() {
       <div className="empty-state">
         <div className="icon">📍</div>
         <h2>{t('addresses.empty')}</h2>
-        <p>لم تقم بإضافة أي عناوين شحن حتى الآن.</p>
+        <p>{t('addresses.no_addresses_yet', 'You haven\'t added any shipping addresses yet.')}</p>
         <CustomButton variant="primary">{t('addresses.add_new')}</CustomButton>
       </div>
 

@@ -11,10 +11,10 @@ import s from "./AdminAnalytics.module.css";
 
 
 const PERIOD_OPTIONS = [
-  { key: "daily", label: "يومي" },
-  { key: "weekly", label: "أسبوعي" },
-  { key: "monthly", label: "شهري" },
-  { key: "yearly", label: "سنوي" },
+  { key: "daily", label: t("admin.period_daily", "يومي") },
+  { key: "weekly", label: t("admin.period_weekly", "أسبوعي") },
+  { key: "monthly", label: t("admin.period_monthly", "شهري") },
+  { key: "yearly", label: t("admin.period_yearly", "سنوي") },
 ];
 
 export default function AdminAnalytics() {
@@ -90,28 +90,28 @@ export default function AdminAnalytics() {
             <StatCard
               title={t('admin.gmv', 'إجمالي المبيعات')}
               value={`${(data?.total_gmv || 0).toLocaleString()} ${t('common.currency', 'ر.س')}`}
-              detail={`${data?.order_count || 0} طلب | نمو ${data?.gmv_growth || 0}%`}
+              detail={`${data?.order_count || 0} {t("admin.order_lbl_short", "طلب")} | {t("admin.growth_lbl", "نمو")} ${data?.gmv_growth || 0}%`}
               color="#6366f1"
               icon="💰"
             />
             <StatCard
               title={t('admin.platform_profit', 'أرباح المنصة')}
               value={`${(data?.platform_net_profit || 0).toLocaleString()} ${t('common.currency', 'ر.س')}`}
-              detail={`نمو ${data?.profit_growth || 0}%`}
+              detail={`${t("admin.growth_lbl", "نمو")} ${data?.profit_growth || 0}%`}
               color="#10b981"
               icon="📊"
             />
             <StatCard
               title={t('admin.avg_order', 'متوسط الطلب')}
               value={`${(data?.avg_order_value || 0).toLocaleString()} ${t('common.currency', 'ر.س')}`}
-              detail={`${data?.active_vendors || 0} متجر نشط`}
+              detail={`${data?.active_vendors || 0} ${t("admin.active_store_lbl", "متجر نشط")}`}
               color="#f59e0b"
               icon="🏷️"
             />
             <StatCard
-              title="المستخدمين"
+              title={t("admin.users_title", "المستخدمين")}
               value={(data?.total_users || 0).toLocaleString()}
-              detail={`${data?.active_vendors || 0} تاجر | ${(data?.total_users || 0) - (data?.active_vendors || 0)} عميل`}
+              detail={`${data?.active_vendors || 0} ${t("admin.vendor_lbl", "تاجر")} | ${(data?.total_users || 0) - (data?.active_vendors || 0)} {t("admin.customer_lbl", "عميل")}`}
               color="#8b5cf6"
               icon="👥"
             />
@@ -143,14 +143,14 @@ export default function AdminAnalytics() {
                     <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8'}} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
                     <Tooltip 
                       contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px 20px' }}
-                      formatter={(value) => [`${value.toLocaleString()} ر.س`, 'الإيرادات']}
+                      formatter={(value) => [`${value.toLocaleString()} ${t("common.currency", "ر.س")}`, t("admin.revenue_lbl", "الإيرادات")]}
                       cursor={{stroke: '#6366f1', strokeWidth: 1, strokeDasharray: '4 4'}}
                     />
                     <Area type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#analyticsFill)" />
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div className={s.emptyState}>لا توجد بيانات للفترة المحددة</div>
+                <div className={s.emptyState}>{t("admin.no_data_period", "لا توجد بيانات للفترة المحددة")}</div>
               )}
             </div>
           </div>
@@ -173,13 +173,13 @@ export default function AdminAnalytics() {
                     <Tooltip 
                       cursor={{fill: '#f8fafc', radius: 4}}
                       contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px 20px' }}
-                      formatter={(value) => [`${value.toLocaleString()} ر.س`, 'المبيعات']}
+                      formatter={(value) => [`${value.toLocaleString()} ${t("common.currency", "ر.س")}`, t("admin.sales_count", "المبيعات")]}
                     />
                     <Bar dataKey="value" fill="#10b981" radius={[6, 6, 0, 0]} maxBarSize={50} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className={s.emptyState}>لا توجد بيانات</div>
+                <div className={s.emptyState}>{t("admin.no_data", "لا توجد بيانات")}</div>
               )}
             </div>
           </div>
@@ -191,16 +191,16 @@ export default function AdminAnalytics() {
             <div className={s.chartHeader}>
               <h3 className={s.chartTitle}>
                 <span className={s.chartIndicator} style={{ background: '#f59e0b' }} />
-                أفضل المتاجر أداءً
+                {t("admin.top_performing_stores", "أفضل المتاجر أداءً")}
               </h3>
             </div>
             <table className={s.vendorsTable}>
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>المتجر</th>
-                  <th>الإيرادات</th>
-                  <th>عدد المبيعات</th>
+                  <th>{t("admin.store_col", "المتجر")}</th>
+                  <th>{t("admin.revenue_lbl", "الإيرادات")}</th>
+                  <th>{t("admin.sales_count", "عدد المبيعات")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -208,7 +208,7 @@ export default function AdminAnalytics() {
                   <tr key={v.id}>
                     <td><span className={s.rank}>{i + 1}</span></td>
                     <td style={{ fontWeight: 600 }}>{v.name}</td>
-                    <td>{v.revenue.toLocaleString()} ر.س</td>
+                    <td>{v.revenue.toLocaleString()} {t("common.currency", "ر.س")}</td>
                     <td>{v.sales}</td>
                   </tr>
                 ))}

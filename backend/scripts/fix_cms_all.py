@@ -4,6 +4,7 @@ Comprehensive CMS fix - uses raw SQL to avoid ORM mapper errors.
 import sys, os, json
 from datetime import datetime, timezone
 
+# Robust path resolution for backend scripts
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 # Only import what we strictly need

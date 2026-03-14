@@ -23,7 +23,7 @@ export default function AdminAds() {
       setAds(data);
     } catch (e) {
       console.error(e);
-      toast.push({ message: "فشل جلب طلبات الإعلانات", type: "error" });
+      toast.push({ message: t('ads.err_fetch', 'فشل جلب طلبات الإعلانات'), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -32,10 +32,10 @@ export default function AdminAds() {
   async function handleStatusUpdate(adId, newStatus) {
     try {
       await updateAdStatus(adId, newStatus, newStatus === 'active' ? true : null);
-      toast.push({ message: "تم تحديث حالة الإعلان", type: "success" });
+      toast.push({ message: t('ads.status_updated', 'تم تحديث حالة الإعلان'), type: "success" });
       loadAds();
     } catch (e) {
-      toast.push({ message: "فشل تحديث الحالة", type: "error" });
+      toast.push({ message: t('ads.err_status_update', 'فشل تحديث الحالة'), type: "error" });
     }
   }
 
@@ -44,10 +44,10 @@ export default function AdminAds() {
       // Keep existing status but update payment state
       const ad = ads.find(a => a.id === adId);
       await updateAdStatus(adId, ad.status, true);
-      toast.push({ message: "تم تغيير حالة الدفع", type: "success" });
+      toast.push({ message: t('ads.payment_updated', 'تم تغيير حالة الدفع'), type: "success" });
       loadAds();
     } catch (e) {
-      toast.push({ message: "فشل تحديث حالة الدفع", type: "error" });
+      toast.push({ message: t('ads.err_payment_update', 'فشل تحديث حالة الدفع'), type: "error" });
     }
   }
 
@@ -55,8 +55,8 @@ export default function AdminAds() {
     <PageContainer>
         <div className={styles.pageHeader}>
              <div>
-                <h1 className={styles.pageTitle}>تأجير المساحات الإعلانية</h1>
-                <p className={styles.pageSubtitle}>إدارة طلبات إعلانات التجّار على الصفحة الرئيسية ومراجعة الدفعات</p>
+                <h1 className={styles.pageTitle}>{t('ads.title_admin', 'تأجير المساحات الإعلانية')}</h1>
+                <p className={styles.pageSubtitle}>{t('ads.subtitle_admin', 'إدارة طلبات إعلانات التجّار على الصفحة الرئيسية ومراجعة الدفعات')}</p>
              </div>
         </div>
 
@@ -70,19 +70,19 @@ export default function AdminAds() {
                     <table className={styles.dataGrid}>
                         <thead>
                             <tr>
-                                <th>الإعلان</th>
-                                <th>معرّف التاجر</th>
-                                <th>المكان والتكلفة</th>
-                                <th>الدفع</th>
-                                <th>الحالة</th>
-                                <th>إجراءات الإدارة</th>
+                                <th>{t('ads.col_ad', 'الإعلان')}</th>
+                                <th>{t('ads.col_vendor_id', 'معرّف التاجر')}</th>
+                                <th>{t('ads.col_placement_cost', 'المكان والتكلفة')}</th>
+                                <th>{t('ads.col_payment', 'الدفع')}</th>
+                                <th>{t('ads.col_status', 'الحالة')}</th>
+                                <th>{t('ads.col_actions', 'إجراءات الإدارة')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {ads.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-                                        لا توجد طلبات إعلانات حالياً
+                                        {t('ads.no_ads_requests', 'لا توجد طلبات إعلانات حالياً')}
                                     </td>
                                 </tr>
                             ) : ads.map(ad => (
@@ -95,42 +95,42 @@ export default function AdminAds() {
                                                 ) : <span style={{fontSize: '10px', color: '#999', padding:'2px'}}>No Image</span>}
                                             </div>
                                             <div>
-                                                <a href={ad.target_url} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: 'var(--primary-color)' }}>الرابط الوجهة</a>
+                                                <a href={ad.target_url} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: 'var(--primary-color)' }}>{t('ads.target_link', 'الرابط الوجهة')}</a>
                                             </div>
                                         </div>
                                     </td>
                                     <td style={{ fontWeight: '500' }}>{ad.vendor_id}</td>
                                     <td>
                                         <div style={{ fontSize: '0.9rem', marginBottom: '4px' }}>{ad.placement}</div>
-                                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{ad.cost} ر.س</div>
+                                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{ad.cost} {t('common.currency', 'ر.س')}</div>
                                     </td>
                                     <td>
                                         <span className={`${styles.badge} ${ad.is_paid ? styles.badgeSuccess : styles.badgeWarning}`}
                                               style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', background: ad.is_paid ? '#dcfce7' : '#fef08a', color: ad.is_paid ? '#166534' : '#854d0e' }}
                                         >
-                                            {ad.is_paid ? 'مدفوع' : 'غير مدفوع'}
+                                            {ad.is_paid ? t('ads.paid', 'مدفوع') : t('ads.unpaid', 'غير مدفوع')}
                                         </span>
                                     </td>
                                     <td>
                                         <span className={`${styles.statusBadge} ${ad.status === 'active' ? styles.statusActive : ad.status === 'rejected' ? styles.statusBanned : styles.statusPending}`}>
-                                            {ad.status === 'active' ? 'مفعل' : ad.status === 'rejected' ? 'مرفوض' : 'في الانتظار'}
+                                            {ad.status === 'active' ? t('ads.status_active', 'مفعل') : ad.status === 'rejected' ? t('ads.status_rejected', 'مرفوض') : t('ads.status_pending', 'في الانتظار')}
                                         </span>
                                     </td>
                                     <td style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                         {ad.status === 'pending' && (
                                             <>
-                                                <button className={styles.actionBtn} style={{ background: '#ecfdf5', color: '#059669', borderColor: '#a7f3d0' }} onClick={() => handleStatusUpdate(ad.id, 'active')}>قبول</button>
-                                                <button className={styles.actionBtn} style={{ background: '#fef2f2', color: '#e11d48', borderColor: '#fecdd3' }} onClick={() => handleStatusUpdate(ad.id, 'rejected')}>رفض</button>
+                                                <button className={styles.actionBtn} style={{ background: '#ecfdf5', color: '#059669', borderColor: '#a7f3d0' }} onClick={() => handleStatusUpdate(ad.id, 'active')}>{t('ads.action_approve', 'قبول')}</button>
+                                                <button className={styles.actionBtn} style={{ background: '#fef2f2', color: '#e11d48', borderColor: '#fecdd3' }} onClick={() => handleStatusUpdate(ad.id, 'rejected')}>{t('ads.action_reject', 'رفض')}</button>
                                             </>
                                         )}
                                         {ad.status === 'active' && (
-                                            <button className={styles.actionBtn} style={{ background: '#fef2f2', color: '#e11d48', borderColor: '#fecdd3' }} onClick={() => handleStatusUpdate(ad.id, 'rejected')}>إيقاف</button>
+                                            <button className={styles.actionBtn} style={{ background: '#fef2f2', color: '#e11d48', borderColor: '#fecdd3' }} onClick={() => handleStatusUpdate(ad.id, 'rejected')}>{t('ads.action_stop', 'إيقاف')}</button>
                                         )}
                                         {ad.status === 'rejected' && (
-                                            <button className={styles.actionBtn} style={{ background: '#ecfdf5', color: '#059669', borderColor: '#a7f3d0' }} onClick={() => handleStatusUpdate(ad.id, 'active')}>إعادة تفعيل</button>
+                                            <button className={styles.actionBtn} style={{ background: '#ecfdf5', color: '#059669', borderColor: '#a7f3d0' }} onClick={() => handleStatusUpdate(ad.id, 'active')}>{t('ads.action_reactivate', 'إعادة تفعيل')}</button>
                                         )}
                                         {!ad.is_paid && (
-                                            <button className={styles.actionBtn} style={{ background: '#f3f4f6', color: '#374151' }} onClick={() => handleMarkPaid(ad.id)}>تأكيد الدفع</button>
+                                            <button className={styles.actionBtn} style={{ background: '#f3f4f6', color: '#374151' }} onClick={() => handleMarkPaid(ad.id)}>{t('ads.action_confirm_payment', 'تأكيد الدفع')}</button>
                                         )}
                                     </td>
                                 </tr>

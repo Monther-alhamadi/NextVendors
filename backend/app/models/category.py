@@ -8,7 +8,9 @@ class Category(SQLAlchemyBaseModel, Base):
     __tablename__ = "categories"
 
     name = Column(String(128), unique=True, nullable=False)
+    name_en = Column(String(128), unique=True, nullable=True)
     description = Column(String(255), default="")
+    description_en = Column(String(255), nullable=True)
     commission_rate = Column(Float, nullable=True) # Override platform default if set
 
     # Omit declarative many-to-many relationship to Product to avoid

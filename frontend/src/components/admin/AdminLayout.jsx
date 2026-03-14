@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from "react-i18next";
 import { useAuth } from '../../store/authStore';
 import AdminSidebar from './AdminSidebar';
 import CommandPalette from './CommandPalette';
@@ -6,16 +7,17 @@ import { Menu, Search, Bell, Settings } from 'lucide-react';
 import styles from './AdminLayout.module.css';
 
 export default function AdminLayout({ children }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCommandPaletteOpen(true);
-      }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          setCommandPaletteOpen(true);
+        }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -40,7 +42,7 @@ export default function AdminLayout({ children }) {
                 </button>
                 <div className={styles.searchBar} onClick={() => setCommandPaletteOpen(true)} style={{cursor: 'pointer'}}>
                     <Search size={18} />
-                    <span style={{flex: 1, color: 'var(--text-muted)'}}>ابحث في النظام...</span>
+                    <span style={{flex: 1, color: 'var(--text-muted)'}}>{t('auto_e5db37', t('auto_e5db37', 'ابحث في النظام...'))}</span>
                     <span className={styles.searchShortcut}>Ctrl+K</span>
                 </div>
             </div>
@@ -52,7 +54,7 @@ export default function AdminLayout({ children }) {
                 </button>
                 <div className={styles.adminProfile}>
                     <div className={styles.adminInfo}>
-                        <span className={styles.adminName}>{user?.name || 'مدير النظام'}</span>
+                        <span className={styles.adminName}>{user?.name || t('auto_c2cde4', 'مدير النظام')}</span>
                         <span className={styles.adminRole}>Administrator</span>
                     </div>
                     <div className={styles.adminAvatar}>

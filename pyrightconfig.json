@@ -1,0 +1,38 @@
+{
+  "include": [
+    "backend",
+    "aggressive_cleaner.py"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "frontend"
+  ],
+  "venvPath": "c:\\Users\\hp\\Desktop\\projet2\\ecommerce-store",
+  "venv": ".venv",
+  "extraPaths": [
+    "./backend"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "backend",
+      "extraPaths": [
+        "."
+      ]
+    }
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": false,
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalSubscript": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalCall": "none",
+  "reportArgumentType": "none",
+  "reportFunctionMemberAccess": "none",
+  "reportAttributeAccessIssue": "none",
+  "reportMissingModuleSource": "none",
+  "reportUnusedImport": "none",
+  "reportUnusedVariable": "none",
+  "reportUndefinedVariable": "none"
+}

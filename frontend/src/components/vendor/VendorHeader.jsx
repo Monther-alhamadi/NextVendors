@@ -1,10 +1,12 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { useAuth } from '../../store/authStore';
 import { Link } from 'react-router-dom';
 import s from './VendorHeader.module.css';
 import { Bell, Search, Menu } from 'lucide-react';
 
 export default function VendorHeader({ collapsed, setCollapsed }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
 
   return (
@@ -19,7 +21,11 @@ export default function VendorHeader({ collapsed, setCollapsed }) {
         </button>
         <div className={s.searchBox}>
           <Search size={18} className={s.searchIcon} />
-          <input type="text" placeholder="ابحث في المتجر..." className={s.searchInput} />
+          <input 
+            type="text" 
+            placeholder={t('common.search_store_ph', 'ابحث في المتجر...')} 
+            className={s.searchInput} 
+          />
         </div>
       </div>
 
@@ -37,7 +43,7 @@ export default function VendorHeader({ collapsed, setCollapsed }) {
           </div>
           <div className={s.userInfo}>
             <span className={s.userName}>{user?.name}</span>
-            <span className={s.userRole}>بائع</span>
+            <span className={s.userRole}>{t('common.vendor_role', 'بائع')}</span>
           </div>
         </Link>
       </div>

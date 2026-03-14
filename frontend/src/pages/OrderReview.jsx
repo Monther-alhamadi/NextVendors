@@ -1,9 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import cartStore from "../store/cartStore";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/common/CustomButton";
 
 export default function OrderReview() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const items = cartStore.items;
   const total = cartStore.total;
@@ -14,9 +16,9 @@ export default function OrderReview() {
 
   return (
     <div className="container">
-      <h1>مراجعة الطلب</h1>
+      <h1>{t('auto_630255', t('auto_630255', 'مراجعة الطلب'))}</h1>
       {items.length === 0 ? (
-        <div>سلتك فارغة.</div>
+        <div>{t('auto_3e86e9', t('auto_3e86e9', 'سلتك فارغة.'))}</div>
       ) : (
         <>
           <ul>
@@ -27,9 +29,9 @@ export default function OrderReview() {
               </li>
             ))}
           </ul>
-          <div>الإجمالي: ${total}</div>
+          <div>{t('orders.total', 'الإجمالي:')} ${total}</div>
           <CustomButton onClick={proceed} variant="primary" size="md">
-            متابعة للدفع
+            {t('orders.proceed_to_pay', 'متابعة للدفع')}
           </CustomButton>
         </>
       )}

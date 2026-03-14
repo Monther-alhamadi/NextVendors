@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { HeroWidget } from './HeroWidget';
 import { SliderWidget } from './SliderWidget';
 import { FeaturesWidget } from './FeaturesWidget';
 
 export default function WidgetRenderer({ widget }) {
+  const { t } = useTranslation();
+  
   if (!widget.is_active) return null;
 
   switch (widget.type) {
@@ -17,8 +20,8 @@ export default function WidgetRenderer({ widget }) {
     case 'GridWidget':
       return (
          <div style={{ padding: '3rem 5%', textAlign: 'center', background: widget.config?.bg_color || 'transparent' }}>
-             <h3>{widget.config?.title || "قسم جديد"}</h3>
-             <p style={{ color: 'var(--text-muted)' }}>{widget.config?.subtitle || "جاري تطوير القالب"}</p>
+             <h3>{widget.config?.title || t('cms.widgets.new_section', 'قسم جديد')}</h3>
+             <p style={{ color: 'var(--text-muted)' }}>{widget.config?.subtitle || t('cms.widgets.under_dev', 'جاري تطوير القالب')}</p>
          </div>
       );
     default:

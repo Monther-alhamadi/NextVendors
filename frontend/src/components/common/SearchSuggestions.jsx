@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import cartStore from "../../store/cartStore";
 import { useToast } from "./ToastProvider";
 import { useTranslation } from "react-i18next";
+import { getLocalizedField } from "../../utils/localization";
 
 export default function SearchSuggestions({ q, inputId = "site-search" }) {
   const [items, setItems] = useState([]);
@@ -13,7 +14,7 @@ export default function SearchSuggestions({ q, inputId = "site-search" }) {
   const toast = useToast();
   const navigate = useNavigate();
   const containerRef = useRef();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (!q || q.length < 2) {
@@ -121,23 +122,23 @@ export default function SearchSuggestions({ q, inputId = "site-search" }) {
                 loading="lazy"
                 decoding="async"
                 src={it.images?.[0] || "/placeholder.png"}
-                alt={it.name}
+                alt={getLocalizedField(it, "name", i18n.language)}
               />
               <div style={{ flex: 1 }}>
-                <div className="ss-title">{it.name}</div>
+                <div className="ss-title">{getLocalizedField(it, "name", i18n.language)}</div>
                 <div className="ss-sub">${it.price.toFixed(2)}</div>
               </div>
               <div className="ss-actions">
                 <button
                   className="ss-add-btn"
-                  aria-label={`${t('product.add_to_cart')} ${it.name}`}
+                  aria-label={`${t('product.add_to_cart')} ${getLocalizedField(it, "name", i18n.language)}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     try {
                       cartStore.addItem(it, 1);
                       // show toast with undo
                       const toastId = toast.push({
-                        message: `${it.name} ${t('search_suggestions.added')}`,
+                        message: `${getLocalizedField(it, "name", i18n.language)} ${t('search_suggestions.added')}`,
                         duration: 6000,
                         action: {
                           label: t('search_suggestions.undo'),

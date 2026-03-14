@@ -90,7 +90,7 @@ export default function AdminBroadcast() {
               <input 
                 type="text" 
                 className={styles.input} 
-                placeholder="مثال: إطلاق الميزة الجديدة..."
+                placeholder={t('auto_a97789', t('auto_a97789', 'مثال: إطلاق الميزة الجديدة...'))}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
               />
@@ -101,7 +101,7 @@ export default function AdminBroadcast() {
               <textarea 
                 className={styles.input} 
                 rows="6" 
-                placeholder="اكتب رسالتك هنا..."
+                placeholder={t('auto_dd7820', t('auto_dd7820', 'اكتب رسالتك هنا...'))}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
               />
@@ -120,14 +120,14 @@ export default function AdminBroadcast() {
            
            <div className={styles.historyList}>
               {history.length === 0 ? (
-                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", textAlign: "center" }}>لا يوجد إشعارات سابقة.</p>
+                 <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", textAlign: "center" }}>{t('auto_794aa3', t('auto_794aa3', 'لا يوجد إشعارات سابقة.'))}</p>
               ) : (
                  history.map(item => (
                     <div key={item.id} className={styles.historyItem}>
                        <h4 className={styles.historyTitle} dir="auto">{item.subject}</h4>
                        <div className={styles.historyMeta}>
                           <span className={styles.badge}>
-                             {item.target === 'all' ? 'الكل' : item.target === 'users' ? 'العملاء' : 'التجار'}
+                             {item.target === 'all' ? t('auto_6d08f1', 'الكل') : item.target === 'users' ? t('auto_8dee68', 'العملاء') : t('auto_b497bf', 'التجار')}
                           </span>
                           <span className={styles.time}>{new Date(item.created_at).toLocaleDateString()}</span>
                        </div>

@@ -4,6 +4,7 @@ import cartStore from "../store/cartStore";
 import { useToast } from "../components/common/ToastProvider";
 import api from "../services/api";
 import { useTranslation } from "react-i18next";
+import { getLocalizedField } from "../utils/localization";
 import styles from "./Wishlist.module.css";
 
 function readWishlist() {
@@ -25,7 +26,7 @@ export default function Wishlist() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     (async () => {
@@ -46,7 +47,7 @@ export default function Wishlist() {
   function moveToCart(p) {
     cartStore.addItem(p, 1);
     remove(p.id);
-    toast.push({ message: `${p.name} ${t("wishlist.moved_to_cart")}`, duration: 2500 });
+    toast.push({ message: `${getLocalizedField(p, "name", i18n.language)} ${t("wishlist.moved_to_cart")}`, duration: 2500 });
   }
 
   function moveAllToCart() {
@@ -110,13 +111,13 @@ export default function Wishlist() {
             <Link to={`/products/${p.id}`}>
               <img
                 src={p.image || p.images?.[0] || "/placeholder.png"}
-                alt={p.name || ""}
+                alt={getLocalizedField(p, "name", i18n.language) || ""}
                 className={styles.itemImage}
                 loading="lazy"
               />
             </Link>
             <div className={styles.itemBody}>
-              <div className={styles.itemName}>{p.name}</div>
+              <div className={styles.itemName}>{getLocalizedField(p, "name", i18n.language)}</div>
               <div className={styles.itemRow}>
                 <span className={styles.itemPrice}>{p.price?.toFixed(0)} {t("common.currency")}</span>
               </div>

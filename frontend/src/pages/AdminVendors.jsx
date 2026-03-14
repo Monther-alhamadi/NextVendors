@@ -23,11 +23,14 @@ export default function AdminVendors() {
   const [stats, setStats] = useState({ total_vendors: 0, pending_kyc: 0 });
   const [loading, setLoading] = useState(true);
   
-  // Modal States
   const [kycModal, setKycModal] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [overrideModal, setOverrideModal] = useState(null);
   const [overrideJson, setOverrideJson] = useState("");
+
+  const [auditModal, setAuditModal] = useState(null);
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -37,12 +40,12 @@ export default function AdminVendors() {
     try {
       setLoading(true);
       const [vData, sData, bData] = await Promise.all([
-          listVendors(),
+          listVendors().catch(() => []),
           getVendorStats().catch(() => ({})),
           getVendorBalances().catch(() => [])
       ]);
       
-      const merged = vData.map(v => ({
+      const merged = (vData || []).map(v => ({
           ...v,
           balance: bData.find(b => b.supplier_id === v.id)?.balance || 0
       }));
@@ -51,7 +54,7 @@ export default function AdminVendors() {
       setStats(sData || { total_vendors: 0, pending_kyc: 0});
     } catch (e) {
       console.error(e);
-      toast.push({ message: t("common.error", "فشل جلب التجار"), type: "error" });
+      toast.push({ message: t("common.error_loading_data"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -61,23 +64,37 @@ export default function AdminVendors() {
       if (!kycModal) return;
       try {
           await reviewKYC(kycModal.id, approved, approved ? null : rejectionReason);
-          toast.push({ message: t("common.success", "تمت معالجة وثائق التاجر"), type: "success" });
+          toast.push({ message: t("common.save_success"), type: "success" });
           setKycModal(null);
           setRejectionReason("");
           loadData();
       } catch (e) {
-          toast.push({ message: t("common.error", "حدث خطأ"), type: "error" });
+          toast.push({ message: t("common.error"), type: "error" });
       }
   }
 
   async function handleBan(vendor) {
-      if (!window.confirm(`هل أنت متأكد من تغيير حالة الحظر لهذا التاجر (${vendor.name})?`)) return;
+      if (!window.confirm(`${t('admin.confirm_delete_user')} ${vendor.name}?`)) return;
       try {
           await banVendor(vendor.id, !vendor.is_banned);
-          toast.push({ message: t("common.success", "تم التحديث بنجاح"), type: "success" });
+          toast.push({ message: t("common.save_success"), type: "success" });
           loadData();
       } catch (e) {
-          toast.push({ message: t("common.error", "فشل التحديث"), type: "error" });
+          toast.push({ message: t("common.error"), type: "error" });
+      }
+  }
+
+  async function handleViewAuditLogs(vendor) {
+      setAuditModal(vendor);
+      setLoadingLogs(true);
+      try {
+          const { getVendorAuditLogs } = await import("../services/vendorService");
+          const logs = await getVendorAuditLogs(vendor.id);
+          setAuditLogs(logs);
+      } catch (e) {
+          toast.push({ message: t("common.error"), type: "error" });
+      } finally {
+          setLoadingLogs(false);
       }
   }
 
@@ -85,14 +102,13 @@ export default function AdminVendors() {
       if (!overrideModal) return;
       try {
           const parsed = overrideJson ? JSON.parse(overrideJson) : null;
-          // Import adminUpdateVendor dynamically since it might not be at the top level
           const { adminUpdateVendor } = await import("../services/vendorService");
           await adminUpdateVendor(overrideModal.id, { override_limits: parsed });
-          toast.push({ message: t("common.success", "تم تحديث الصلاحيات بنجاح"), type: "success" });
+          toast.push({ message: t("common.save_success"), type: "success" });
           setOverrideModal(null);
           loadData();
       } catch (e) {
-          toast.push({ message: "تنسيق JSON غير صحيح أو فشل التحديث", type: "error" });
+          toast.push({ message: t("common.error"), type: "error" });
       }
   }
 
@@ -114,16 +130,16 @@ export default function AdminVendors() {
     <PageContainer>
         <div className={styles.pageHeader}>
              <div>
-                <h1 className={styles.pageTitle}>{t('admin.merchant_center', 'مركز التجّار والمتجر')}</h1>
-                <p className={styles.pageSubtitle}>{t('admin.manage_vendors', 'إدارة توثيق المتاجر، الرصيد، والمخالفات')}</p>
+                <h1 className={styles.pageTitle}>{t('admin.vendors_title')}</h1>
+                <p className={styles.pageSubtitle}>{t('admin.vendors_subtitle')}</p>
              </div>
              <div className={styles.headerActions}>
                  <div className={styles.statsBox}>
-                     <span className={styles.statsLabel}>{t("admin.pending_kyc", "وثائق قيد المراجعة")}</span>
+                     <span className={styles.statsLabel}>{t("admin.pending_kyc")}</span>
                      <span className={styles.statsValue}>{stats.pending_kyc || 0}</span>
                  </div>
-                 <button className={styles.primaryBtn} onClick={() => alert("ميزة إضافة تاجر يدوياً قيد التطوير.")}>
-                    <Plus size={18} /> {t("admin.add_vendor", "إضافة تاجر")}
+                 <button className={styles.primaryBtn} onClick={() => alert(t("common.loading"))}>
+                    <Plus size={18} /> {t("admin.add_vendor")}
                  </button>
              </div>
         </div>
@@ -133,19 +149,20 @@ export default function AdminVendors() {
                onClick={() => setActiveTab('all')}
                className={`${styles.tabBtn} ${activeTab === 'all' ? styles.active : ''}`}
             >
-                {t('common.all', 'الكل')}
+                {t('common.all')}
             </button>
             <button
                onClick={() => setActiveTab('kyc')}
                className={`${styles.tabBtn} ${activeTab === 'kyc' ? styles.active : ''}`}
             >
-                {t('admin.tab_kyc', 'توثيق KYC')}
+                {stats.pending_kyc > 0 && <span className={styles.tabBadge}>{stats.pending_kyc}</span>}
+                {t('admin.verification')}
             </button>
             <button
                onClick={() => setActiveTab('banned')}
                className={`${styles.tabBtn} ${activeTab === 'banned' ? styles.active : ''}`}
             >
-                {t('admin.tab_banned', 'محظورون')}
+                {t('admin.suspended')}
             </button>
         </div>
 
@@ -159,12 +176,12 @@ export default function AdminVendors() {
                     <table className={styles.dataGrid}>
                         <thead>
                             <tr>
-                                <th>{t('admin.store_identity', 'هوية المتجر')}</th>
-                                <th>{t('common.status', 'الحالة')}</th>
-                                <th>{t('admin.kyc', 'توثيق (KYC)')}</th>
-                                <th>{t('admin.plan', 'الباقة')}</th>
-                                <th>{t('admin.balance', 'الرصيد المتاح')}</th>
-                                <th style={{ textAlign: 'left' }}>{t('common.actions', 'الإجراءات')}</th>
+                                <th>{t('admin.vendor')}</th>
+                                <th>{t('common.status')}</th>
+                                <th>{t('admin.verification')}</th>
+                                <th>{t('admin.plan')}</th>
+                                <th>{t('admin.balance')}</th>
+                                <th style={{ textAlign: 'left' }}>{t('common.actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -172,7 +189,7 @@ export default function AdminVendors() {
                                 <tr>
                                     <td colSpan={6} style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
                                         <Store size={40} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-                                        لا يوجد بيانات لعرضها في هذا التبويب
+                                        {t("common.no_data")}
                                     </td>
                                 </tr>
                             ) : filteredVendors.map(v => (
@@ -184,16 +201,16 @@ export default function AdminVendors() {
                                             </div>
                                             <div>
                                                 <div className={styles.storeName}>{v.name}</div>
-                                                <div className={styles.storeCode}>{v.code || 'بدون كود'}</div>
+                                                <div className={styles.storeCode}>{v.code || '-'}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         {v.is_banned ? (
-                                            <span className={`${styles.statusBadge} ${styles.statusBanned}`}><ShieldAlert size={10} style={{display:'inline', marginRight:'2px'}}/> محظور</span>
+                                            <span className={`${styles.statusBadge} ${styles.statusBanned}`}><ShieldAlert size={10} style={{display:'inline', marginRight:'2px'}}/> {t("admin.suspended")}</span>
                                         ) : (
                                             <span className={`${styles.statusBadge} ${v.status === 'active' ? styles.statusActive : styles.statusPending}`}>
-                                                {v.status === 'active' ? 'نشط' : 'قيد الانتظار'}
+                                                {v.status === 'active' ? t('admin.active') : t('admin.pending')}
                                             </span>
                                         )}
                                     </td>
@@ -202,7 +219,7 @@ export default function AdminVendors() {
                                            onClick={() => { if(v.kyc_status === 'pending') setKycModal(v); }}
                                            className={`${styles.kycBtn} ${getKycClass(v.kyc_status)}`}
                                         >
-                                            {v.kyc_status === 'approved' ? 'موثق ✅' : v.kyc_status === 'pending' ? 'مراجعة الآن ⏳' : 'غير مكتمل'}
+                                            {v.kyc_status === 'approved' ? t('admin.verified') : v.kyc_status === 'pending' ? t('admin.approve') : t('admin.unverified')}
                                         </button>
                                     </td>
                                     <td>
@@ -212,25 +229,30 @@ export default function AdminVendors() {
                                     </td>
                                     <td>
                                         <span className={styles.balance}>
-                                            {v.balance?.toFixed(2)} {t('common.currency', 'ر.س')}
+                                            {v.balance?.toFixed(2)} {t('common.currency')}
                                         </span>
                                     </td>
                                     <td style={{ textAlign: 'left', display: 'flex', gap: '8px' }}>
+                                        <button 
+                                            onClick={() => handleViewAuditLogs(v)}
+                                            className={`${styles.actionBtn}`}
+                                        >
+                                            {t('admin.audit_logs') || "سجل التدقيق"}
+                                        </button>
                                         <button 
                                             onClick={() => {
                                                 setOverrideModal(v);
                                                 setOverrideJson(v.override_limits ? JSON.stringify(v.override_limits, null, 2) : "{\n  \"max_products\": 100,\n  \"max_coupons\": 5,\n  \"allow_whatsapp_checkout\": false,\n  \"allow_store_customization\": false\n}");
                                             }}
                                             className={`${styles.actionBtn}`}
-                                            title="إدارة الصلاحيات والاستثناءات"
                                         >
-                                            صلاحيات
+                                            {t('admin.security_settings')}
                                         </button>
                                         <button 
                                             onClick={() => handleBan(v)}
                                             className={`${styles.actionBtn} ${v.is_banned ? '' : styles.danger}`}
                                         >
-                                            {v.is_banned ? "فك الحظر" : "حظر التاجر"}
+                                            {v.is_banned ? t("admin.unsuspend") : t("admin.suspend")}
                                         </button>
                                     </td>
                                 </tr>
@@ -244,44 +266,39 @@ export default function AdminVendors() {
         {kycModal && (
             <div className={styles.modalOverlay}>
                 <div className={styles.modalContent}>
-                    <h2 className={styles.modalTitle}>توثيق التاجر: {kycModal.name}</h2>
+                    <h2 className={styles.modalTitle}>{t("admin.verification")}: {kycModal.name}</h2>
                     
                     <div className={styles.modalGrid}>
                         <div className={styles.modalSection}>
-                            <h4 className={styles.modalSectionTitle}>المستندات المرفوعة</h4>
+                            <h4 className={styles.modalSectionTitle}>{t("admin.view_document")}</h4>
                             {(!kycModal.kyc_documents || kycModal.kyc_documents.length === 0) ? (
-                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>لا توجد مستندات مرفوعة.</p>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t("common.no_data")}</p>
                             ) : (
                                 <ul className={styles.docList}>
                                     {kycModal.kyc_documents.map((doc, i) => (
                                         <li key={i} className={styles.docItem}>
                                             <span>{doc.document_type}</span>
-                                            <a href={doc.file_url} target="_blank" rel="noreferrer" className={styles.docLink}>فتح المستند</a>
+                                            <a href={doc.file_url} target="_blank" rel="noreferrer" className={styles.docLink}>{t("admin.view_document")}</a>
                                         </li>
                                     ))}
                                 </ul>
                             )}
-                            {kycModal.verification_document_url && (
-                                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border-light)' }}>
-                                     <a href={kycModal.verification_document_url} target="_blank" rel="noreferrer" className={styles.docLink}>رابط المستند القديم</a>
-                                </div>
-                            )}
                         </div>
                         <div className={styles.modalSection}>
-                            <h4 className={styles.modalSectionTitle}>القرار التأديبي (في حال الرفض)</h4>
+                            <h4 className={styles.modalSectionTitle}>{t("admin.action_reject")}</h4>
                              <input 
                                 className={styles.modalInput}
                                 value={rejectionReason}
                                 onChange={e => setRejectionReason(e.target.value)}
-                                placeholder="سبب الرفض (مثال: الهوية غير واضحة)"
+                                placeholder={t("admin.reject_reason_ph")}
                              />
                         </div>
                     </div>
 
                     <div className={styles.modalActions}>
-                        <button className={`${styles.btnModal} ${styles.btnCancel}`} onClick={() => setKycModal(null)}>إلغاء</button>
-                        <button className={`${styles.btnModal} ${styles.btnReject}`} onClick={() => handleKYCReview(false)}>رفض المستندات</button>
-                        <button className={`${styles.btnModal} ${styles.btnApprove}`} onClick={() => handleKYCReview(true)}>اعتماد المتجر</button>
+                        <button className={`${styles.btnModal} ${styles.btnCancel}`} onClick={() => setKycModal(null)}>{t("common.cancel")}</button>
+                        <button className={`${styles.btnModal} ${styles.btnReject}`} onClick={() => handleKYCReview(false)}>{t("admin.reject")}</button>
+                        <button className={`${styles.btnModal} ${styles.btnApprove}`} onClick={() => handleKYCReview(true)}>{t("admin.approve")}</button>
                     </div>
                 </div>
             </div>
@@ -290,21 +307,49 @@ export default function AdminVendors() {
         {overrideModal && (
             <div className={styles.modalOverlay}>
                 <div className={styles.modalContent} style={{ maxWidth: '600px' }}>
-                    <h2 className={styles.modalTitle}>إدارة صلاحيات التاجر: {overrideModal.name}</h2>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                        أدخل الصلاحيات الاستثنائية للتاجر بصيغة JSON. هذه الصلاحيات ستتجاوز حدود الباقة الأساسية. لدعم واتساب أو تخصيص المتجر، استخدم القيم المنطقية true/false.
-                    </p>
+                    <h2 className={styles.modalTitle}>{t("admin.security_settings")}: {overrideModal.name}</h2>
                     <textarea 
                         className={styles.modalInput}
                         rows={10}
                         style={{ fontFamily: 'monospace', direction: 'ltr', width: '100%', padding: '1rem', resize: 'vertical' }}
                         value={overrideJson}
                         onChange={e => setOverrideJson(e.target.value)}
-                        placeholder={`{\n  "max_products": 200,\n  "allow_whatsapp_checkout": true\n}`}
                     />
                     <div className={styles.modalActions} style={{ marginTop: '1.5rem' }}>
-                        <button className={`${styles.btnModal} ${styles.btnCancel}`} onClick={() => setOverrideModal(null)}>إلغاء</button>
-                        <button className={`${styles.btnModal} ${styles.btnApprove}`} onClick={handleSaveOverrides}>حفظ الصلاحيات</button>
+                        <button className={`${styles.btnModal} ${styles.btnCancel}`} onClick={() => setOverrideModal(null)}>{t("common.cancel")}</button>
+                        <button className={`${styles.btnModal} ${styles.btnApprove}`} onClick={handleSaveOverrides}>{t("common.save")}</button>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {auditModal && (
+            <div className={styles.modalOverlay}>
+                <div className={styles.modalContent} style={{ maxWidth: '700px' }}>
+                    <h2 className={styles.modalTitle}>{t("admin.audit_logs") || "سجل التدقيق"}: {auditModal.name}</h2>
+                    <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '1.5rem', background: 'var(--bg-page)', padding: '1rem', borderRadius: '8px' }}>
+                        {loadingLogs ? (
+                            <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem 0' }}>{t("common.loading") || "جاري التحميل..."}</p>
+                        ) : auditLogs.length === 0 ? (
+                            <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem 0' }}>{t("common.no_data") || "لا توجد سجلات"}</p>
+                        ) : (
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                                {auditLogs.map(log => (
+                                    <li key={log.id} style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '0.8rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                            <strong style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>{log.action}</strong>
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                                {new Date(log.created_at).toLocaleString('ar-SA')}
+                                            </span>
+                                        </div>
+                                        {log.details && <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{log.details}</p>}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                    <div className={styles.modalActions}>
+                        <button className={`${styles.btnModal} ${styles.btnCancel}`} onClick={() => setAuditModal(null)}>{t("common.close") || "إغلاق"}</button>
                     </div>
                 </div>
             </div>

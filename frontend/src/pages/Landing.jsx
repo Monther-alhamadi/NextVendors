@@ -10,6 +10,8 @@ import { getPage } from "../services/cmsService";
 import DynamicWidget from "../components/DynamicWidget";
 import WidgetRenderer from "../components/cms/WidgetRenderer";
 
+import { getLocalizedField } from "../utils/localization";
+
 /* ─── Flash-sale countdown hook ───────────────────────────────────── */
 function useCountdown(targetMs) {
   const [remaining, setRemaining] = useState(() => Math.max(0, targetMs - Date.now()));
@@ -41,32 +43,31 @@ function SkeletonCard() {
   );
 }
 
-/* ─── Categories loaded from API ─────────────────────────────────────── */
-const CATEGORIES = [
-  { value: "", icon: "🛍️", label: "الكل" },
-  { value: "electronics", icon: "📱", label: "إلكترونيات" },
-  { value: "clothing", icon: "👕", label: "ملابس" },
-  { value: "home", icon: "🏡", label: "منزل" },
-  { value: "beauty", icon: "✨", label: "جمال" },
-  { value: "sports", icon: "⚽", label: "رياضة" },
-  { value: "books", icon: "📚", label: "كتب" },
-  { value: "food", icon: "🍔", label: "طعام" },
-  { value: "toys", icon: "🧸", label: "ألعاب" },
-];
+/* ─── Category Icon Mapping ────────────────────────────────────────── */
+const CATEGORY_ICONS = {
+  "electronics": "📱",
+  "clothing": "👕",
+  "home": "🏡",
+  "beauty": "✨",
+  "sports": "⚽",
+  "books": "📚",
+  "food": "🍔",
+  "toys": "🧸"
+};
 
 /* ─── Features ──────────────────────────────────────────────────────── */
-const FEATURES = [
-  { icon: "🚀", titleKey: "home.features.delivery",     descKey: "home.features.delivery_desc",     default: "توصيل سريع خلال 24 ساعة",        defaultDesc: "نوصل طلبك إلى باب منزلك بأسرع وقت ممكن" },
-  { icon: "💎", titleKey: "home.features.quality",      descKey: "home.features.quality_desc",      default: "جودة لا تُضاهى",                 defaultDesc: "كل منتج يمر بفحص دقيق لضمان أعلى معايير الجودة" },
-  { icon: "🛡️", titleKey: "home.features.payment",    descKey: "home.features.payment_desc",      default: "دفع آمن ومحمي 100%",               defaultDesc: "بياناتك محمية بأحدث تقنيات التشفير والأمان" },
-  { icon: "🔄", titleKey: "home.features.returns",     descKey: "home.features.returns_desc",      default: "إرجاع مجاني خلال 30 يوم",          defaultDesc: "غير راضٍ؟ أعد المنتج مجاناً دون أي أسئلة" },
+const getFeaturesList = (t) => [
+  { icon: "🚀", titleKey: "home.features.delivery",     descKey: "home.features.delivery_desc" },
+  { icon: "💎", titleKey: "home.features.quality",      descKey: "home.features.quality_desc" },
+  { icon: "🛡️", titleKey: "home.features.payment",    descKey: "home.features.payment_desc" },
+  { icon: "🔄", titleKey: "home.features.returns",     descKey: "home.features.returns_desc" },
 ];
 
 /* ─── Testimonials ──────────────────────────────────────────────────── */
-const TESTIMONIALS = [
-  { text: "التجربة رائعة! المنتجات أصلية والتوصيل كان أسرع من المتوقع بكثير.", author: "أحمد محمد", role: "عميل منذ 2023", stars: 5, avatar: "أ" },
-  { text: "تصاميم جذابة ومنتجات بجودة استثنائية. أنصح به بشدة لكل من يبحث عن الفخامة.", author: "يسرى علي", role: "عميلة مميزة", stars: 5, avatar: "ي" },
-  { text: "خدمة عملاء محترفة وسرعة في الرد. تجربة تسوق لا مثيل لها في المنطقة.", author: "خالد عبدالله", role: "عميل دائم", stars: 5, avatar: "خ" },
+const getTestimonials = (t) => [
+  { text: t("home.testimonials.t1_text"), author: t("home.testimonials.t1_author"), role: t("home.testimonials.t1_role"), stars: 5, avatar: t("home.testimonials.t1_avatar") },
+  { text: t("home.testimonials.t2_text"), author: t("home.testimonials.t2_author"), role: t("home.testimonials.t2_role"), stars: 5, avatar: t("home.testimonials.t2_avatar") },
+  { text: t("home.testimonials.t3_text"), author: t("home.testimonials.t3_author"), role: t("home.testimonials.t3_role"), stars: 5, avatar: t("home.testimonials.t3_avatar") },
 ];
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -75,17 +76,19 @@ const TESTIMONIALS = [
 export default function Landing() {
   const [cmsPage, setCmsPage] = useState(null); // The dynamic page config
   const [featured, setFeatured] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [legacyWidgets, setLegacyWidgets] = useState([]);
   const [vendorAds, setVendorAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("");
   const [email, setEmail] = useState("");
   const toast = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // Flash sale ends in ~9 hours from now
   const saleEnd = Date.now() + 9 * 3_600_000;
   const countdown = useCountdown(saleEnd);
+
 
   useEffect(() => {
     (async () => {
@@ -103,12 +106,14 @@ export default function Landing() {
         }
 
         // Load necessary data for fallback components
-        const [prodData, widgetData, adsData] = await Promise.all([
+        const [prodData, catData, widgetData, adsData] = await Promise.all([
           listProducts("", 8),
+          getCategories().catch(() => []), 
           governanceService.getActiveWidgets().catch(() => []),
           governanceService.getPublicVendorAds().catch(() => [])
         ]);
         setFeatured(Array.isArray(prodData) ? prodData : (prodData?.products || []));
+        setCategories(catData || []);
         setLegacyWidgets(Array.isArray(widgetData) ? widgetData : []);
         setVendorAds(Array.isArray(adsData) ? adsData : []);
       } catch (e) {
@@ -122,7 +127,7 @@ export default function Landing() {
   const handleSubscribe = useCallback((e) => {
     e.preventDefault();
     if (!email) return;
-    toast.push({ message: t("home.newsletter.success") || "تم الاشتراك بنجاح! 🎉", duration: 3500 });
+    toast.push({ message: t("home.newsletter.success"), duration: 3500 });
     setEmail("");
   }, [email, t, toast]);
 
@@ -133,7 +138,7 @@ export default function Landing() {
   return (
     <div>
       {/* ─── PREMIUM HERO ──────────────────────────────────────────────── */}
-           <section className="hero-section" aria-label="قسم الترحيب">
+           <section className="hero-section" aria-label={t("home.hero.aria_label", "قسم الترحيب")}>
         <div className="hero-aurora" aria-hidden="true" />
         <div className="hero-grid" aria-hidden="true" />
 
@@ -141,25 +146,25 @@ export default function Landing() {
           <div className="hero-content">
             <div className="hero-badge">
               <span>⚡</span>
-              <span>{t("home.hero.badge") || "منصة التسوق الأكثر ثقة"}</span>
+              <span>{t("home.hero.badge", "منصة التسوق الأكثر ثقة")}</span>
             </div>
 
             <h1 className="hero-title">
               <Trans i18nKey="home.hero.title">
-                اكتشف <span className="gradient-text">الفخامة</span>
-                {" "}في كل تفصيل
+                {t("home.hero.discover", "اكتشف")} <span className="gradient-text">{t("home.hero.luxury", "الفخامة")}</span>
+                {" "}{t("home.hero.in_every_detail", "في كل تفصيل")}
               </Trans>
             </h1>
 
             <p className="hero-subtitle">
-              {t("home.hero.subtitle") || "وجهتك الأولى للمنتجات الحصرية والمميزة. تسوق أحدث الصيحات العالمية بجودة لا تُضاهى وتوصيل يصل إليك في أسرع وقت."}
+              {t("home.hero.subtitle", "وجهتك الأولى للمنتجات الحصرية والمميزة. تسوق أحدث الصيحات العالمية بجودة لا تُضاهى وتوصيل يصل إليك في أسرع وقت.")}
             </p>
 
             <div className="hero-actions">
               <Link to="/products?category=new">
                 <button className="btn btn-primary btn-lg" style={{ borderRadius: "999px" }}>
                   <span>🛍️</span>
-                  {t("home.hero.shop_new") || "تسوق الجديد"}
+                  {t("home.hero.shop_new", "تسوق الجديد")}
                 </button>
               </Link>
               <Link to="/products">
@@ -173,7 +178,7 @@ export default function Landing() {
                     backdropFilter: "blur(8px)",
                   }}
                 >
-                  {t("home.hero.browse_collection") || "تصفح المجموعة"}
+                  {t("home.hero.browse_collection", "تصفح المجموعة")}
                 </button>
               </Link>
             </div>
@@ -188,7 +193,7 @@ export default function Landing() {
               color: "rgba(255,255,255,0.55)",
               fontSize: "var(--text-sm)",
             }}>
-              {["🏆 +50,000 عميل راضٍ", "⭐ تقييم 4.9/5", "🚚 توصيل مجاني فوق 200 ر.س"].map(item => (
+              {[t("home.trust.1", "🏆 +50,000 عميل راضٍ"), t("home.trust.2", "⭐ تقييم 4.9/5"), t("home.trust.3", "🚚 توصيل مجاني فوق 200 ر.س")].map(item => (
                 <span key={item} style={{ display: "flex", alignItems: "center", gap: "4px" }}>{item}</span>
               ))}
             </div>
@@ -200,16 +205,16 @@ export default function Landing() {
       <div className="container" style={{ paddingTop: "2rem" }}>
         <div className="flash-sale-banner">
           <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-            <span style={{ fontSize: "var(--text-2xs)", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.08em" }}>🔥 عرض محدود</span>
+            <span style={{ fontSize: "var(--text-2xs)", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.08em" }}>🔥 {t("home.flash_sale.limited_offer", "عرض محدود")}</span>
             <span style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: "var(--text-xl)" }}>
-              {t("home.flash_sale.title") || "تخفيضات الفلاش — حتى 70% خصم"}
+              {t("home.flash_sale.title", "تخفيضات الفلاش — حتى 70% خصم")}
             </span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ opacity: 0.7, fontSize: "var(--text-sm)" }}>ينتهي خلال:</span>
+            <span style={{ opacity: 0.7, fontSize: "var(--text-sm)" }}>{t("home.flash_sale.ends_in", "ينتهي خلال:")}</span>
             <div className="flash-sale-timer">
-              {[{ l: "س", v: countdown.h }, { l: "د", v: countdown.m }, { l: "ث", v: countdown.s }].map(({ l, v }) => (
+              {[{ l: t("home.time.h"), v: countdown.h }, { l: t("home.time.m"), v: countdown.m }, { l: t("home.time.s"), v: countdown.s }].map(({ l, v }) => (
                 <div key={l} className="timer-unit">
                   <span className="num">{v}</span>
                   <span className="label">{l}</span>
@@ -226,7 +231,7 @@ export default function Landing() {
               borderRadius: "999px",
               backdropFilter: "blur(6px)",
             }}>
-              تسوق الآن →
+              {t("home.flash_sale.shop_now", "تسوق الآن")} →
             </button>
           </Link>
         </div>
@@ -238,7 +243,7 @@ export default function Landing() {
           <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
             {vendorAds.map(ad => (
               <a key={ad.id} href={ad.target_url} target="_blank" rel="noreferrer" style={{ display: 'block', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'transform 0.2s', background: '#f8fafc', position: 'relative' }}>
-                 <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', backdropFilter: 'blur(2px)' }}>إعلان ممول</div>
+                 <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', backdropFilter: 'blur(2px)' }}>{t("home.sponsored_ad", "إعلان ممول")}</div>
                  <img src={ad.image_url} alt="Vendor Advertisement" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display='none'; }} />
               </a>
             ))}
@@ -261,21 +266,31 @@ export default function Landing() {
       <section className="container" style={{ paddingTop: "2rem", paddingBottom: "0.5rem" }}>
         <div className="section-header" style={{ marginBottom: "1.25rem" }}>
           <div>
-            <div className="section-eyebrow">{t("home.categories.eyebrow") || "اكتشف"}</div>
-            <h2 className="section-title">{t("home.categories.title") || "تسوق حسب الفئة"}</h2>
+            <div className="section-eyebrow">{t("home.categories.eyebrow", "اكتشف")}</div>
+            <h2 className="section-title">{t("home.categories.title", "تسوق حسب الفئة")}</h2>
           </div>
         </div>
 
         <div className="categories-scroll">
-          {CATEGORIES.map(cat => (
+          <Link
+            to="/products"
+            className={`category-chip ${activeCategory === "" ? "active" : ""}`}
+            onClick={() => setActiveCategory("")}
+          >
+            <div className="cat-icon">🛍️</div>
+            <span style={{ fontSize: "var(--text-xs)", fontWeight: 600 }}>{t("common.all", "الكل")}</span>
+          </Link>
+          {categories.map((cat, idx) => (
             <Link
-              key={cat.value}
-              to={cat.value ? `/products?category=${cat.value}` : "/products"}
-              className={`category-chip ${activeCategory === cat.value ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat.value)}
+              key={idx}
+              to={`/products?category=${encodeURIComponent(cat.name)}`}
+              className={`category-chip ${activeCategory === cat.name ? "active" : ""}`}
+              onClick={() => setActiveCategory(cat.name)}
             >
-              <div className="cat-icon">{cat.icon}</div>
-              <span style={{ fontSize: "var(--text-xs)", fontWeight: 600 }}>{cat.label}</span>
+              <div className="cat-icon">{CATEGORY_ICONS[cat.name.toLowerCase()] || "📦"}</div>
+              <span style={{ fontSize: "var(--text-xs)", fontWeight: 600 }}>
+                {getLocalizedField(cat, "name", i18n.language)}
+              </span>
             </Link>
           ))}
         </div>
@@ -285,9 +300,9 @@ export default function Landing() {
       <section className="container section-pad">
         <div className="section-header">
           <div>
-            <div className="section-eyebrow">{t("home.trending.eyebrow") || "رائج الآن"}</div>
-            <h2 className="section-title">{t("home.trending.title") || "أبرز المنتجات"}</h2>
-            <p className="section-subtitle">{t("home.trending.subtitle") || "اختيارات مميزة لك بأفضل الأسعار"}</p>
+            <div className="section-eyebrow">{t("home.trending.eyebrow", "رائج الآن")}</div>
+            <h2 className="section-title">{t("home.trending.title", "أبرز المنتجات")}</h2>
+            <p className="section-subtitle">{t("home.trending.subtitle", "اختيارات مميزة لك بأفضل الأسعار")}</p>
           </div>
           <Link to="/products" style={{
             color: "var(--primary)",
@@ -298,7 +313,7 @@ export default function Landing() {
             gap: "4px",
             whiteSpace: "nowrap",
           }}>
-            {t("home.trending.view_all") || "عرض الكل"} →
+            {t("home.trending.view_all", "عرض الكل")} →
           </Link>
         </div>
 
@@ -319,7 +334,7 @@ export default function Landing() {
             gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
             gap: "2rem",
           }}>
-            {FEATURES.map(f => (
+            {getFeaturesList(t).map(f => (
               <div key={f.icon} style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
                 <div style={{
                   width: 52, height: 52, flexShrink: 0,
@@ -332,10 +347,10 @@ export default function Landing() {
                 </div>
                 <div>
                   <h4 style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "var(--text-base)", color: "var(--text-primary)", marginBottom: "4px" }}>
-                    {t(f.titleKey) || f.default}
+                    {t(f.titleKey)}
                   </h4>
                   <p style={{ fontSize: "var(--text-sm)", color: "var(--text-muted)", lineHeight: 1.5 }}>
-                    {t(f.descKey) || f.defaultDesc}
+                    {t(f.descKey)}
                   </p>
                 </div>
               </div>
@@ -349,8 +364,8 @@ export default function Landing() {
         <div className="container">
           <div className="section-header">
             <div>
-              <div className="section-eyebrow">{t("home.testimonials.eyebrow") || "آراء عملائنا"}</div>
-              <h2 className="section-title">{t("home.testimonials.title") || "يثقون بنا"}</h2>
+              <div className="section-eyebrow">{t("home.testimonials.eyebrow", "آراء عملائنا")}</div>
+              <h2 className="section-title">{t("home.testimonials.title", "يثقون بنا")}</h2>
             </div>
           </div>
 
@@ -359,7 +374,7 @@ export default function Landing() {
             gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
             gap: "1.5rem",
           }}>
-            {TESTIMONIALS.map((item, idx) => (
+            {getTestimonials(t).map((item, idx) => (
               <div
                 key={idx}
                 className="card"
@@ -430,7 +445,7 @@ export default function Landing() {
               fontSize: "var(--text-sm)", fontWeight: 600,
               marginBottom: "1.5rem",
             }}>
-              📬 {t("home.newsletter.eyebrow") || "النشرة الإخبارية"}
+              📬 {t("home.newsletter.eyebrow", "النشرة الإخبارية")}
             </div>
 
             <h2 style={{
@@ -442,7 +457,7 @@ export default function Landing() {
               lineHeight: 1.2,
               marginBottom: "1rem",
             }}>
-              {t("home.newsletter.title") || "احصل على أفضل العروض أولاً"}
+              {t("home.newsletter.title", "احصل على أفضل العروض أولاً")}
             </h2>
 
             <p style={{
@@ -451,7 +466,7 @@ export default function Landing() {
               lineHeight: 1.7,
               marginBottom: "2rem",
             }}>
-              {t("home.newsletter.desc") || "اشترك ليصلك إشعار فوري بكل العروض الحصرية والمنتجات الجديدة قبل الجميع."}
+              {t("home.newsletter.desc", "اشترك ليصلك إشعار فوري بكل العروض الحصرية والمنتجات الجديدة قبل الجميع.")}
             </p>
 
             <form
@@ -462,7 +477,7 @@ export default function Landing() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder={t("home.newsletter.placeholder") || "بريدك الإلكتروني ..."}
+                placeholder={t("home.newsletter.placeholder", "بريدك الإلكتروني ...")}
                 required
                 style={{
                   flex: "1 1 240px",
@@ -481,7 +496,7 @@ export default function Landing() {
                 className="btn btn-primary"
                 style={{ borderRadius: "999px", whiteSpace: "nowrap" }}
               >
-                {t("home.newsletter.subscribe") || "اشترك مجاناً"}
+                {t("home.newsletter.subscribe", "اشترك مجاناً")}
               </button>
             </form>
           </div>

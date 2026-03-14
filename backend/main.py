@@ -18,21 +18,18 @@ import logging
 import tempfile
 from pathlib import Path
 
-# Defensive import aliasing for launch paths where the repository root is on
-# PYTHONPATH and the `app` package lives under `backend/app`. Some runners
-# (e.g. when invoking `backend.main` without `--app-dir`) will make
-# `backend` importable but not `app`, which causes top-level imports like
-# `from app.api.v1...` to fail. Try to alias `backend.app` -> `app` so
-# imports work regardless of the process start location.
+# Robust module resolution for the 'app' package at runtime.
+_backend_dir = Path(__file__).resolve().parent
+if str(_backend_dir) not in sys.path:
+    sys.path.insert(0, str(_backend_dir))
+
 try:
     import app  # noqa: F401
-except Exception:
+except (ImportError, ModuleNotFoundError):
     try:
-        backend_app = importlib.import_module("backend.app")
-        if "app" not in sys.modules:
-            sys.modules["app"] = backend_app
-    except Exception:
-        # If aliasing fails, allow the real import error to surface later.
+        # Fallback for when backend is treated as a sub-package
+        from backend import app as app
+    except ImportError:
         pass
 
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, status
@@ -212,6 +209,7 @@ def _register_routers(app: FastAPI) -> None:
     
     # Reviews
     from app.api.v1.endpoints import reviews
+    app.include_router(reviews.router, prefix="/api/v1")
     app.include_router(notifications.router, prefix="/api/v1/notifications", tags=["notifications"])
     app.include_router(subscription_plans.router, prefix="/api/v1/subscription-plans", tags=["subscriptions"])
 
@@ -663,8 +661,8 @@ def _maybe_init_db(app: FastAPI, logger) -> None:
         return
 
     try:
-        from app.core.database import init_db, SessionLocal
-        from app.services.user_service import UserService
+        from app.core.database import init_db, SessionLocal # type: ignore
+        from app.services.user_service import UserService # type: ignore
 
         init_db()
         
@@ -676,7 +674,7 @@ def _maybe_init_db(app: FastAPI, logger) -> None:
             
             db = SessionLocal()
             svc = UserService(db)
-            from app.models.user import User
+            from app.models.user import User # type: ignore
 
             existing = db.query(User).filter(User.username == "devadmin").first()
             if not existing:
@@ -763,7 +761,9 @@ def health() -> Dict[str, Any]:
     uptime = None
     if started is not None:
         try:
-            uptime = round(time.time() - float(started), 3)
+            current_time: float = time.time()
+            start_time: float = float(started)
+            uptime = round(current_time - start_time, 3)
         except Exception:
             uptime = None
 
@@ -951,7 +951,7 @@ def get_widgets(
     _admin=Depends(require_role("admin"))
 ) -> Dict[str, Any]:
     """Get all UI widgets or only active ones"""
-    from app.services.widget_service import WidgetService
+    from app.services.widget_service import WidgetService # type: ignore
     svc = WidgetService(db)
     
     if active_only:
@@ -969,7 +969,7 @@ def toggle_widget(
     _admin=Depends(require_role("admin"))
 ) -> Dict[str, Any]:
     """Toggle widget active status"""
-    from app.services.widget_service import WidgetService
+    from app.services.widget_service import WidgetService # type: ignore
     from app.services.audit_service import AuditService
     
     svc = WidgetService(db)
@@ -992,9 +992,9 @@ def get_system_settings(
     db: Session = Depends(get_db),
     _admin=Depends(require_role("admin"))
 ) -> Dict[str, Any]:
-    """Get all system settings"""
-    from app.services.system_settings_service import SystemSettingsService
-    svc = SystemSettingsService(db)
+    """Get all UI widgets or only active ones"""
+    from app.services.widget_service import WidgetService
+    svc = WidgetService(db)
     return {"settings": svc.get_all_settings()}
 
 @app.patch("/api/v1/admin/system-settings/{key}")

@@ -19,7 +19,9 @@ class Product(SQLAlchemyBaseModel, Base):
     # Nullable temporarily for migration, but logic should enforce it
     
     name: str = Column(String(255), nullable=False, index=True)
+    name_en: Optional[str] = Column(String(255), nullable=True, index=True)
     description: Optional[str] = Column(String(1024), nullable=True)
+    description_en: Optional[str] = Column(String(1024), nullable=True)
     price: float = Column(Float, nullable=False, default=0.0)
     
     # Inventory is now a CACHED TOTAL of all SupplierProduct.inventory or Store inventory. 
@@ -35,6 +37,7 @@ class Product(SQLAlchemyBaseModel, Base):
     
     # Relationships
     category: Optional[str] = Column(String(128), nullable=True, index=True)
+    category_en: Optional[str] = Column(String(128), nullable=True, index=True)
 
     # Lifecycle
     status: str = Column(String(50), default="published", index=True) # draft, review, published, suspended

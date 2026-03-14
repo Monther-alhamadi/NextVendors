@@ -112,7 +112,7 @@ export default function CommandPalette({ isOpen, onClose }) {
           {filteredActions.length === 0 ? (
             <div className={styles.emptyState}>
               <Search size={40} opacity={0.3} />
-              <p>لا توجد نتائج مطابقة لبحثك.</p>
+              <p>{t('auto_90a882', t('auto_90a882', 'لا توجد نتائج مطابقة لبحثك.'))}</p>
             </div>
           ) : (
             Object.entries(groupedResults).map(([group, actions]) => (
@@ -141,9 +141,9 @@ export default function CommandPalette({ isOpen, onClose }) {
         </div>
         
         <div className={styles.footer}>
-            <span><span className={styles.kbd}>↑</span> <span className={styles.kbd}>↓</span> للتنقل</span>
-            <span><span className={styles.kbd}>↵</span> للاختيار</span>
-            <span><span className={styles.kbd}>ESC</span> للإغلاق</span>
+            <span><span className={styles.kbd}>↑</span> <span className={styles.kbd}>↓</span> {t('auto_4cf459', t('auto_4cf459', 'للتنقل'))}</span>
+            <span><span className={styles.kbd}>↵</span> {t('auto_727a0f', t('auto_727a0f', 'للاختيار'))}</span>
+            <span><span className={styles.kbd}>ESC</span> {t('auto_b8a734', t('auto_b8a734', 'للإغلاق'))}</span>
         </div>
       </div>
     </div>

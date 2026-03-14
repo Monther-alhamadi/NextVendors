@@ -88,7 +88,7 @@ def seed_rbac():
         # 5. Migrate users
         logger.info("Migrating legacy users to RBAC roles...")
         users = db.query(User).all()
-        migrated_count = 0
+        migrated_count: int = 0
         for user in users:
             # Bind based on legacy role token if no RBAC roles exist
             if not user.roles:

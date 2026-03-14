@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import {
   Plus, GripVertical, Trash2, Edit3, Settings, Monitor, CheckCircle2,
   RotateCcw, Eye, EyeOff, Layers, LayoutTemplate, Image, Star,
-  Grid3X3, ExternalLink, Undo2, ChevronDown, Sparkles, Save
+  Grid3X3, ExternalLink, ChevronDown, Sparkles, Save
 } from "lucide-react";
 import {
   listAdminPages, getAdminPage, createPage, addWidget,
@@ -14,53 +14,74 @@ import PageContainer from "../components/PageContainer";
 import styles from "./AdminStoreBuilder.module.css";
 import WidgetConfigForm from "../components/cms/WidgetConfigForm";
 
-const WIDGET_CATALOG = [
+/**
+ * Returns the catalog of available widgets with their default configs and meta.
+ */
+const getWidgetCatalog = (t) => [
   {
-    type: "HeroWidget",
-    label: "البنر الرئيسي",
-    labelEn: "Hero Banner",
+    type: 'HeroWidget',
+    label: t('cms.widgets.hero_label', 'البنر الرئيسي'),
+    labelEn: 'Hero Banner',
     icon: Image,
-    color: "#6366f1",
-    description: "بنر كبير بخلفية وعنوان رئيسي وزر",
-    default: { title: "مرحباً بك", subtitle: "", button_text: "تسوق الآن", bg_color: "#0a0d2e" }
+    color: '#6366f1',
+    description: t('cms.widgets.hero_desc', 'بنر كبير بخلفية وعنوان رئيسي وزر'),
+    default: { 
+      title: t('cms.widgets.hero_default_title', 'مرحباً بك'), 
+      subtitle: '', 
+      button_text: t('common.shop_now', 'تسوق الآن'), 
+      bg_color: '#0a0d2e' 
+    }
   },
   {
-    type: "SliderWidget",
-    label: "شريط المنتجات",
-    labelEn: "Product Carousel",
+    type: 'SliderWidget',
+    label: t('cms.widgets.slider_label', 'شريط المنتجات'),
+    labelEn: 'Product Carousel',
     icon: Layers,
-    color: "#10b981",
-    description: "عرض دائري لأحدث المنتجات أو تصنيف معين",
-    default: { title: "أحدث المنتجات", categoryId: null, limit: 10, bg_color: "#f8fafc" }
+    color: '#10b981',
+    description: t('cms.widgets.slider_desc', 'عرض دائري لأحدث المنتجات أو تصنيف معين'),
+    default: { 
+      title: t('cms.widgets.slider_default_title', 'أحدث المنتجات'), 
+      categoryId: null, 
+      limit: 10, 
+      bg_color: '#f8fafc' 
+    }
   },
   {
-    type: "FeaturesWidget",
-    label: "مميزات المتجر",
-    labelEn: "Store Features",
+    type: 'FeaturesWidget',
+    label: t('cms.widgets.features_label', 'مميزات المتجر'),
+    labelEn: 'Store Features',
     icon: Star,
-    color: "#f59e0b",
-    description: "عرض أيقونات المميزات مثل التوصيل والجودة",
-    default: { title: "لماذا تتسوق معنا؟", items: [], bg_color: "#ffffff" }
+    color: '#f59e0b',
+    description: t('cms.widgets.features_desc', 'عرض أيقونات المميزات مثل التوصيل والجودة'),
+    default: { 
+      title: t('cms.widgets.features_default_title', 'لماذا تتسوق معنا؟'), 
+      items: [], 
+      bg_color: '#ffffff' 
+    }
   },
   {
-    type: "GridWidget",
-    label: "شبكة تصنيفات",
-    labelEn: "Category Grid",
+    type: 'GridWidget',
+    label: t('cms.widgets.grid_label', 'شبكة تصنيفات'),
+    labelEn: 'Category Grid',
     icon: Grid3X3,
-    color: "#8b5cf6",
-    description: "شبكة بصرية لتصنيفات المتجر",
-    default: { title: "تسوق حسب القسم", bg_color: "#f8fafc" }
+    color: '#8b5cf6',
+    description: t('cms.widgets.grid_desc', 'شبكة بصرية لتصنيفات المتجر'),
+    default: { 
+      title: t('cms.widgets.grid_default_title', 'تسوق حسب القسم'), 
+      bg_color: '#f8fafc' 
+    }
   },
 ];
 
-function getWidgetMeta(type) {
-  return WIDGET_CATALOG.find(w => w.type === type) || {
+const getWidgetMeta = (type, catalog) => {
+  return catalog.find(w => w.type === type) || {
     label: type, icon: LayoutTemplate, color: "#64748b", description: ""
   };
-}
+};
 
 export default function AdminStoreBuilder() {
   const { t } = useTranslation();
+  const WIDGET_CATALOG = getWidgetCatalog(t);
   const toast = useToast();
 
   // Core state
@@ -80,14 +101,10 @@ export default function AdminStoreBuilder() {
   // Add widget panel
   const [showAddPanel, setShowAddPanel] = useState(false);
 
-  // Unsaved changes tracking
+  // Unsaved changes tracking (simple position-based check)
   const hasUnsavedChanges = JSON.stringify(widgets.map(w => w.id)) !== JSON.stringify(initialWidgets.map(w => w.id));
 
-  useEffect(() => {
-    loadPages();
-  }, []);
-
-  async function loadPages() {
+  const loadPages = useCallback(async () => {
     try {
       setLoading(true);
       const data = await listAdminPages();
@@ -95,16 +112,24 @@ export default function AdminStoreBuilder() {
       if (data.length > 0) {
         handleSelectPage(data[0]);
       } else {
-        const home = await createPage({ title: "الرئيسية", slug: "home", is_published: true });
+        const home = await createPage({ 
+          title: t("common.home_page", "الرئيسية"), 
+          slug: "home", 
+          is_published: true 
+        });
         setPages([home]);
         handleSelectPage(home);
       }
     } catch (e) {
-      toast.push({ message: "فشل تحميل الصفحات", type: "error" });
+      toast.push({ message: t("admin.builder.err_load_pages", "فشل تحميل الصفحات"), type: "error" });
     } finally {
       setLoading(false);
     }
-  }
+  }, [t, toast]);
+
+  useEffect(() => {
+    loadPages();
+  }, [loadPages]);
 
   async function handleSelectPage(pageInfo) {
     try {
@@ -116,7 +141,7 @@ export default function AdminStoreBuilder() {
       setInitialWidgets(sorted);
       setEditingWidget(null);
     } catch (e) {
-      toast.push({ message: "فشل تحميل بيانات الصفحة", type: "error" });
+      toast.push({ message: t("admin.builder.err_load_page_data", "فشل تحميل بيانات الصفحة"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -137,25 +162,25 @@ export default function AdminStoreBuilder() {
       setInitialWidgets(updated);
       setEditingWidget(newWidget);
       setShowAddPanel(false);
-      toast.push({ message: "تم إضافة المكون بنجاح ✨", type: "success" });
+      toast.push({ message: t("admin.builder.widget_added", "تم إضافة المكون بنجاح ✨"), type: "success" });
     } catch (e) {
-      toast.push({ message: "خطأ أثناء إضافة المكون", type: "error" });
+      toast.push({ message: t("admin.builder.widget_add_err", "خطأ أثناء إضافة المكون"), type: "error" });
     }
   };
 
   // --- Delete Widget ---
   const handleDeleteWidget = async (e, widgetId) => {
     e.stopPropagation();
-    if (!window.confirm("هل أنت متأكد من حذف هذا المكون؟")) return;
+    if (!window.confirm(t("admin.builder.del_confirm", "هل أنت متأكد من حذف هذا المكون؟"))) return;
     try {
       await deleteWidget(widgetId);
       const updated = widgets.filter(w => w.id !== widgetId);
       setWidgets(updated);
       setInitialWidgets(updated);
       if (editingWidget?.id === widgetId) setEditingWidget(null);
-      toast.push({ message: "تم الحذف", type: "success" });
+      toast.push({ message: t("common.deleted", "تم الحذف"), type: "success" });
     } catch (e) {
-      toast.push({ message: "فشل الحذف", type: "error" });
+      toast.push({ message: t("common.delete_failed", "فشل الحذف"), type: "error" });
     }
   };
 
@@ -170,11 +195,11 @@ export default function AdminStoreBuilder() {
       setWidgets(prev => prev.map(w => w.id === updated.id ? updated : w));
       setInitialWidgets(prev => prev.map(w => w.id === updated.id ? updated : w));
       toast.push({
-        message: updated.is_active ? "تم تفعيل المكون" : "تم إخفاء المكون",
+        message: updated.is_active ? t("admin.builder.widget_activated", "تم تفعيل المكون") : t("admin.builder.widget_hidden", "تم إخفاء المكون"),
         type: "success"
       });
     } catch (e) {
-      toast.push({ message: "فشل تعديل الحالة", type: "error" });
+      toast.push({ message: t("admin.builder.status_err", "فشل تعديل الحالة"), type: "error" });
     }
   };
 
@@ -189,9 +214,9 @@ export default function AdminStoreBuilder() {
       setWidgets(prev => prev.map(w => w.id === updated.id ? updated : w));
       setInitialWidgets(prev => prev.map(w => w.id === updated.id ? updated : w));
       setEditingWidget(updated);
-      toast.push({ message: "تم حفظ التعديلات ✓", type: "success" });
+      toast.push({ message: t("common.saved", "تم حفظ التعديلات ✓"), type: "success" });
     } catch (e) {
-      toast.push({ message: "لم يتم حفظ التعديلات", type: "error" });
+      toast.push({ message: t("common.save_failed", "لم يتم حفظ التعديلات"), type: "error" });
     }
   };
 
@@ -199,7 +224,7 @@ export default function AdminStoreBuilder() {
   const handleReset = async () => {
     setWidgets([...initialWidgets]);
     setEditingWidget(null);
-    toast.push({ message: "تمت إعادة ضبط الترتيب", type: "info" });
+    toast.push({ message: t("admin.builder.order_reset", "تمت إعادة ضبط الترتيب"), type: "info" });
   };
 
   // --- Save Order ---
@@ -210,9 +235,9 @@ export default function AdminStoreBuilder() {
       const positionalArray = widgets.map((w, index) => ({ id: w.id, position: index }));
       await reorderWidgets(selectedPage.id, positionalArray);
       setInitialWidgets([...widgets]);
-      toast.push({ message: "تم حفظ الترتيب بنجاح ✓", type: "success" });
+      toast.push({ message: t("admin.builder.order_saved", "تم حفظ الترتيب بنجاح ✓"), type: "success" });
     } catch (err) {
-      toast.push({ message: "فشل حفظ الترتيب", type: "error" });
+      toast.push({ message: t("admin.builder.order_save_err", "فشل حفظ الترتيب"), type: "error" });
     } finally {
       setSaving(false);
     }
@@ -279,7 +304,7 @@ export default function AdminStoreBuilder() {
     return (
       <div className={styles.loadingScreen}>
         <div className={styles.loadingSpinner} />
-        <p>جاري تحميل المُنشئ المرئي...</p>
+        <p>{t("admin.builder.loading_builder", "جاري تحميل المُنشئ المرئي...")}</p>
       </div>
     );
   }
@@ -291,23 +316,23 @@ export default function AdminStoreBuilder() {
         <div className={styles.headerLeft}>
           <div className={styles.headerIcon}><Sparkles size={24} /></div>
           <div>
-            <h1 className={styles.title}>منشئ المتجر المرئي</h1>
-            <p className={styles.subtitle}>تخصيص كامل لواجهة المتجر بالسحب والإفلات</p>
+            <h1 className={styles.title}>{t('admin.builder.title', 'منشئ المتجر المرئي')}</h1>
+            <p className={styles.subtitle}>{t('admin.builder.subtitle', 'تخصيص كامل لواجهة المتجر بالسحب والإفلات')}</p>
           </div>
         </div>
         <div className={styles.headerActions}>
           {hasUnsavedChanges && (
             <>
               <button className={styles.resetBtn} onClick={handleReset}>
-                <RotateCcw size={15} /> إعادة الضبط
+                <RotateCcw size={15} /> {t('admin.builder.reset', 'إعادة الضبط')}
               </button>
               <button className={styles.saveOrderBtn} onClick={handleSaveOrder} disabled={saving}>
-                <Save size={15} /> {saving ? "جاري الحفظ..." : "حفظ الترتيب"}
+                <Save size={15} /> {saving ? t('common.saving', 'جاري الحفظ...') : t('admin.builder.save_order', 'حفظ الترتيب')}
               </button>
             </>
           )}
           <button className={styles.previewBtn} onClick={handlePreview}>
-            <ExternalLink size={15} /> معاينة المتجر
+            <ExternalLink size={15} /> {t('admin.builder.preview', 'معاينة المتجر')}
           </button>
         </div>
       </div>
@@ -318,7 +343,7 @@ export default function AdminStoreBuilder() {
           <div className={styles.canvasToolbar}>
             <div className={styles.pageSelector}>
               <Monitor size={16} />
-              <span>الصفحة:</span>
+              <span>{t('admin.builder.page', 'الصفحة:')}</span>
               <select
                 value={selectedPage?.id || ""}
                 onChange={(e) => {
@@ -331,10 +356,10 @@ export default function AdminStoreBuilder() {
             </div>
             <div className={styles.toolbarRight}>
               {selectedPage?.is_published && (
-                <span className={styles.statusLive}><CheckCircle2 size={13} /> مباشر</span>
+                <span className={styles.statusLive}><CheckCircle2 size={13} /> {t("common.live", "مباشر")}</span>
               )}
               <span className={styles.widgetCount}>
-                <Layers size={13} /> {widgets.length} مكون
+                <Layers size={13} /> {widgets.length} {t('cms.widget_count', 'مكون')}
               </span>
             </div>
           </div>
@@ -346,12 +371,12 @@ export default function AdminStoreBuilder() {
                 <div className={styles.emptyIconWrap}>
                   <LayoutTemplate size={48} />
                 </div>
-                <p>هذه الصفحة فارغة</p>
-                <span>أضف مكونات من الزر أدناه لبدء بناء واجهتك</span>
+                <p>{t('admin.builder.empty_page', 'هذه الصفحة فارغة')}</p>
+                <span>{t('admin.builder.empty_page_hint', 'أضف مكونات من الزر أدناه لبدء بناء واجهتك')}</span>
               </div>
             ) : (
               widgets.map((widget, index) => {
-                const meta = getWidgetMeta(widget.type);
+                const meta = getWidgetMeta(widget.type, WIDGET_CATALOG);
                 const IconComp = meta.icon;
                 const isDropTarget = dropTargetIdx === index && draggedIdx !== null && draggedIdx !== index;
                 const isDragged = draggedIdx === index;
@@ -390,14 +415,14 @@ export default function AdminStoreBuilder() {
                           </span>
                         </div>
                         <span className={styles.blockSummary}>
-                          {widget.config?.title || "بدون عنوان"}
+                          {widget.config?.title || t("common.untitled", "بدون عنوان")}
                         </span>
                       </div>
                       <div className={styles.blockActions}>
                         <button
                           className={styles.visibilityBtn}
                           onClick={(e) => handleToggleActive(e, widget)}
-                          title={widget.is_active ? "إخفاء" : "إظهار"}
+                          title={widget.is_active ? t('common.hide', 'إخفاء') : t('common.show', 'إظهار')}
                         >
                           {widget.is_active ? <Eye size={14} /> : <EyeOff size={14} />}
                         </button>
@@ -427,7 +452,7 @@ export default function AdminStoreBuilder() {
           {/* Add Widget Button */}
           <div className={styles.addWidgetBar}>
             <button className={styles.addWidgetTrigger} onClick={() => setShowAddPanel(!showAddPanel)}>
-              <Plus size={18} /> إضافة مكون جديد
+              <Plus size={18} /> {t('admin.builder.add_widget', 'إضافة مكون جديد')}
               <ChevronDown size={14} className={showAddPanel ? styles.chevronOpen : ""} />
             </button>
 
@@ -460,7 +485,7 @@ export default function AdminStoreBuilder() {
         <div className={styles.inspectorArea}>
           <div className={styles.inspectorHeader}>
             <Settings size={18} />
-            <h2>إعدادات المكون</h2>
+            <h2>{t("admin.builder.widget_settings", "إعدادات المكون")}</h2>
           </div>
           <div className={styles.inspectorBody}>
             {editingWidget ? (
@@ -472,8 +497,8 @@ export default function AdminStoreBuilder() {
             ) : (
               <div className={styles.inspectorEmpty}>
                 <div className={styles.inspectorEmptyIcon}><Edit3 size={32} /></div>
-                <p>اختر مكوناً من الواجهة</p>
-                <span>انقر على أي مكون لتعديل خصائصه ومظهره</span>
+                <p>{t('admin.builder.select_widget', 'اختر مكوناً من الواجهة')}</p>
+                <span>{t('admin.builder.select_widget_hint', 'انقر على أي مكون لتعديل خصائصه ومظهره')}</span>
               </div>
             )}
           </div>

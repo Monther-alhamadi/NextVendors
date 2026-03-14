@@ -28,7 +28,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import VendorRoute from "./components/VendorRoute";
 const Cart = React.lazy(() => import("./pages/Cart"));
 const Orders = React.lazy(() => import("./pages/Orders"));
-const Register = React.lazy(() => import("./pages/Register"));
 const Profile = React.lazy(() => import("./pages/Profile"));
 const About = React.lazy(() => import("./pages/About"));
 const Contact = React.lazy(() => import("./pages/Contact"));
@@ -175,7 +174,7 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-          <Route path="/register" element={<Suspense fallback={<GlobalLoader />}><Register /></Suspense>} />
+          <Route path="/register" element={<Suspense fallback={<GlobalLoader />}><Login /></Suspense>} />
           <Route
             path="/profile"
             element={

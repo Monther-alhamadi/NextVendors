@@ -105,7 +105,7 @@ export default function AdminRoles() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>{t("admin.roles.title", "إدارة الصلاحيات والأدوار")}</h1>
-          <p className={styles.subtitle}>{"تحكم دقيق بصلاحيات الموظفين والتجار عبر نظام RBAC المتقدم"}</p>
+          <p className={styles.subtitle}>{t('auto_42bfc0', t('auto_42bfc0', 'تحكم دقيق بصلاحيات الموظفين والتجار عبر نظام RBAC المتقدم'))}</p>
         </div>
         <button className={styles.createBtn} onClick={() => setIsModalOpen(true)}>
           <Plus size={18} />
@@ -175,7 +175,7 @@ export default function AdminRoles() {
             <h2>{t("admin.roles.create_title", "إضافة دور وظيفي جديد")}</h2>
             <form onSubmit={handleCreateRole}>
               <div className={styles.formGroup}>
-                <label>{"اسم الدور (مثال: support_agent)"}</label>
+                <label>{t('auto_0247a9', t('auto_0247a9', 'اسم الدور (مثال: support_agent)'))}</label>
                 <input 
                   type="text" 
                   value={newRoleName} 
@@ -185,8 +185,8 @@ export default function AdminRoles() {
                 />
               </div>
               <div className={styles.modalActions}>
-                <button type="button" onClick={() => setIsModalOpen(false)} className={styles.cancelBtn}>الغاء</button>
-                <button type="submit" className={styles.saveBtn} disabled={savingId === "new"}>حفظ ومتابعة</button>
+                <button type="button" onClick={() => setIsModalOpen(false)} className={styles.cancelBtn}>{t('auto_be4b2a', t('auto_be4b2a', 'الغاء'))}</button>
+                <button type="submit" className={styles.saveBtn} disabled={savingId === "new"}>{t('auto_50c642', t('auto_50c642', 'حفظ ومتابعة'))}</button>
               </div>
             </form>
           </div>

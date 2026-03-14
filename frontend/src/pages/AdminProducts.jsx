@@ -36,14 +36,13 @@ export default function AdminProducts() {
       if (activeTab === 'pending') {
           data = await adminGetPendingProducts().catch(() => []);
       } else {
-          // Provide fallback limit if missing
           const res = await listProducts("", 100).catch(() => ({ products: [] }));
           data = res?.products || res || [];
       }
       setProducts(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
-      toast.push({ message: "Failed to load products", type: "error" });
+      toast.push({ message: t('common.error_loading_data'), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -60,57 +59,57 @@ export default function AdminProducts() {
   }, [products, searchQuery]);
 
   async function handleDelete(id) {
-    const ok = await confirm(t('admin.confirm_delete_product', 'هل أنت متأكد من حذف هذا المنتج؟'));
+    const ok = await confirm(t('admin.confirm_delete_product'));
     if (!ok) return;
     try {
       await deleteProduct(id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      toast.push({ message: t('common.save_success', 'تم الحذف بنجاح'), type: "success" });
+      toast.push({ message: t('common.delete_success'), type: "success" });
     } catch (err) {
-      toast.push({ message: t('common.error', 'حدث خطأ'), type: "error" });
+      toast.push({ message: t('common.error'), type: "error" });
     }
   }
 
   async function handleModeration(id, status, reason = null) {
       try {
           await adminReviewProduct(id, status, reason);
-          toast.push({ message: t('common.save_success', 'تم حفظ التحديث'), type: "success" });
+          toast.push({ message: t('common.save_success'), type: "success" });
           setRejectModal(null);
           setRejectReason("");
           loadProducts(); 
       } catch (e) {
-          toast.push({ message: t('common.error', 'حدث خطأ في المراجعة'), type: "error" });
+          toast.push({ message: t('common.error'), type: "error" });
       }
   }
 
   const getStatusBadge = (product) => {
     if (activeTab === 'pending') {
-      return <span className={`${styles.statusBadge} ${styles.statusPending}`}>قيد المراجعة</span>;
+      return <span className={`${styles.statusBadge} ${styles.statusPending}`}>{t('admin.status_in_review')}</span>;
     }
     if (product.moderation_status === 'rejected') {
       return (
         <div>
-          <span className={`${styles.statusBadge} ${styles.statusRejected}`}>مرفوض</span>
+          <span className={`${styles.statusBadge} ${styles.statusRejected}`}>{t("admin.status_rejected")}</span>
           {product.rejection_reason && <span className={styles.rejectedReason}>{product.rejection_reason}</span>}
         </div>
       );
     }
     if (product.status === 'active' || product.status === 'published') {
-      return <span className={`${styles.statusBadge} ${styles.statusActive}`}>نشط</span>;
+      return <span className={`${styles.statusBadge} ${styles.statusActive}`}>{t('admin.status_active')}</span>;
     }
-    return <span className={`${styles.statusBadge} ${styles.statusDraft}`}>مسودة / غير نشط</span>;
+    return <span className={`${styles.statusBadge} ${styles.statusDraft}`}>{t('product.status_draft')}</span>;
   };
 
   return (
     <PageContainer>
       <div className={styles.pageHeader}>
         <div>
-           <h1 className={styles.pageTitle}>{t('admin.manage_products', 'إدارة المنتجات المتقدمة')}</h1>
-           <p className={styles.pageSubtitle}>{'التحكم الكامل في الكتالوج، المراجعة، والتعديل.'}</p>
+           <h1 className={styles.pageTitle}>{t('admin.manage_products')}</h1>
+           <p className={styles.pageSubtitle}>{t("admin.products_desc_2")}</p>
         </div>
         <Link to="/admin/products/new" className={styles.primaryBtn}>
           <Plus size={18} />
-          {t('admin.create_product', 'إضافة منتج جديد')}
+          {t('admin.create_product')}
         </Link>
       </div>
 
@@ -120,14 +119,14 @@ export default function AdminProducts() {
              className={`${styles.tabBtn} ${activeTab === "all" ? styles.active : ''}`}
           >
               <Package size={16} />
-              {t('admin.all_products', 'جميع المنتجات')}
+              {t('admin.all_products')}
           </button>
           <button
              onClick={() => setActiveTab("pending")}
              className={`${styles.tabBtn} ${activeTab === "pending" ? styles.active : ''}`}
           >
               <Filter size={16} />
-              {t('admin.pending_approval', 'بانتظار الموافقة')} 
+              {t('admin.pending_approval')} 
               {products.length > 0 && activeTab === "pending" && <span className={styles.badge}>{products.length}</span>}
           </button>
       </div>
@@ -139,14 +138,14 @@ export default function AdminProducts() {
                <input 
                   type="text" 
                   className={styles.searchInput}
-                  placeholder={t('admin.search_products', 'ابحث باسم المنتج، رقم الـ ID أو المتجر...')}
+                  placeholder={t('admin.search_products')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                />
            </div>
            <div className={styles.filters}>
               <button className={styles.filterBtn}>
-                 <Download size={16} /> تصدير
+                 <Download size={16} /> {t("admin.export")}
               </button>
            </div>
         </div>
@@ -159,17 +158,17 @@ export default function AdminProducts() {
           ) : filteredProducts.length === 0 ? (
             <div className={styles.emptyState}>
                <Package size={48} className={styles.emptyIcon} />
-               <p>{t('common.no_products', 'لا توجد منتجات لعرضها.')}</p>
+               <p>{t('common.no_products')}</p>
             </div>
           ) : (
             <table className={styles.dataGrid}>
               <thead>
                 <tr>
-                  <th>المنتج</th>
-                  <th>المتجر / البائع</th>
-                  <th>السعر</th>
-                  <th>الحالة</th>
-                  <th style={{ textAlign: 'left' }}>الإجراءات</th>
+                  <th>{t('admin.col_product')}</th>
+                  <th>{t("admin.col_store_vendor")}</th>
+                  <th>{t("product.price")}</th>
+                  <th>{t("common.status")}</th>
+                  <th style={{ textAlign: 'left' }}>{t("common.actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,7 +196,7 @@ export default function AdminProducts() {
                         )}
                     </td>
                     <td>
-                        <span className={styles.price}>{p.price?.toLocaleString()} {t('common.currency', 'ر.س')}</span>
+                        <span className={styles.price}>{p.price?.toLocaleString()} {t('common.currency')}</span>
                     </td>
                     <td>
                         {getStatusBadge(p)}
@@ -206,19 +205,19 @@ export default function AdminProducts() {
                        <div className={styles.actions}>
                            {activeTab === 'pending' ? (
                                <>
-                                  <button onClick={() => handleModeration(p.id, "approved")} className={`${styles.iconBtn} ${styles.approveBtn}`} title="موافقة مباشر">
+                                  <button onClick={() => handleModeration(p.id, "approved")} className={`${styles.iconBtn} ${styles.approveBtn}`} title={t("admin.action_approve_direct")}>
                                       <CheckCircle size={18} />
                                   </button>
-                                  <button onClick={() => setRejectModal(p)} className={`${styles.iconBtn} ${styles.deleteBtn}`} title="رفض">
+                                  <button onClick={() => setRejectModal(p)} className={`${styles.iconBtn} ${styles.deleteBtn}`} title={t("admin.action_reject")}>
                                       <XOctagon size={18} />
                                   </button>
                                </>
                            ) : (
                                <>
-                                  <Link to={`/admin/products/${p.id}`} className={`${styles.iconBtn} ${styles.editBtn}`} title="تعديل عميق">
+                                  <Link to={`/admin/products/${p.id}`} className={`${styles.iconBtn} ${styles.editBtn}`} title={t("admin.action_edit_deep")}>
                                       <Edit2 size={18} />
                                   </Link>
-                                  <button onClick={() => handleDelete(p.id)} className={`${styles.iconBtn} ${styles.deleteBtn}`} title="حذف بالكامل">
+                                  <button onClick={() => handleDelete(p.id)} className={`${styles.iconBtn} ${styles.deleteBtn}`} title={t("admin.action_delete_full")}>
                                       <Trash2 size={18} />
                                   </button>
                                </>
@@ -236,17 +235,17 @@ export default function AdminProducts() {
       {rejectModal && (
           <div className={styles.modalOverlay}>
               <div className={styles.modalContent}>
-                  <h3 className={styles.modalTitle}>رفض المنتج: {rejectModal.name}</h3>
+                  <h3 className={styles.modalTitle}>{t("admin.reject_product")} {rejectModal.name}</h3>
                   <textarea 
                      className={styles.modalInput}
                      value={rejectReason}
                      onChange={e => setRejectReason(e.target.value)}
-                     placeholder="يرجى كتابة سبب الرفض لتوضيحه للتاجر (مثال: الصورة غير مناسبة، السعر مبالغ فيه...)"
+                     placeholder={t("admin.reject_reason_ph")}
                      autoFocus
                   />
                   <div className={styles.modalActions}>
-                      <button className={styles.cancelBtn} onClick={() => setRejectModal(null)}>إلغاء</button>
-                      <button className={styles.confirmRejectBtn} onClick={() => handleModeration(rejectModal.id, "rejected", rejectReason)}>تأكيد الرفض</button>
+                      <button className={styles.cancelBtn} onClick={() => setRejectModal(null)}>{t("common.cancel")}</button>
+                      <button className={styles.confirmRejectBtn} onClick={() => handleModeration(rejectModal.id, "rejected", rejectReason)}>{t("admin.confirm_reject")}</button>
                   </div>
               </div>
           </div>

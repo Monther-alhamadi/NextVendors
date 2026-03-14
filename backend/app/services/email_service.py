@@ -48,6 +48,40 @@ def send_email(
             "To enable real emails, configure SMTP_* environment variables."
         )
 
+def send_otp_email(email_to: str, username: str, otp: str) -> None:
+    subject = f"Verification Code: {otp} - {settings.APP_NAME}"
+    html_content = f"""
+    <html>
+        <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1f2937; line-height: 1.6; background-color: #f9fafb; padding: 40px;">
+            <div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <h1 style="color: #4f46e5; margin: 0; font-size: 24px;">Welcome to {settings.APP_NAME}</h1>
+                    <p style="color: #6b7280; font-size: 16px;">Verify your email address to get started</p>
+                </div>
+                
+                <p>Hello <strong>{username}</strong>,</p>
+                <p>Thank you for joining our ecosystem. Please use the verification code below to confirm your account:</p>
+                
+                <div style="background: #f3f4f6; padding: 24px; border-radius: 12px; text-align: center; margin: 32px 0;">
+                    <span style="font-family: monospace; font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #111827;">{otp}</span>
+                </div>
+                
+                <p style="font-size: 14px; color: #6b7280;">This code will expire in 10 minutes. If you did not request this, please ignore this email.</p>
+                
+                <div style="border-top: 1px solid #e5e7eb; margin-top: 32px; padding-top: 24px; text-align: center; font-size: 14px; color: #9ca3af;">
+                    &copy; 2026 {settings.APP_NAME}. All rights reserved.
+                </div>
+            </div>
+        </body>
+    </html>
+    """
+    send_email(
+        email_to=email_to,
+        subject_template=subject,
+        html_template=html_content,
+        environment={"project_name": settings.APP_NAME, "username": username, "otp": otp},
+    )
+
 def send_welcome_email(email_to: str, username: str) -> None:
     subject = f"Welcome to {settings.APP_NAME} - Account Created"
     html_content = f"""

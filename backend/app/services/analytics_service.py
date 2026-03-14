@@ -42,7 +42,8 @@ class AnalyticsService:
         """Calculate growth percentage between two values."""
         if previous == 0:
             return 100.0 if current > 0 else 0.0
-        return round(((current - previous) / previous) * 100, 1)
+        val: float = ((current - previous) / previous) * 100
+        return round(val, 1)
 
     # ── Vendor Stats ─────────────────────────────────────────────
     def get_vendor_stats(self, vendor_id: int) -> Dict[str, Any]:
@@ -110,7 +111,7 @@ class AnalyticsService:
             "total_gmv": float(total_gmv),
             "active_vendors": active_vendors,
             "banned_vendors": banned_vendors,
-            "dispute_rate": round(dispute_rate, 2)
+            "dispute_rate": round(float(dispute_rate), 2)
         }
 
     # ── Dashboard Stats ──────────────────────────────────────────
@@ -324,7 +325,7 @@ class AnalyticsService:
         refunded = self.db.query(func.count(Order.id)).filter(
             Order.status == OrderStatus.refunded
         ).scalar() or 0
-        dispute_rate = round((refunded / max(total_orders, 1)) * 100, 2)
+        dispute_rate = round(float(refunded / max(total_orders, 1)) * 100, 2)
 
         return {
             "platform_status": "healthy",

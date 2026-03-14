@@ -250,7 +250,6 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-}
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--dur-slow) var(--ease-in-out),
               color var(--dur-slow) var(--ease-in-out);

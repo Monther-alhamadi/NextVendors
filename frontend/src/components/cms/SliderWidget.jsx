@@ -70,7 +70,7 @@ export function SliderWidget({ config }) {
         </div>
       ) : (
         <div style={{ textAlign: 'center', padding: '3rem', background: 'var(--surface)', borderRadius: '16px' }}>
-          <p style={{ color: 'var(--text-muted)' }}>لا توجد منتجات حالياً.</p>
+          <p style={{ color: 'var(--text-muted)' }}>{t('common.no_products', 'لا توجد منتجات حالياً.')}</p>
         </div>
       )}
     </section>

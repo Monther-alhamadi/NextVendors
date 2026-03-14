@@ -59,7 +59,7 @@ export default function VendorProducts() {
       <div className={s.header}>
         <div>
           <h1 className={s.title}>{t('vendor.my_products', 'منتجاتي')}</h1>
-          <p className={s.subtitle}>إدارة الكتالوج الخاص بك والمخزون والتسعير.</p>
+          <p className={s.subtitle}>{t('vendor.products_subtitle', 'إدارة الكتالوج الخاص بك والمخزون والتسعير.')}</p>
         </div>
         <Link to="/vendor/products/add" className={s.addBtn}>
           <Plus size={18} />
@@ -74,7 +74,7 @@ export default function VendorProducts() {
             <Tag size={20} />
           </div>
           <div>
-            <div className={s.statLabel}>إجمالي المنتجات</div>
+            <div className={s.statLabel}>{t('vendor.stat_total', 'إجمالي المنتجات')}</div>
             <div className={s.statValue}>{stats.total}</div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function VendorProducts() {
              <Tag size={20} />
           </div>
           <div>
-            <div className={s.statLabel}>نشط ومتوفر</div>
+            <div className={s.statLabel}>{t('vendor.stat_active', 'نشط ومتوفر')}</div>
             <div className={s.statValue}>{stats.active}</div>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function VendorProducts() {
              <Archive size={20} />
           </div>
           <div>
-            <div className={s.statLabel}>مسودات</div>
+            <div className={s.statLabel}>{t('vendor.stat_drafts', 'مسودات')}</div>
             <div className={s.statValue}>{stats.drafts}</div>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function VendorProducts() {
              <Archive size={20} />
           </div>
           <div>
-            <div className={s.statLabel}>نفذت الكمية</div>
+            <div className={s.statLabel}>{t('vendor.stat_out_of_stock', 'نفذت الكمية')}</div>
             <div className={s.statValue}>{stats.outOfStock}</div>
           </div>
         </div>
@@ -110,10 +110,10 @@ export default function VendorProducts() {
       {/* Toolbar */}
       <div className={s.toolbar}>
         <div className={s.filters}>
-          <button className={`${s.filterBtn} ${filter === 'all' ? s.active : ''}`} onClick={() => setFilter('all')}>الكل</button>
-          <button className={`${s.filterBtn} ${filter === 'active' ? s.active : ''}`} onClick={() => setFilter('active')}>نشط</button>
-          <button className={`${s.filterBtn} ${filter === 'draft' ? s.active : ''}`} onClick={() => setFilter('draft')}>مسودات</button>
-          <button className={`${s.filterBtn} ${filter === 'out_of_stock' ? s.active : ''}`} onClick={() => setFilter('out_of_stock')}>نفذت الكمية</button>
+          <button className={`${s.filterBtn} ${filter === 'all' ? s.active : ''}`} onClick={() => setFilter('all')}>{t('common.all', 'الكل')}</button>
+          <button className={`${s.filterBtn} ${filter === 'active' ? s.active : ''}`} onClick={() => setFilter('active')}>{t('vendor.filter_active', 'نشط')}</button>
+          <button className={`${s.filterBtn} ${filter === 'draft' ? s.active : ''}`} onClick={() => setFilter('draft')}>{t('vendor.filter_drafts', 'مسودات')}</button>
+          <button className={`${s.filterBtn} ${filter === 'out_of_stock' ? s.active : ''}`} onClick={() => setFilter('out_of_stock')}>{t('vendor.filter_out_of_stock', 'نفذت الكمية')}</button>
         </div>
         <div className={s.searchBox}>
           <Search size={16} className={s.searchIcon} />
@@ -132,12 +132,12 @@ export default function VendorProducts() {
         <table className={s.table}>
           <thead>
             <tr>
-              <th>المنتج</th>
+              <th>{t('vendor.col_product', 'المنتج')}</th>
               <th>SKU</th>
-              <th>الحالة</th>
-              <th>السعر</th>
-              <th>المخزون</th>
-              <th className={s.actionsCol}>إجراءات</th>
+              <th>{t('vendor.col_status', 'الحالة')}</th>
+              <th>{t('vendor.col_price', 'السعر')}</th>
+              <th>{t('vendor.col_inventory', 'المخزون')}</th>
+              <th className={s.actionsCol}>{t('vendor.col_actions', 'إجراءات')}</th>
             </tr>
           </thead>
           <tbody>
@@ -165,10 +165,10 @@ export default function VendorProducts() {
                  <td colSpan="6" className={s.emptyRow}>
                     <div className={s.emptyState}>
                       <span className={s.emptyIcon}>📦</span>
-                      <h3>لا توجد منتجات</h3>
-                      <p>لم نتمكن من العثور على أي منتجات تطابق بحثك أو الفلتر المستخدم.</p>
+                      <h3>{t('vendor.no_products', 'لا توجد منتجات')}</h3>
+                      <p>{t('vendor.no_products_desc', 'لم نتمكن من العثور على أي منتجات تطابق بحثك أو الفلتر المستخدم.')}</p>
                       <Link to="/vendor/products/add" className={s.addBtnEmpty}>
-                        إضافة منتج جديد
+                        {t('vendor.add_new', 'إضافة منتج جديد')}
                       </Link>
                     </div>
                  </td>
@@ -190,10 +190,10 @@ export default function VendorProducts() {
                     <td className={s.skuTxt}>{p.sku_vendor || '-'}</td>
                     <td>
                       <span className={`${s.badge} ${p.status === 'draft' ? s.draft : s.published}`}>
-                         {p.status === 'draft' ? 'مسودة' : 'نشط'}
+                         {p.status === 'draft' ? t('vendor.status_draft', 'مسودة') : t('vendor.status_active', 'نشط')}
                       </span>
                     </td>
-                    <td className={s.priceTxt}>{p.cost_price?.toFixed(2)} ر.س</td>
+                    <td className={s.priceTxt}>{p.cost_price?.toFixed(2)} {t('common.currency', 'ر.س')}</td>
                     <td>
                       <span className={`${s.stockBadge} ${p.inventory > 0 ? s.inStock : s.outOfStock}`}>
                         {p.inventory}
@@ -201,10 +201,10 @@ export default function VendorProducts() {
                     </td>
                     <td>
                       <div className={s.actions}>
-                        <button className={s.actionBtn} aria-label="تعديل" title="تعديل">
+                        <button className={s.actionBtn} aria-label={t('common.edit', 'تعديل')} title={t('common.edit', 'تعديل')}>
                           <Edit2 size={16} />
                         </button>
-                        <button className={`${s.actionBtn} ${s.danger}`} aria-label="حذف" title="حذف">
+                        <button className={`${s.actionBtn} ${s.danger}`} aria-label={t('common.delete', 'حذف')} title={t('common.delete', 'حذف')}>
                           <Trash2 size={16} />
                         </button>
                       </div>

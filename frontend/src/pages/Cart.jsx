@@ -5,13 +5,14 @@ import OptimizedImage from "../components/OptimizedImage";
 import { TrashIcon } from "../components/common/Icons";
 import PageContainer from "../components/PageContainer";
 import { useTranslation } from "react-i18next";
+import { getLocalizedField } from "../utils/localization";
 import s from "./Cart.module.css";
 
 const FREE_SHIPPING_THRESHOLD = 100;
 
 export default function Cart() {
   const [items, setItems] = useState(cartStore.items);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const unsub = cartStore.subscribe(() => setItems([...cartStore.items]));
@@ -56,13 +57,15 @@ export default function Cart() {
                 return (
                   <div key={it.product.id} className={s.itemCard}>
                     <div className={s.itemImage}>
-                      <OptimizedImage src={imgSrc} alt={it.product.name} />
+                      <OptimizedImage src={imgSrc} alt={getLocalizedField(it.product, "name", i18n.language)} />
                     </div>
                     <div className={s.itemBody}>
-                      <h4 className={s.itemName}>{it.product.name}</h4>
-                      <span className={s.itemPrice}>
-                        {it.product.price.toLocaleString()} {t("common.currency")}
-                      </span>
+                      <h4 className={s.itemName}>
+                        {getLocalizedField(it.product, "name", i18n.language)}
+                      </h4>
+                      <div className="text-indigo-600 font-bold mb-4">
+                        {it.product.price.toLocaleString()} {t('common.currency')}
+                      </div>
                       <div className={s.itemActions}>
                         {/* Quantity stepper */}
                         <div className={s.stepper}>
@@ -70,7 +73,7 @@ export default function Cart() {
                             className={s.stepperBtn}
                             onClick={() => cartStore.updateQuantity(it.product.id, Math.max(1, it.quantity - 1))}
                             disabled={it.quantity <= 1}
-                            aria-label="Decrease"
+                            aria-label={t("common.decrease")}
                           >
                             −
                           </button>
@@ -78,7 +81,7 @@ export default function Cart() {
                           <button
                             className={s.stepperBtn}
                             onClick={() => cartStore.updateQuantity(it.product.id, it.quantity + 1)}
-                            aria-label="Increase"
+                            aria-label={t("common.increase")}
                           >
                             +
                           </button>
@@ -102,11 +105,11 @@ export default function Cart() {
               {/* Free shipping progress */}
               <div className={s.shippingProgress}>
                 {subtotal >= FREE_SHIPPING_THRESHOLD ? (
-                  <div className={s.shippingFree}>🎉 {t("cart.free_shipping_unlocked") || "Free shipping unlocked!"}</div>
+                  <div className={s.shippingFree}>🎉 {t("cart.free_shipping_unlocked")}</div>
                 ) : (
                   <>
                     <div className={s.shippingLabel}>
-                      🚚 {t("cart.free_shipping_msg") || `Add ${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(0)} ${t("common.currency")} for free shipping`}
+                      🚚 {t("cart.free_shipping_msg", { amount: (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(0), currency: t("common.currency") })}
                     </div>
                     <div className={s.progressBar}>
                       <div className={s.progressFill} style={{ width: `${shippingProgress}%` }} />
@@ -127,10 +130,10 @@ export default function Cart() {
                 </span>
               </div>
               <div className={s.summaryRow}>
-                <span className={s.summaryRowLabel}>{t("checkout.shipping") || "Shipping"}</span>
+                <span className={s.summaryRowLabel}>{t("checkout.shipping")}</span>
                 <span className={shipping === 0 ? s.summaryRowFree : s.summaryRowValue}>
                   {shipping === 0
-                    ? t("checkout.free") || "Free"
+                    ? t("checkout.free")
                     : `${shipping.toLocaleString()} ${t("common.currency")}`}
                 </span>
               </div>

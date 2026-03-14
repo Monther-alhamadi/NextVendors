@@ -7,10 +7,10 @@ export function FeaturesWidget({ config }) {
   const { t } = useTranslation();
 
   const DEFAULT_FEATURES = [
-    { icon: "🚀", titleKey: "home.features.delivery",     descKey: "home.features.delivery_desc",     title: "توصيل سريع خلال 24 ساعة",        desc: "نوصل طلبك إلى باب منزلك بأسرع وقت ممكن" },
-    { icon: "💎", titleKey: "home.features.quality",      descKey: "home.features.quality_desc",      title: "جودة لا تُضاهى",                 desc: "كل منتج يمر بفحص دقيق لضمان أعلى معايير الجودة" },
-    { icon: "🛡️", titleKey: "home.features.payment",    descKey: "home.features.payment_desc",      title: "دفع آمن ومحمي 100%",               desc: "بياناتك محمية بأحدث تقنيات التشفير والأمان" },
-    { icon: "🔄", titleKey: "home.features.returns",     descKey: "home.features.returns_desc",      title: "إرجاع مجاني خلال 30 يوم",          desc: "غير راضٍ؟ أعد المنتج مجاناً دون أي أسئلة" },
+    { icon: "🚀", titleKey: "home.features.delivery", descKey: "home.features.delivery_desc" },
+    { icon: "💎", titleKey: "home.features.quality",  descKey: "home.features.quality_desc" },
+    { icon: "🛡️", titleKey: "home.features.payment", descKey: "home.features.payment_desc" },
+    { icon: "🔄", titleKey: "home.features.returns", descKey: "home.features.returns_desc" },
   ];
 
   const features = config.items?.length > 0 ? config.items : DEFAULT_FEATURES;

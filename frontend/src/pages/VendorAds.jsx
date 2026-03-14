@@ -20,9 +20,9 @@ export default function VendorAds() {
   const [loading, setLoading] = useState(false);
 
   const placements = [
-    { id: "homepage_hero", name: "بنر رئيسي (الرئيسية)", price: 150.0 },
-    { id: "sidebar_premium", name: "جانبي مميز (المنتجات)", price: 75.0 },
-    { id: "checkout_upsell", name: "بنر قبل الدفع (سلة المهملات)", price: 200.0 }
+    { id: "homepage_hero", name: t("vendor.ad_hero_main", "بنر رئيسي (الرئيسية)"), price: 150.0 },
+    { id: "sidebar_premium", name: t("vendor.ad_sidebar_premium", "جانبي مميز (المنتجات)"), price: 75.0 },
+    { id: "checkout_upsell", name: t("vendor.ad_checkout_upsell", "بنر قبل الدفع (سلة المهملات)"), price: 200.0 }
   ];
 
   const handlePlacementChange = (e) => {
@@ -34,18 +34,18 @@ export default function VendorAds() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.image_url || !formData.target_url) {
-      toast.push({ message: "يرجى تعبئة كافة الحقول المطلوبة", type: "warning" });
+      toast.push({ message: t("vendor.ad_fill_all", "يرجى تعبئة كافة الحقول المطلوبة"), type: "warning" });
       return;
     }
 
     try {
       setLoading(true);
       await requestVendorAd(formData);
-      toast.push({ message: "تم تقديم طلب الإعلان بنجاح. سنقوم بمراجعته قريباً.", type: "success" });
+      toast.push({ message: t("vendor.ad_success_submitted", "تم تقديم طلب الإعلان بنجاح. سنقوم بمراجعته قريباً."), type: "success" });
       setFormData({ ...formData, image_url: "", target_url: "" });
     } catch (err) {
       console.error(err);
-      toast.push({ message: "حدث خطأ أثناء تقديم الطلب", type: "error" });
+      toast.push({ message: t("vendor.ad_err_submit", "حدث خطأ أثناء تقديم الطلب"), type: "error" });
     } finally {
       setLoading(false);
     }
@@ -55,18 +55,18 @@ export default function VendorAds() {
     <PageContainer>
       <div className={styles.headerArea}>
         <div>
-          <h1 className={styles.pageTitle}><Megaphone size={28} /> الترويج والإعلانات</h1>
-          <p className={styles.pageSubtitle}>ارفع مبيعاتك من خلال حجز مساحات إعلانية في أبرز مناطق المنصة.</p>
+          <h1 className={styles.pageTitle}><Megaphone size={28} /> {t("vendor.ads_promotions_title", "الترويج والإعلانات")}</h1>
+          <p className={styles.pageSubtitle}>{t("vendor.ads_promotions_subtitle", "ارفع مبيعاتك من خلال حجز مساحات إعلانية في أبرز مناطق المنصة.")}</p>
         </div>
       </div>
 
       <div className={styles.settingsGrid}>
         <div className={styles.card}>
-           <h2 className={styles.cardTitle}>معسكر الإعلانات</h2>
+           <h2 className={styles.cardTitle}>{t("vendor.ads_camp", "معسكر الإعلانات")}</h2>
            
            <form onSubmit={handleSubmit} className={styles.formGroup}>
              <label className={styles.label}>
-               رابط صورة الإعلان (URL) *
+               {t("vendor.ad_image_url_req", "رابط صورة الإعلان (URL) *")}
                <input 
                  className={styles.input} 
                  type="url" 
@@ -77,7 +77,7 @@ export default function VendorAds() {
              </label>
 
              <label className={styles.label}>
-               رابط التوجيه (أين يذهب العميل عند النقر) *
+               {t("vendor.ad_target_link_req", "رابط التوجيه (أين يذهب العميل عند النقر) *")}
                <input 
                  className={styles.input} 
                  type="url" 
@@ -88,37 +88,37 @@ export default function VendorAds() {
              </label>
 
              <label className={styles.label}>
-               مكان الإعلان
+               {t("vendor.ad_placement_lbl", "مكان الإعلان")}
                <select 
                  className={styles.input} 
                  value={formData.placement}
                  onChange={handlePlacementChange}
                >
                  {placements.map(p => (
-                   <option key={p.id} value={p.id}>{p.name} - {p.price} ر.س</option>
+                   <option key={p.id} value={p.id}>{p.name} - {p.price} {t("common.currency", "ر.س")}</option>
                  ))}
                </select>
              </label>
 
              <div className={styles.paymentBox} style={{ margin: '20px 0', padding: '15px', background: '#f8fafc', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontWeight: 600, color: 'var(--text-color)' }}>التكلفة الإجمالية:</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary-color)' }}>{formData.cost} ر.س</span>
+                <span style={{ fontWeight: 600, color: 'var(--text-color)' }}>{t("vendor.ad_total_cost", "التكلفة الإجمالية:")}</span>
+                <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--primary-color)' }}>{formData.cost} {t("common.currency", "ر.س")}</span>
              </div>
 
              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '20px' }}>
-                سيتم خصم المبلغ من رصيد متجرك أو يتطلب تحويل بنكي إذا لم يكن لديك رصيد كافي. (ميزة قيد التطوير). التفعيل بعد مراجعة الإدارة.
+                {t("vendor.ad_deduction_notice", "سيتم خصم المبلغ من رصيد متجرك أو يتطلب تحويل بنكي إذا لم يكن لديك رصيد كافي. (ميزة قيد التطوير). التفعيل بعد مراجعة الإدارة.")}
              </p>
 
              <button type="submit" disabled={loading} className={styles.saveBtn} style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                <CreditCard size={18} /> {loading ? 'جاري التقديم...' : 'تأكيد طلب الإعلان'}
+                <CreditCard size={18} /> {loading ? t('vendor.ad_submitting', 'جاري التقديم...') : t('vendor.ad_confirm', 'تأكيد طلب الإعلان')}
              </button>
            </form>
         </div>
 
         <div className={styles.card}>
-           <h2 className={styles.cardTitle}>إعلانات سابقة</h2>
+           <h2 className={styles.cardTitle}>{t('vendor.prev_ads', 'إعلانات سابقة')}</h2>
            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-               سجل إعلاناتك سيظهر هنا.
+               {t('vendor.ad_history_empty', 'سجل إعلاناتك سيظهر هنا.')}
            </div>
         </div>
       </div>

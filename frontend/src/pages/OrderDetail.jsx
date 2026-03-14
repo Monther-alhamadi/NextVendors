@@ -142,7 +142,7 @@ export default function OrderDetail() {
                   {currentStatus === "completed" && (
                     <div className={styles.itemAction}>
                       <button className={styles.returnBtn} onClick={() => setReturnItem(item)}>
-                        {t("orders.return") || "إرجاع"}
+                        {t("orders.return")}
                       </button>
                     </div>
                   )}

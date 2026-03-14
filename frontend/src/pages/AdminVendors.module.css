@@ -100,6 +100,26 @@
   border-bottom-color: var(--primary);
 }
 
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  background: var(--primary-subtle);
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  border-radius: 9px;
+  margin-right: 6px;
+  padding: 0 4px;
+}
+
+.active .tabBadge {
+  background: var(--primary);
+  color: white;
+}
+
 .tableCard {
   background: var(--bg-surface);
   border-radius: var(--radius-xl);

@@ -14,14 +14,6 @@ import styles from "./AdminDashboard.module.css";
 import api from "../services/api";
 import Skeleton from "../components/common/Skeleton";
 
-
-const PERIOD_OPTIONS = [
-  { key: "daily", label: "يومي" },
-  { key: "weekly", label: "أسبوعي" },
-  { key: "monthly", label: "شهري" },
-  { key: "yearly", label: "سنوي" },
-];
-
 const ACTIVITY_ICONS = {
   order: <ShoppingBag size={14} />,
   vendor: <Users size={14} />,
@@ -32,6 +24,14 @@ const ACTIVITY_ICONS = {
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
+
+  const PERIOD_OPTIONS = [
+    { key: "daily", label: t("dashboard.period_daily") },
+    { key: "weekly", label: t("dashboard.period_weekly") },
+    { key: "monthly", label: t("dashboard.period_monthly") },
+    { key: "yearly", label: t("dashboard.period_yearly") },
+  ];
+
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [chartData, setChartData] = useState([]);
@@ -45,7 +45,6 @@ export default function AdminDashboard() {
   async function loadDashboardData() {
     setLoading(true);
     try {
-      // Fetch real analytics and activity feed in parallel
       const [analyticsRes, activityRes] = await Promise.all([
         api.get(`/analytics/admin?period=${period}`).catch(() => ({ data: {} })),
         api.get("/analytics/admin/activity?limit=15").catch(() => ({ data: [] })),
@@ -66,7 +65,6 @@ export default function AdminDashboard() {
         avg_order: data.avg_order_value || 0,
       });
 
-      // Build chart data from sales_chart or generate from recent orders
       if (data.sales_chart && data.sales_chart.length > 0) {
         setChartData(data.sales_chart.map(item => ({
           name: item.date,
@@ -113,7 +111,7 @@ export default function AdminDashboard() {
         <div className={styles.kpiValue}>
           {prefix}{typeof value === 'number' ? value.toLocaleString() : value}{suffix}
         </div>
-        <div className={styles.kpiSubtext}>مقارنة بالفترة السابقة</div>
+        <div className={styles.kpiSubtext}>{t('dashboard.compare_prev_period')}</div>
         
         <div className={styles.kpiIconWrapper} style={{ color: colorClass }}>
           <Icon size={120} strokeWidth={1.5} />
@@ -122,28 +120,26 @@ export default function AdminDashboard() {
     );
   };
 
-  // Format time ago
   const timeAgo = (isoTime) => {
     if (!isoTime) return "";
     const diff = Date.now() - new Date(isoTime).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "الآن";
-    if (mins < 60) return `منذ ${mins} دقيقة`;
+    if (mins < 1) return t("dashboard.time_now");
+    if (mins < 60) return t("dashboard.time_mins_ago", { count: mins });
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `منذ ${hours} ساعة`;
+    if (hours < 24) return t("dashboard.time_hours_ago", { count: hours });
     const days = Math.floor(hours / 24);
-    return `منذ ${days} يوم`;
+    return t("dashboard.time_days_ago", { count: days });
   };
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.pageTitle}>{t('admin.dashboard_title', 'مركز القيادة الموحد')}</h1>
-          <p className={styles.pageSubtitle}>نظرة عامة على أداء المنصة ومؤشرات النمو</p>
+          <h1 className={styles.pageTitle}>{t('admin.dashboard_title')}</h1>
+          <p className={styles.pageSubtitle}>{t('admin.dashboard_subtitle')}</p>
         </div>
         <div className={styles.headerActions}>
-          {/* Period selector */}
           <div className={styles.periodSelector}>
             {PERIOD_OPTIONS.map(p => (
               <button
@@ -156,56 +152,55 @@ export default function AdminDashboard() {
             ))}
           </div>
           <button className={styles.actionBtn} onClick={loadDashboardData}>
-            <RefreshCw size={16} /> تحديث
+            <RefreshCw size={16} /> {t('common.refresh')}
           </button>
         </div>
       </div>
 
       <div className={styles.kpiGrid}>
         <KpiCard 
-          title="إجمالي المبيعات (GMV)" 
+          title={t("dashboard.kpi_gmv")} 
           value={stats.gmv} 
           growth={stats.gmv_growth} 
-          suffix={' ' + t('common.currency', 'ر.س')}
+          suffix={' ' + t('common.currency')}
           icon={DollarSign}
           colorClass="#6366f1"
         />
         <KpiCard 
-          title="أرباح المنصة" 
+          title={t("dashboard.kpi_profit")} 
           value={stats.profit} 
           growth={stats.profit_growth} 
-          suffix={' ' + t('common.currency', 'ر.س')}
+          suffix={' ' + t('common.currency')}
           icon={TrendingUp}
           colorClass="#10b981"
         />
         <KpiCard 
-          title="الطلبات" 
+          title={t("dashboard.kpi_orders")} 
           value={stats.order_count} 
           growth={stats.order_growth} 
           icon={ShoppingBag}
           colorClass="#f59e0b"
         />
         <KpiCard 
-          title="متوسط قيمة الطلب" 
+          title={t("dashboard.kpi_avg_order")} 
           value={stats.avg_order} 
           growth={0}
-          suffix={' ' + t('common.currency', 'ر.س')}
+          suffix={' ' + t('common.currency')}
           icon={Activity}
           colorClass="#8b5cf6"
         />
       </div>
 
       <div className={styles.chartsGrid}>
-        {/* Main Revenue Chart */}
         <div className={styles.chartCard} style={{ gridColumn: 'span 2' }}>
           <div className={styles.chartHeader}>
             <h3 className={styles.chartTitle}>
               <Activity size={20} color="var(--primary)" />
-              المبيعات ({PERIOD_OPTIONS.find(p => p.key === period)?.label})
+              {t('dashboard.sales')} ({PERIOD_OPTIONS.find(p => p.key === period)?.label})
             </h3>
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                المتاجر: {stats.total_vendors} | المستخدمين: {stats.total_users?.toLocaleString()}
+                {t('dashboard.vendors_count')}: {stats.total_vendors} | {t('dashboard.users_count')}: {stats.total_users?.toLocaleString()}
               </span>
             </div>
           </div>
@@ -224,28 +219,27 @@ export default function AdminDashboard() {
                   <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--text-muted)', fontSize: 12}} tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-md)' }}
-                    formatter={(value) => [`${value.toLocaleString()} ر.س`, 'المبيعات']}
+                    formatter={(value) => [`${value.toLocaleString()} ${t("common.currency")}`, t('dashboard.sales')]}
                   />
-                  <Area type="monotone" dataKey="revenue" name="المبيعات" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                  <Area type="monotone" dataKey="revenue" name={t("dashboard.sales")} stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                لا توجد بيانات مبيعات للفترة المحددة
+                {t('dashboard.no_sales_data')}
               </div>
             )}
           </div>
         </div>
 
-        {/* Live Activity Stream */}
         <div className={styles.chartCard}>
           <div className={styles.chartHeader}>
             <h3 className={styles.chartTitle}>
               <TrendingUp size={20} color="#10b981" />
-              النشاط الأخير
+              {t('dashboard.recent_activity')}
             </h3>
             <span className={styles.trendBadge} style={{ background: '#d1fae5', color: '#10b981' }}>
-              {activities.length > 0 ? 'Live' : '—'}
+              {activities.length > 0 ? t('admin.live') : '—'}
             </span>
           </div>
           <div className={styles.activityList}>
@@ -265,7 +259,7 @@ export default function AdminDashboard() {
               ))
             ) : (
               <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                لا توجد أنشطة حديثة
+                {t('dashboard.no_recent_activity')}
               </div>
             )}
           </div>

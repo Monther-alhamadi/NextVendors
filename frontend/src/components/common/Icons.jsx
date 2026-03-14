@@ -1,4 +1,3 @@
-import React from "react";
 
 export const CartIcon = ({ width = 16, height = 16 }) => (
   <svg

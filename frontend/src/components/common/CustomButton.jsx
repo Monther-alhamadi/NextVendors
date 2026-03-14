@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 import styles from "./CustomButton.module.css";
 
 export default function CustomButton({
@@ -8,12 +9,16 @@ export default function CustomButton({
   size = "md",
   disabled = false,
   loading = false,
-  loadingText = "جاري التحميل...",
+  loadingText,
   icon = null,
   onClick,
   ariaLabel,
   ...props
 }) {
+  const { t } = useTranslation();
+  const defaultLoadingText = t('common.loading', 'جاري التحميل...');
+  const actualLoadingText = loadingText || defaultLoadingText;
+
   const btnClass = [
     styles.customBtn,
     styles[variant] ? styles[variant] : styles.primary,
@@ -32,7 +37,7 @@ export default function CustomButton({
       {...props}
     >
       {loading ? (
-        <span className={styles.loader}>{loadingText}</span>
+        <span className={styles.loader}>{actualLoadingText}</span>
       ) : (
         <>
           {icon ? (

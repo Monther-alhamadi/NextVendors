@@ -9,17 +9,18 @@ import Badge from "../common/Badge";
 import { useTranslation } from "react-i18next";
 import useCompareStore from "../../store/compareStore";
 import { useToast } from "../common/ToastProvider";
+import { getLocalizedField } from "../../utils/localization";
 
 export default function ProductCard({ product, onAddToCart }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useToast();
   const { items: compareItems, toggleItem: toggleCompare } = useCompareStore();
   const isCompared = compareItems.some((i) => i.id === product?.id);
 
   if (!product) return null;
 
-  const category = product.category || t("common.general") || "General";
-  const name = product.name || product.title || t("common.unnamed_product") || "Unnamed Product";
+  const category = getLocalizedField(product, "category", i18n.language) || t("common.general") || "General";
+  const name = getLocalizedField(product, "name", i18n.language) || t("common.unnamed_product") || "Unnamed Product";
   const price = typeof product.price === "number" ? product.price : parseFloat(product.price) || 0;
   const oldPrice = product.old_price || product.original_price || null;
   const discount = oldPrice && oldPrice > price ? Math.round(((oldPrice - price) / oldPrice) * 100) : null;

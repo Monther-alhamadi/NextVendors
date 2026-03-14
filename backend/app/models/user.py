@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
 from typing import List, TYPE_CHECKING
 from app.models.base import SQLAlchemyBaseModel
 from app.core.database import Base
@@ -30,6 +30,13 @@ class User(SQLAlchemyBaseModel, Base):
     # 2FA Security
     totp_secret: str = Column(String(32), nullable=True)
     is_2fa_enabled: bool = Column(Boolean, default=False, nullable=False)
+    
+    # Email Verification OTP
+    otp_code: str = Column(String(6), nullable=True)
+    otp_expires_at = Column(DateTime, nullable=True)
+    otp_failed_attempts: int = Column(Integer, default=0, nullable=False)
+    otp_last_sent_at = Column(DateTime, nullable=True)
+    is_verified: bool = Column(Boolean, default=False, nullable=False)
     
     # Relationships
     return_requests = relationship("ReturnRequest", back_populates="user")

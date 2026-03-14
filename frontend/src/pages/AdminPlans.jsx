@@ -15,12 +15,12 @@ import s from "./AdminPlans.module.css";
 
 // ── All toggleable vendor capabilities ──────────────────────
 const PLAN_FEATURES = [
-  { key: "auto_approve_products",         icon: "✅", label: "الموافقة التلقائية على المنتجات", desc: "المنتجات تُنشر مباشرة دون مراجعة" },
-  { key: "can_customize_store",           icon: "🎨", label: "تخصيص المتجر",                  desc: "تعديل الألوان والتصميم والشعار" },
-  { key: "can_access_advanced_analytics", icon: "📊", label: "تحليلات متقدمة",                desc: "إحصائيات مفصلة ورسوم بيانية" },
-  { key: "can_use_priority_support",      icon: "⚡", label: "دعم فني أولوي",                 desc: "أولوية في الرد والدعم الفني" },
-  { key: "allow_whatsapp_checkout",       icon: "💬", label: "الدفع عبر واتساب",              desc: "إتمام الطلب عبر محادثة واتساب" },
-  { key: "is_active",                    icon: "🟢", label: "الخطة فعّالة",                   desc: "إظهار الخطة للتجار الجدد" },
+  { key: "auto_approve_products",         icon: "✅", label: t('auto_d3bb0c', t('auto_d3bb0c', 'الموافقة التلقائية على المنتجات')), desc: t('auto_259ec0', t('auto_259ec0', 'المنتجات تُنشر مباشرة دون مراجعة')) },
+  { key: "can_customize_store",           icon: "🎨", label: t('auto_625bcb', t('auto_625bcb', 'تخصيص المتجر')),                  desc: t('auto_4767b5', t('auto_4767b5', 'تعديل الألوان والتصميم والشعار')) },
+  { key: "can_access_advanced_analytics", icon: "📊", label: t('auto_7f0dea', t('auto_7f0dea', 'تحليلات متقدمة')),                desc: t('auto_164c51', t('auto_164c51', 'إحصائيات مفصلة ورسوم بيانية')) },
+  { key: "can_use_priority_support",      icon: "⚡", label: t('auto_06c1bb', t('auto_06c1bb', 'دعم فني أولوي')),                 desc: t('auto_68ab77', t('auto_68ab77', 'أولوية في الرد والدعم الفني')) },
+  { key: "allow_whatsapp_checkout",       icon: "💬", label: t('auto_1ca245', t('auto_1ca245', 'الدفع عبر واتساب')),              desc: t('auto_895f00', t('auto_895f00', 'إتمام الطلب عبر محادثة واتساب')) },
+  { key: "is_active",                    icon: "🟢", label: t('auto_c5eda0', t('auto_c5eda0', 'الخطة فعّالة')),                   desc: t('auto_b634e4', t('auto_b634e4', 'إظهار الخطة للتجار الجدد')) },
 ];
 
 const INITIAL_FORM = {
@@ -41,6 +41,7 @@ const INITIAL_FORM = {
 
 export default function AdminPlans() {
   const { t } = useTranslation();
+  const PLAN_FEATURES = getPlanFeatures(t);
   const toast = useToast();
 
   const [plans, setPlans] = useState([]);
@@ -94,10 +95,10 @@ export default function AdminPlans() {
     try {
       if (editingPlan) {
         await updateVendorPlan(editingPlan.id, formData);
-        toast.push({ message: "تم تحديث الخطة بنجاح", type: "success" });
+        toast.push({ message: t("admin.plans.update_success", "تم تحديث الخطة بنجاح"), type: "success" });
       } else {
         await createVendorPlan(formData);
-        toast.push({ message: "تم إنشاء الخطة بنجاح", type: "success" });
+        toast.push({ message: t("admin.plans.create_success", "تم إنشاء الخطة بنجاح"), type: "success" });
       }
       setModalOpen(false);
       loadData();
@@ -107,13 +108,13 @@ export default function AdminPlans() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm("هل أنت متأكد من حذف هذه الخطة؟")) return;
+    if (!window.confirm(t("admin.plans.delete_confirm", "هل أنت متأكد من حذف هذه الخطة؟"))) return;
     try {
       await deleteVendorPlan(id);
-      toast.push({ message: "تم حذف الخطة", type: "success" });
+      toast.push({ message: t("admin.plans.delete_success", "تم حذف الخطة"), type: "success" });
       loadData();
     } catch (e) {
-      toast.push({ message: e.response?.data?.detail || "فشل حذف الخطة", type: "error" });
+      toast.push({ message: e.response?.data?.detail || t("admin.plans.delete_failed", "فشل حذف الخطة"), type: "error" });
     }
   }
 
@@ -126,7 +127,7 @@ export default function AdminPlans() {
         p.id === plan.id ? { ...p, [featureKey]: newValue } : p
       ));
     } catch (e) {
-      toast.push({ message: "فشل تحديث الميزة", type: "error" });
+      toast.push({ message: t("admin.plans.toggle_failed", "فشل تحديث الميزة"), type: "error" });
     }
   }
 
@@ -136,12 +137,12 @@ export default function AdminPlans() {
         {/* Header */}
         <div className={s.header}>
           <div>
-            <h1 className={s.title}>إدارة خطط التجار</h1>
-            <p className={s.subtitle}>تحكم في الخطط والمميزات والأسعار والحدود لكل مستوى اشتراك</p>
+            <h1 className={s.title}>{t("admin.plans.title", "إدارة خطط التجار")}</h1>
+            <p className={s.subtitle}>{t("admin.plans.subtitle", "تحكم في الخطط والمميزات والأسعار والحدود لكل مستوى اشتراك")}</p>
           </div>
           <button className={s.createBtn} onClick={openCreate}>
             <Plus size={18} />
-            إنشاء خطة جديدة
+            {t("admin.plans.create_new", "إنشاء خطة جديدة")}
           </button>
         </div>
 
@@ -153,8 +154,8 @@ export default function AdminPlans() {
         ) : plans.length === 0 ? (
           <div className={s.emptyState}>
             <div className={s.emptyIcon}>📋</div>
-            <div className={s.emptyText}>لا توجد خطط حالياً</div>
-            <div className={s.emptyHint}>أنشئ خطة اشتراك للبدء في إدارة مميزات التجار</div>
+            <div className={s.emptyText}>{t("admin.plans.empty", "لا توجد خطط حالياً")}</div>
+            <div className={s.emptyHint}>{t("admin.plans.empty_hint", "أنشئ خطة اشتراك للبدء في إدارة مميزات التجار")}</div>
           </div>
         ) : (
           <div className={s.plansGrid}>
@@ -164,26 +165,26 @@ export default function AdminPlans() {
                 <div className={s.planCardHeader}>
                   <span className={s.planName}>{plan.name}</span>
                   <span className={`${s.planBadge} ${plan.is_active ? s.badgeActive : s.badgeInactive}`}>
-                    {plan.is_active ? 'فعّالة' : 'معطّلة'}
+                    {plan.is_active ? t("common.active_f", "فعّالة") : t("common.inactive_f", "معطّلة")}
                   </span>
                 </div>
 
                 {/* Pricing */}
                 <div className={s.planPricing}>
                   <div className={s.priceItem}>
-                    <span className={s.priceLabel}>شهرياً</span>
+                    <span className={s.priceLabel}>{t("admin.plans.monthly", "شهرياً")}</span>
                     <span className={s.priceValue}>
-                      {plan.monthly_price} <span className={s.priceUnit}>ر.س</span>
+                      {plan.monthly_price} <span className={s.priceUnit}>{t("common.currency", "ر.س")}</span>
                     </span>
                   </div>
                   <div className={s.priceItem}>
-                    <span className={s.priceLabel}>سنوياً</span>
+                    <span className={s.priceLabel}>{t("admin.plans.yearly", "سنوياً")}</span>
                     <span className={s.priceValue}>
-                      {plan.yearly_price || '—'} <span className={s.priceUnit}>ر.س</span>
+                      {plan.yearly_price || '—'} <span className={s.priceUnit}>{t("common.currency", "ر.س")}</span>
                     </span>
                   </div>
                   <div className={s.priceItem}>
-                    <span className={s.priceLabel}>العمولة</span>
+                    <span className={s.priceLabel}>{t("admin.plans.commission", "العمولة")}</span>
                     <span className={s.priceValue}>
                       {(plan.commission_rate * 100).toFixed(1)}<span className={s.priceUnit}>%</span>
                     </span>
@@ -194,17 +195,17 @@ export default function AdminPlans() {
                 <div className={s.planLimits}>
                   <div className={s.limitItem}>
                     <span className={s.limitValue}>{plan.max_products}</span>
-                    <span className={s.limitLabel}>أقصى منتجات</span>
+                    <span className={s.limitLabel}>{t("admin.plans.max_products", "أقصى منتجات")}</span>
                   </div>
                   <div className={s.limitItem}>
                     <span className={s.limitValue}>{plan.max_coupons || 0}</span>
-                    <span className={s.limitLabel}>أقصى كوبونات</span>
+                    <span className={s.limitLabel}>{t("admin.plans.max_coupons", "أقصى كوبونات")}</span>
                   </div>
                 </div>
 
                 {/* Features Toggles */}
                 <div className={s.planFeatures}>
-                  <div className={s.featuresTitle}>المميزات والخدمات</div>
+                  <div className={s.featuresTitle}>{t("admin.plans.features", "المميزات والخدمات")}</div>
                   <div className={s.featuresList}>
                     {PLAN_FEATURES.map(feat => (
                       <div key={feat.key} className={s.featureRow}>
@@ -225,7 +226,7 @@ export default function AdminPlans() {
                 {/* Actions */}
                 <div className={s.planActions}>
                   <button className={s.editBtn} onClick={() => openEdit(plan)}>
-                    <Edit2 size={14} /> تعديل الخطة
+                    <Edit2 size={14} /> {t("admin.plans.edit_plan", "تعديل الخطة")}
                   </button>
                   <button className={s.deleteBtn} onClick={() => handleDelete(plan.id)}>
                     <Trash2 size={14} />
@@ -242,36 +243,36 @@ export default function AdminPlans() {
             <div className={s.modal}>
               <div className={s.modalHeader}>
                 <h2 className={s.modalTitle}>
-                  {editingPlan ? `تعديل خطة: ${editingPlan.name}` : 'إنشاء خطة جديدة'}
+                  {editingPlan ? `تعديل خطة: ${editingPlan.name}` : '{t("admin.plans.create_new", "إنشاء خطة جديدة")}'}
                 </h2>
               </div>
 
               <div className={s.modalBody}>
                 {/* Basic Info */}
                 <div className={s.formGroup}>
-                  <label className={s.formLabel}>اسم الخطة</label>
+                  <label className={s.formLabel}>{t("admin.plans.plan_name", "اسم الخطة")}</label>
                   <input 
                     className={s.formInput}
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
-                    placeholder="مثال: أساسية، احترافية، مؤسسية"
+                    placeholder={t("admin.plans.name_ph", "مثال: أساسية، احترافية، مؤسسية")}
                     required
                   />
                 </div>
                 <div className={s.formGroup}>
-                  <label className={s.formLabel}>الوصف</label>
+                  <label className={s.formLabel}>{t("admin.plans.desc", "الوصف")}</label>
                   <input 
                     className={s.formInput}
                     value={formData.description}
                     onChange={e => setFormData({...formData, description: e.target.value})}
-                    placeholder="وصف مختصر للخطة ومميزاتها"
+                    placeholder={t("admin.plans.desc_ph", "وصف مختصر للخطة ومميزاتها")}
                   />
                 </div>
 
                 {/* Pricing */}
                 <div className={s.formRow}>
                   <div className={s.formGroup}>
-                    <label className={s.formLabel}>السعر الشهري (ر.س)</label>
+                    <label className={s.formLabel}>{t("admin.plans.monthly_price_lbl", "السعر الشهري (ر.س)")}</label>
                     <input 
                       className={s.formInput}
                       type="number"
@@ -282,7 +283,7 @@ export default function AdminPlans() {
                     />
                   </div>
                   <div className={s.formGroup}>
-                    <label className={s.formLabel}>السعر السنوي (ر.س)</label>
+                    <label className={s.formLabel}>{t("admin.plans.yearly_price_lbl", "السعر السنوي (ر.س)")}</label>
                     <input 
                       className={s.formInput}
                       type="number"
@@ -297,7 +298,7 @@ export default function AdminPlans() {
                 {/* Limits */}
                 <div className={s.formRow}>
                   <div className={s.formGroup}>
-                    <label className={s.formLabel}>نسبة العمولة (0.10 = 10%)</label>
+                    <label className={s.formLabel}>{t("admin.plans.commission_lbl", "نسبة العمولة (0.10 = 10%)")}</label>
                     <input 
                       className={s.formInput}
                       type="number"
@@ -309,7 +310,7 @@ export default function AdminPlans() {
                     />
                   </div>
                   <div className={s.formGroup}>
-                    <label className={s.formLabel}>الحد الأقصى للمنتجات</label>
+                    <label className={s.formLabel}>{t("admin.plans.max_products", "الحد الأقصى للمنتجات")}</label>
                     <input 
                       className={s.formInput}
                       type="number"
@@ -322,7 +323,7 @@ export default function AdminPlans() {
 
                 <div className={s.formRow}>
                   <div className={s.formGroup}>
-                    <label className={s.formLabel}>الحد الأقصى للكوبونات</label>
+                    <label className={s.formLabel}>{t("admin.plans.max_coupons", "الحد الأقصى للكوبونات")}</label>
                     <input 
                       className={s.formInput}
                       type="number"
@@ -335,7 +336,7 @@ export default function AdminPlans() {
 
                 {/* Feature Toggles */}
                 <div className={s.formSection}>
-                  <div className={s.formSectionTitle}>المميزات والخدمات</div>
+                  <div className={s.formSectionTitle}>{t("admin.plans.features", "المميزات والخدمات")}</div>
                   <div className={s.featuresList}>
                     {PLAN_FEATURES.map(feat => (
                       <div key={feat.key} className={s.featureRow}>
@@ -358,9 +359,9 @@ export default function AdminPlans() {
               </div>
 
               <div className={s.modalFooter}>
-                <button className={s.cancelBtn} onClick={() => setModalOpen(false)}>إلغاء</button>
+                <button className={s.cancelBtn} onClick={() => setModalOpen(false)}>{t("common.cancel", "إلغاء")}</button>
                 <button className={s.saveBtn} onClick={handleSubmit}>
-                  {editingPlan ? 'تحديث الخطة' : 'إنشاء الخطة'}
+                  {editingPlan ? t('admin.plans.update_plan', 'تحديث الخطة') : t('admin.plans.create_plan', 'إنشاء الخطة')}
                 </button>
               </div>
             </div>

@@ -4,12 +4,12 @@ import os
 # Setup sys.path to allow importing app modules
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from app.core.database import Base, engine
+from app.core.database import Base, engine # type: ignore
 import app.models  # This imports __init__.py which calls all _try_import
 
 # In some cases models might need the app initialized to register properly
 try:
-    from main import app as main_app
+    from main import app as main_app # type: ignore
 except ImportError:
     pass
 

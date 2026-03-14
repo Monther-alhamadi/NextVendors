@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Users, TrendingUp, DollarSign, Copy, Lock, PlusCircle } from "lucide-react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/common/CustomButton";
 import { useToast } from "../components/common/ToastProvider";
 import governanceService from "../services/governanceService";
 import s from "./VendorAffiliate.module.css";
-import { useNavigate } from "react-router-dom";
 
 export default function VendorAffiliate() {
   const { t } = useTranslation();
@@ -51,42 +51,28 @@ export default function VendorAffiliate() {
   const copyReferralCode = (code) => {
     const link = `${window.location.origin}?ref=${code}`;
     navigator.clipboard.writeText(link);
-    toast.push({ message: t('common.copied_to_clipboard', 'تم النسخ بنجاح!'), type: 'success' });
+    toast.push({ message: t('common.copied', 'تم النسخ إلى الحافظة'), type: 'success' });
   };
 
   if (loading) {
-    return (
-      <div className={s.page} style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className={s.loading}>{t('common.loading', 'جارٍ التحميل...')}</div>;
   }
 
   if (!hasAccess) {
     return (
-      <div className={s.page}>
-        <div className={s.upgradeCard}>
-          <div className={s.lockIconWrap}>
-            <Lock size={32} style={{ color: "var(--text-secondary)" }} />
-          </div>
-          <h2 className={s.upgradeTitle}>{t('vendor.affiliate_locked', 'برنامج التسويق بالعمولة - يتطلب ترقية')}</h2>
-          <p className={s.upgradeDesc}>{t('vendor.affiliate_locked_desc', 'افتح نظام التسويق بالعمولة الاحترافي وصمم حملات تسويقية لزيادة مبيعاتك.')}</p>
-          <CustomButton variant="primary" onClick={() => navigate('/vendor/plans')}>
-            {t('vendor.upgrade_now', 'ترقية إلى الباقة الاحترافية')}
-          </CustomButton>
-        </div>
+      <div className={s.noAccess}>
+        <Lock size={48} />
+        <h2>{t('common.access_denied', 'ليس لديك صلاحية الوصول')}</h2>
+        <p>{t('vendor.affiliate_access_warn', 'تحتاج إلى ترقية حسابك للوصول إلى نظام الأفلييت.')}</p>
+        <CustomButton onClick={() => navigate('/vendor/plans')}>{t('vendor.upgrade_now', 'ترقية الآن')}</CustomButton>
       </div>
     );
   }
 
   return (
-    <div className={s.page}>
-      <div className={s.header}>
-        <h1 className={s.title}>{t('vendor.affiliate_program', 'نظام التسويق بالعمولة')}</h1>
-        <p className={s.subtitle}>{t('vendor.affiliate_desc', 'إدارة المسوقين، تتبع الحملات، ومعرفة أداء الإحالات.')}</p>
-      </div>
+    <div className={s.container}>
+      <h1 className={s.title}>{t('vendor.affiliate_dashboard', 'لوحة تحكم الأفلييت')}</h1>
 
-      {/* Stats Grid */}
       <div className={s.statsGrid}>
         <div className={s.statCard}>
           <div className={`${s.statIcon} ${s.statPurple}`}>
@@ -94,7 +80,7 @@ export default function VendorAffiliate() {
           </div>
           <div className={s.statContent}>
             <div className={s.statLabel}>{t('vendor.total_affiliates', 'إجمالي المسوقين')}</div>
-            <div className={s.statValue}>{affiliateData?.total_affiliates || 0}</div>
+            <div className={s.statValue}>{affiliateData?.affiliates_count || 0}</div>
           </div>
         </div>
 
@@ -103,8 +89,8 @@ export default function VendorAffiliate() {
             <TrendingUp size={28} />
           </div>
           <div className={s.statContent}>
-            <div className={s.statLabel}>{t('vendor.total_conversions', 'التحويلات الناجحة')}</div>
-            <div className={s.statValue}>{affiliateData?.total_conversions || 0}</div>
+            <div className={s.statLabel}>{t('vendor.total_conversions', 'إجمالي التحويلات')}</div>
+            <div className={s.statValue}>{affiliateData?.conversions_count || 0}</div>
           </div>
         </div>
 
@@ -114,17 +100,16 @@ export default function VendorAffiliate() {
           </div>
           <div className={s.statContent}>
             <div className={s.statLabel}>{t('vendor.commission_paid', 'العمولات المدفوعة')}</div>
-            <div className={s.statValue}>{affiliateData?.total_commission?.toFixed(2) || '0.00'} {t('common.currency')}</div>
+            <div className={s.statValue}>{affiliateData?.total_commission?.toFixed(2) || '0.00'} {t('common.currency', 'ر.س')}</div>
           </div>
         </div>
       </div>
 
-      {/* Campaigns List */}
       <div className={s.campaignsCard}>
         <div className={s.campaignsHead}>
           <h2 className={s.campaignsTitle}>{t('vendor.affiliate_campaigns', 'الحملات التسويقية النشطة')}</h2>
           <CustomButton variant="primary" size="sm" onClick={() => navigate('/vendor/coupons')}>
-             <PlusCircle size={16} /> إضافة حملة جديدة
+             <PlusCircle size={16} /> {t('affiliate.add_campaign', 'إضافة حملة جديدة')}
           </CustomButton>
         </div>
 
@@ -138,11 +123,11 @@ export default function VendorAffiliate() {
               <div key={campaign.id} className={s.campaignItem}>
                 <div className={s.campaignInfo}>
                   <h3 className={s.campaignName}>{campaign.name}</h3>
-                  <p className={s.campaignComm}>نسبة العمولة: {campaign.commission_rate}%</p>
+                  <p className={s.campaignComm}>{t('affiliate.commission_rate', 'نسبة العمولة:')} {campaign.commission_rate}%</p>
                 </div>
                 <div className={s.campaignStats}>
-                  <span className={s.badge}>{campaign.clicks} نقرة</span>
-                  <span className={s.badgeSuccess}>{campaign.conversions} مبيعة</span>
+                  <span className={s.badge}>{campaign.clicks} {t('affiliate.clicks', 'نقرة')}</span>
+                  <span className={s.badgeSuccess}>{campaign.conversions} {t('affiliate.conversions', 'مبيعة')}</span>
                 </div>
                 <button className={s.copyBtn} onClick={() => copyReferralCode(campaign.code)}>
                   <Copy size={16} />

@@ -61,7 +61,7 @@ export default function VendorSettings() {
         }
     } catch (e) {
         console.error(e);
-        toast.push({ message: t('common.error', 'حدث خطأ'), type: "error" });
+        toast.push({ message: t("common.error"), type: "error" });
     } finally {
         setLoading(false);
     }
@@ -72,9 +72,9 @@ export default function VendorSettings() {
       setSaving(true);
       try {
           await updateMyVendorProfile(formData);
-          toast.push({ message: t('common.save_success', 'تم حفظ الإعدادات بنجاح!'), type: "success" });
+          toast.push({ message: t("common.save_success"), type: "success" });
       } catch (e) {
-          toast.push({ message: e.response?.data?.detail || t('common.error', 'حدث خطأ'), type: "error" });
+          toast.push({ message: e.response?.data?.detail || t("common.error"), type: "error" });
       } finally {
           setSaving(false);
       }
@@ -91,15 +91,15 @@ export default function VendorSettings() {
   return (
     <div className={s.page}>
       <div className={s.header}>
-        <h1 className={s.title}>{t('vendor.store_settings', 'إعدادات المتجر')}</h1>
-        <p className={s.subtitle}>تخصيص معلومات المتجر وطرق التواصل وعرض هويتك.</p>
+        <h1 className={s.title}>{t("vendor.store_settings")}</h1>
+        <p className={s.subtitle}>{t("vendor.appearance_desc")}</p>
       </div>
       
       <div className={s.formWrap}>
         <form onSubmit={handleSubmit}>
             <div className={s.formSection}>
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.store_name', 'اسم المتجر')} <span style={{color:'red'}}>*</span></label>
+                    <label>{t("vendor.store_name")} <span style={{color:'red'}}>*</span></label>
                     <input 
                         required
                         className={s.input}
@@ -109,17 +109,17 @@ export default function VendorSettings() {
                 </div>
 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.description_label', 'وصف المتجر')}</label>
+                    <label>{t("vendor.description_label")}</label>
                     <textarea 
                         className={s.textarea}
                         value={formData.description}
                         onChange={e => setFormData({...formData, description: e.target.value})}
-                        placeholder={t('vendor.description_placeholder', 'اكتب نبذة عن متجرك...')}
+                        placeholder={t("vendor.description_placeholder")}
                     />
                 </div>
 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.logo_url_label', 'رابط الشعار (Logo URL)')}</label>
+                    <label>{t("vendor.logo_url_label")}</label>
                     <input 
                         className={s.input}
                         value={formData.logo_url}
@@ -128,14 +128,14 @@ export default function VendorSettings() {
                     />
                     {formData.logo_url && (
                         <div className={s.logoPreview}>
-                            <img src={formData.logo_url} alt="Logo Preview" onError={(e) => { e.target.style.display='none'; e.target.parentNode.innerHTML='<span style="font-size:10px;color:#999">رابط غير صالح</span>' }} />
+                            <img src={formData.logo_url} alt="Logo Preview" onError={(e) => { e.target.style.display='none'; }} />
                         </div>
                     )}
                 </div>
 
                 <div className={s.dualInputs}>
                     <div className={s.inputGroup}>
-                        <label>{t('common.email', 'البريد الإلكتروني')}</label>
+                        <label>{t("common.email")}</label>
                         <input 
                             type="email"
                             className={s.input}
@@ -145,7 +145,7 @@ export default function VendorSettings() {
                         />
                     </div>
                     <div className={s.inputGroup}>
-                        <label>{t('common.phone', 'رقم الهاتف')}</label>
+                        <label>{t("common.phone")}</label>
                         <input 
                             type="tel"
                             className={s.input}
@@ -158,20 +158,20 @@ export default function VendorSettings() {
             </div>
 
             <div className={s.formSection} style={{ position: 'relative', minHeight: '300px' }}>
-                <h3 className={s.sectionTitle}>{t('vendor.hybrid_commerce', 'إعدادات التجارة المباشرة (واتساب)')}</h3>
-                <p className={s.sectionDesc}>{t('vendor.hybrid_desc', 'قم بتفعيل هذه الميزة لتمكين العملاء من الطلب المباشر والتفاوض عبر الواتساب بدلاً من الدفع عبر المنصة فقط.')}</p>
+                <h3 className={s.sectionTitle}>{t("vendor.hybrid_commerce")}</h3>
+                <p className={s.sectionDesc}>{t("vendor.hybrid_desc")}</p>
                 
                 {capabilities && capabilities.allow_whatsapp_checkout === false && (
                     <div style={{ position: 'absolute', top: '70px', left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.85)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', backdropFilter: 'blur(2px)' }}>
                         <Lock size={40} color="var(--primary-color)" style={{ marginBottom: '1rem', opacity: 0.8 }} />
-                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>ميزة حصرية לבاقة Elite</h4>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>قم بالترقية للباقة المميزة لتفعيل الطلب عبر الواتساب وإدارة التفاوض المباشر</p>
-                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>ترقية الباقة الآن</Link>
+                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>{t("vendor.elite_feature")}</h4>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{t("vendor.elite_desc")}</p>
+                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>{t("vendor.upgrade_now")}</Link>
                     </div>
                 )}
                 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.whatsapp', 'رقم الواتساب')}</label>
+                    <label>{t("vendor.whatsapp")}</label>
                     <input 
                         type="tel"
                         className={s.input}
@@ -192,41 +192,41 @@ export default function VendorSettings() {
                             <span className={s.slider}></span>
                         </div>
                         <div>
-                            <strong>{t('vendor.allow_direct', 'السماح بالطلبات المباشرة (Direct Orders)')}</strong>
-                            <p className={s.toggleHint}>{t('vendor.allow_direct_hint', 'عند التفعيل، سيظهر زر "شراء عبر الواتساب" في صفحة منتجاتك.')}</p>
+                            <strong>{t("vendor.allow_direct")}</strong>
+                            <p className={s.toggleHint}>{t("vendor.allow_direct_hint")}</p>
                         </div>
                     </label>
                 </div>
 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.settlement_method', 'طريقة التسوية المفضلة')}</label>
+                    <label>{t("vendor.settlement_method")}</label>
                     <select 
                         className={s.input}
                         value={formData.preferred_settlement_method}
                         onChange={e => setFormData({...formData, preferred_settlement_method: e.target.value})}
                     >
-                        <option value="platform">{t('vendor.settle_platform', 'الدفع الآلي عبر المنصة (Platform)')}</option>
-                        <option value="post_billing">{t('vendor.settle_invoice', 'فوترة آجلة (Post-Billing Invoice)')}</option>
-                        <option value="subscription">{t('vendor.settle_sub', 'عبر تقاسم الاشتراك (Subscription)')}</option>
+                        <option value="platform">{t("vendor.settle_platform")}</option>
+                        <option value="post_billing">{t("vendor.settle_invoice")}</option>
+                        <option value="subscription">{t("vendor.settle_sub")}</option>
                     </select>
                 </div>
             </div>
 
             <div className={s.formSection} style={{ position: 'relative', minHeight: '350px' }}>
-                <h3 className={s.sectionTitle}>{t('vendor.store_appearance', 'المظهر المتقدم للمتجر (Elite Appearance)')}</h3>
-                <p className={s.sectionDesc}>{t('vendor.appearance_desc', 'قم بتخصيص مظهر متجرك العام لجذب المزيد من الزبائن.')}</p>
+                <h3 className={s.sectionTitle}>{t("vendor.store_appearance")}</h3>
+                <p className={s.sectionDesc}>{t("vendor.appearance_desc")}</p>
                 
                 {capabilities && capabilities.allow_store_customization === false && (
                     <div style={{ position: 'absolute', top: '70px', left: 0, right: 0, bottom: 0, background: 'rgba(255, 255, 255, 0.85)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', backdropFilter: 'blur(2px)' }}>
                         <Lock size={40} color="var(--primary-color)" style={{ marginBottom: '1rem', opacity: 0.8 }} />
-                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>أطلق العنان لهوية متجرك</h4>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>تخصيص الألوان، رفع خلفيات، وإعلانات داخل المتجر متاحة في الباقة الاحترافية</p>
-                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>استكشاف الباقات</Link>
+                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>{t("vendor.elite_appearance_title")}</h4>
+                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{t("vendor.elite_appearance_desc")}</p>
+                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>{t("vendor.upgrade_now")}</Link>
                     </div>
                 )}
                 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.theme_color', 'لون المتجر الأساسي')}</label>
+                    <label>{t("vendor.theme_color")}</label>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <input 
                             type="color"
@@ -239,7 +239,7 @@ export default function VendorSettings() {
                 </div>
 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.background_url', 'رابط خلفية المتجر (Background Image URL)')}</label>
+                    <label>{t("vendor.background_url")}</label>
                     <input 
                         className={s.input}
                         value={formData.background_image_url || ""}
@@ -249,34 +249,34 @@ export default function VendorSettings() {
                 </div>
 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.announcement_text', 'شريط الإعلانات الخاص بك')}</label>
+                    <label>{t("vendor.announcement_text")}</label>
                     <input 
                         className={s.input}
                         value={formData.announcement_text || ""}
                         onChange={e => setFormData({...formData, announcement_text: e.target.value})}
-                        placeholder={t('vendor.announcement_placeholder', 'مثال: خصم 20% على جميع المنتجات اليوم!')}
+                        placeholder={t("vendor.announcement_placeholder")}
                     />
                 </div>
 
                 <div className={s.dualInputs}>
                     <div className={s.inputGroup}>
-                        <label>{t('vendor.currency_display', 'عملة العرض المفضلة')}</label>
+                        <label>{t("vendor.currency_display")}</label>
                         <select 
                             className={s.input}
                             value={formData.currency_display || "SAR"}
                             onChange={e => setFormData({...formData, currency_display: e.target.value})}
                         >
-                            <option value="SAR">SAR - ريال سعودي</option>
-                            <option value="USD">USD - دولار أمريكي</option>
-                            <option value="AED">AED - درهم إماراتي</option>
-                            <option value="KWD">KWD - دينار كويتي</option>
-                            <option value="EGP">EGP - جنيه مصري</option>
+                            <option value="SAR">SAR - {t("currency.sar")}</option>
+                            <option value="USD">USD - {t("currency.usd")}</option>
+                            <option value="AED">AED - {t("currency.aed")}</option>
+                            <option value="KWD">KWD - {t("currency.kwd")}</option>
+                            <option value="EGP">EGP - {t("currency.egp")}</option>
                         </select>
                     </div>
                 </div>
                 
                 <div className={s.inputGroup}>
-                    <label>{t('vendor.store_ads', 'إعلانات وبنرات المتجر الداخلي (JSON / URLs)')}</label>
+                    <label>{t("vendor.store_ads")}</label>
                     <textarea 
                         className={s.textarea}
                         value={formData.store_ads || ""}
@@ -284,7 +284,7 @@ export default function VendorSettings() {
                         placeholder='["https://example.com/ad1.jpg", "https://example.com/ad2.jpg"]'
                         style={{direction: 'ltr', textAlign: 'left'}}
                     />
-                    <small style={{color: '#666', marginTop: '4px', display: 'block'}}>{t('vendor.store_ads_hint', 'أدخل روابط الصور كقائمة JSON للبنرات الترويجية الحصرية لمتجرك: ["رابط1", "رابط2"]')}</small>
+                    <small style={{color: '#666', marginTop: '4px', display: 'block'}}>{t("vendor.store_ads_hint")}</small>
                 </div>
             </div>
 
@@ -295,7 +295,7 @@ export default function VendorSettings() {
                     ) : (
                       <>
                         <Save size={18} />
-                        {t('common.save', 'حفظ التعديلات')}
+                        {t("common.save")}
                       </>
                     )}
                 </button>

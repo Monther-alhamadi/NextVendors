@@ -45,6 +45,18 @@ class AdminVendorService:
         db.add(log)
         db.commit()
         db.refresh(vendor)
+        # Send Email Notification
+        try:
+            from app.services.email_service import send_email
+            import threading
+            target_email = vendor.email or (vendor.owner.email if vendor.owner else None)
+            if target_email:
+                subject = "مبروك! تمت الموافقة على طلبك للبيـع"
+                html_content = f"<html><body dir='rtl'><h2>أهلاً {vendor.name}!</h2><p>تمت الموافقة على طلبكم للبيـع. يمكنك الآن الدخول إلى لوحة تحكم التاجر وإضافة منتجاتك.</p></body></html>"
+                threading.Thread(target=send_email, args=(target_email, subject, html_content)).start()
+        except Exception:
+            pass
+
         return vendor
 
     @staticmethod
@@ -71,6 +83,18 @@ class AdminVendorService:
         )
         db.add(log)
         db.commit()
+        # Send Email Notification
+        try:
+            from app.services.email_service import send_email
+            import threading
+            target_email = vendor.email or (vendor.owner.email if vendor.owner else None)
+            if target_email:
+                subject = "تحديث بخصوص طلبك البيع"
+                html_content = f"<html><body dir='rtl'><h2>أهلاً {vendor.name}،</h2><p>نعتذر لإخبارك بأنه تم رفض طلبكم البيع على منصتنا.</p><p><strong>السبب:</strong> {reason}</p></body></html>"
+                threading.Thread(target=send_email, args=(target_email, subject, html_content)).start()
+        except Exception:
+            pass
+
         return vendor
 
     @staticmethod

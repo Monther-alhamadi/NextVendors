@@ -90,7 +90,7 @@ export default function AdminSidebar({ isMobileOpen, setMobileOpen }) {
         <div className={styles.header}>
           <Link to="/admin" className={styles.logo}>
             <div className={styles.logoIcon}>A</div>
-            {!collapsed && <span className={styles.logoText}>لوحة القيادة</span>}
+            {!collapsed && <span className={styles.logoText}>{t('auto_9df8f2', t('auto_9df8f2', 'لوحة القيادة'))}</span>}
           </Link>
           <button 
             className={styles.collapseBtn}

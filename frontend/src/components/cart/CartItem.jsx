@@ -3,9 +3,10 @@ import OptimizedImage from "../OptimizedImage";
 import CustomButton from "../common/CustomButton";
 import { TrashIcon } from "../common/Icons";
 import { useTranslation } from "react-i18next";
+import { getLocalizedField } from "../../utils/localization";
 
 export default function CartItem({ item, onRemove, onUpdate }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // Extract correct image URL
   const firstImg = item.product.images?.[0];
@@ -16,12 +17,14 @@ export default function CartItem({ item, onRemove, onUpdate }) {
       <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 transition-transform group-hover:scale-105">
         <OptimizedImage
           src={imgSrc}
-          alt={item.product.name}
+          alt={getLocalizedField(item.product, "name", i18n.language)}
           className="w-full h-full object-cover"
         />
       </div>
       <div className="flex-1 min-w-0">
-        <h4 className="text-lg font-bold text-slate-800 truncate mb-1">{item.product.name}</h4>
+        <h4 className="text-lg font-bold text-slate-800 truncate mb-1">
+          {getLocalizedField(item.product, "name", i18n.language)}
+        </h4>
         <div className="text-indigo-600 font-bold mb-4">
           {item.product.price.toLocaleString()} {t('common.currency')}
         </div>

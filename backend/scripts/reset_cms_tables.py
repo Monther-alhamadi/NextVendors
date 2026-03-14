@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import app.models # Load all models
 from app.core.database import SessionLocal, engine
 from app.models.cms import Page, Widget
-from sqlalchemy import text # Import text
+from sqlalchemy import text
 
 def reset_cms_tables():
     print("Dropping and recreating CMS tables...")

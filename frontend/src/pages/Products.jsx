@@ -15,6 +15,8 @@ import PageContainer from "../components/PageContainer";
 import { useTranslation } from "react-i18next";
 import styles from "./Products.module.css";
 
+import { getLocalizedField } from "../utils/localization";
+
 // ─── Skeleton placeholder for product cards ───────────────────────────────────
 function ProductSkeleton() {
   return (
@@ -200,8 +202,10 @@ export default function Products() {
           onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
         >
           <option value="">{t("filter.all_categories")}</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat, idx) => (
+            <option key={idx} value={cat.name}>
+              {getLocalizedField(cat, "name", i18n.language)}
+            </option>
           ))}
         </select>
       </div>

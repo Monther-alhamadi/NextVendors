@@ -79,8 +79,8 @@ const VendorAddProduct = () => {
       setTimeout(() => navigate('/vendor/products'), 1500);
     } catch (err) {
       console.error("Failed to add product", err);
-      setError(err.response?.data?.detail || 'فشل إضافة المنتج');
-      toast.push({ message: err.response?.data?.detail || "فشل إضافة المنتج.", type: 'error' });
+      setError(err.response?.data?.detail || t('vendor.add_product_failed', 'فشل إضافة المنتج'));
+      toast.push({ message: err.response?.data?.detail || t("vendor.add_product_failed_dot", "فشل إضافة المنتج."), type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -91,25 +91,25 @@ const VendorAddProduct = () => {
         <div className={s.page}>
           <div className={s.selectModeContainer}>
               <h1 className={s.selectTitle}>{t('vendor.add_new_product', 'إضافة منتج جديد')}</h1>
-              <p className={s.selectSubtitle}>اختر طريقة إضافة المنتج التي تناسبك لبدء البيع فوراً.</p>
+              <p className={s.selectSubtitle}>{t("vendor.add_product_subtitle", "اختر طريقة إضافة المنتج التي تناسبك لبدء البيع فوراً.")}</p>
               
               <div className={s.cardsGrid}>
                   <div className={s.modeCard} onClick={() => setMode('dropship')}>
                       <div className={`${s.cardIconWrap} ${s.blue}`}>
                         <Globe size={40} />
                       </div>
-                      <h2 className={s.cardTitle}>البيع من كتالوج الموردين</h2>
-                      <p className={s.cardDesc}>دروبشيبينغ لمنتجات جاهزة من موردين معتمدين. (يتطلب باقة احترافية)</p>
-                      <span className={s.cardAction}>تصفح الكتالوج &rarr;</span>
+                      <h2 className={s.cardTitle}>{t("vendor.sell_from_catalog", "البيع من كتالوج الموردين")}</h2>
+                      <p className={s.cardDesc}>{t("vendor.dropship_desc", "دروبشيبينغ لمنتجات جاهزة من موردين معتمدين. (يتطلب باقة احترافية)")}</p>
+                      <span className={s.cardAction}>{t("vendor.browse_catalog", "تصفح الكتالوج")} &rarr;</span>
                   </div>
 
                   <div className={s.modeCard} onClick={() => setMode('create')}>
                       <div className={`${s.cardIconWrap} ${s.purple}`}>
                         <PlusCircle size={40} />
                       </div>
-                      <h2 className={s.cardTitle}>إنشاء منتج خاص بك</h2>
-                      <p className={s.cardDesc}>ارفاق الصور والتفاصيل الخاصة بك. تحكم كامل في القوائم الخاصة بك.</p>
-                      <span className={s.cardAction}>إنشاء قائمة &rarr;</span>
+                      <h2 className={s.cardTitle}>{t("vendor.create_own_product", "إنشاء منتج خاص بك")}</h2>
+                      <p className={s.cardDesc}>{t("vendor.create_own_desc", "ارفاق الصور والتفاصيل الخاصة بك. تحكم كامل في القوائم الخاصة بك.")}</p>
+                      <span className={s.cardAction}>{t("vendor.create_listing", "إنشاء قائمة")} &rarr;</span>
                   </div>
               </div>
           </div>
@@ -122,9 +122,9 @@ const VendorAddProduct = () => {
         <div className={s.header}>
             <button onClick={() => setMode('select')} className={s.backBtn}>
               <ArrowLeft size={20} />
-              <span>العودة للخيارات</span>
+              <span>{t("vendor.back_to_options", "العودة للخيارات")}</span>
             </button>
-            <h1 className={s.title}>{mode === 'dropship' ? 'بيع منتج دروبشيبينغ' : 'إنشاء منتج خاص'}</h1>
+            <h1 className={s.title}>{mode === 'dropship' ? t('vendor.dropship_product', 'بيع منتج دروبشيبينغ') : t('vendor.create_private_product', 'إنشاء منتج خاص')}</h1>
         </div>
 
         <div className={s.formWrapper}>
@@ -136,11 +136,11 @@ const VendorAddProduct = () => {
                     <div className={s.section}>
                         <div className={s.sectionHeader}>
                           <Search size={20} />
-                          <h3>البحث في الكتالوج</h3>
+                          <h3>{t("vendor.search_catalog", "البحث في الكتالوج")}</h3>
                         </div>
                         <input 
                             type="text" 
-                            placeholder="ابحث بالاسم، الفئة، أو الرمز الشريطي..."
+                            placeholder={t("vendor.search_catalog_ph", "ابحث بالاسم، الفئة، أو الرمز الشريطي...")}
                             className={s.input}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -149,7 +149,7 @@ const VendorAddProduct = () => {
                             <div className={s.searchResults}>
                                 <div className={s.searchResultItem} onClick={() => setSelectedMaster({id: 1, name: "Global Widget X", category: "Electronics"})}>
                                      <div className={s.resultName}>Global Widget X</div>
-                                     <div className={s.resultMeta}>Electronics • السعر الأساسي: 50 ر.س</div>
+                                     <div className={s.resultMeta}>Electronics • {t("vendor.base_price_50", "السعر الأساسي: 50 ر.س")}</div>
                                 </div>
                             </div>
                         )}
@@ -157,9 +157,9 @@ const VendorAddProduct = () => {
                             <div className={s.selectedMasterCard}>
                                 <div>
                                     <span className={s.selectedName}>{selectedMaster.name}</span>
-                                    <span className={s.selectedMeta}>تم اختياره من كتالوج الموردين العالمي</span>
+                                    <span className={s.selectedMeta}>{t("vendor.selected_from_catalog", "تم اختياره من كتالوج الموردين العالمي")}</span>
                                 </div>
-                                <button type="button" onClick={() => setSelectedMaster(null)} className={s.changeBtn}>تغيير</button>
+                                <button type="button" onClick={() => setSelectedMaster(null)} className={s.changeBtn}>{t("common.change", "تغيير")}</button>
                             </div>
                         )}
                     </div>
@@ -170,11 +170,11 @@ const VendorAddProduct = () => {
                     <div className={s.section}>
                          <div className={s.sectionHeader}>
                           <Package size={20} />
-                          <h3>المعلومات الأساسية</h3>
+                          <h3>{t("vendor.basic_info", "المعلومات الأساسية")}</h3>
                         </div>
                         <div className={s.grid2}>
                           <div className={s.inputGroup}>
-                            <label>اسم المنتج <span className={s.required}>*</span></label>
+                            <label>{t("vendor.product_name", "اسم المنتج")} <span className={s.required}>*</span></label>
                             <input 
                                 className={s.input}
                                 value={formData.name}
@@ -183,7 +183,7 @@ const VendorAddProduct = () => {
                             />
                           </div>
                           <div className={s.inputGroup}>
-                            <label>التصنيف <span className={s.required}>*</span></label>
+                            <label>{t("vendor.category", "التصنيف")} <span className={s.required}>*</span></label>
                             <input 
                                 className={s.input}
                                 value={formData.category}
@@ -193,7 +193,7 @@ const VendorAddProduct = () => {
                           </div>
                         </div>
                         <div className={s.inputGroup}>
-                            <label>الوصف <span className={s.required}>*</span></label>
+                            <label>{t("vendor.description", "الوصف")} <span className={s.required}>*</span></label>
                             <textarea
                                 required
                                 className={s.textarea}
@@ -210,7 +210,7 @@ const VendorAddProduct = () => {
                     <div className={s.section}>
                         <div className={s.sectionHeader}>
                           <ImageIcon size={20} />
-                          <h3>الصور والوسائط</h3>
+                          <h3>{t("vendor.images_media", "الصور والوسائط")}</h3>
                         </div>
                         <ProductImageManager 
                             images={images}
@@ -223,11 +223,11 @@ const VendorAddProduct = () => {
                 <div className={s.section}>
                     <div className={s.sectionHeader}>
                       <DollarSign size={20} />
-                      <h3>التسعير والمخزون</h3>
+                      <h3>{t("vendor.pricing_inventory", "التسعير والمخزون")}</h3>
                     </div>
                     <div className={s.grid2}>
                         <div className={s.inputGroup}>
-                          <label>السعر (ر.س) <span className={s.required}>*</span></label>
+                          <label>{t("vendor.price_sar", "السعر (ر.س)")} <span className={s.required}>*</span></label>
                           <input 
                               type="number"
                               step="0.01"
@@ -238,7 +238,7 @@ const VendorAddProduct = () => {
                           />
                         </div>
                         <div className={s.inputGroup}>
-                          <label>المخزون المتوفر <span className={s.required}>*</span></label>
+                          <label>{t("vendor.available_stock", "المخزون المتوفر")} <span className={s.required}>*</span></label>
                           <input 
                               type="number"
                               className={s.input}
@@ -248,7 +248,7 @@ const VendorAddProduct = () => {
                           />
                         </div>
                         <div className={s.inputGroup}>
-                          <label>SKU (رمز الصنف)</label>
+                          <label>{t("vendor.sku_label", "SKU (رمز الصنف)")}</label>
                           <input 
                               className={s.input}
                               value={formData.sku}
@@ -256,7 +256,7 @@ const VendorAddProduct = () => {
                           />
                         </div>
                         <div className={s.inputGroup}>
-                          <label>تنبيه انخفاض المخزون</label>
+                          <label>{t("vendor.low_stock_alert", "تنبيه انخفاض المخزون")}</label>
                           <input 
                               type="number"
                               className={s.input}
@@ -272,25 +272,25 @@ const VendorAddProduct = () => {
                   <div className={s.section}>
                     <div className={s.sectionHeader}>
                       <Settings size={20} />
-                      <h3>تحسين محركات البحث (SEO) <span className={s.badge}>متقدم</span></h3>
+                      <h3>{t("vendor.seo", "تحسين محركات البحث (SEO)")} <span className={s.badge}>{t("common.advanced", "متقدم")}</span></h3>
                     </div>
                     <div className={s.grid2}>
                        <div className={s.inputGroup}>
-                          <label>عنوان ميتا (Meta Title)</label>
+                          <label>{t("vendor.meta_title", "عنوان ميتا (Meta Title)")}</label>
                           <input 
                               className={s.input}
                               value={formData.metaTitle}
                               onChange={e => setFormData({...formData, metaTitle: e.target.value})}
-                              placeholder="عنوان الصفحة لمحركات البحث"
+                              placeholder={t("vendor.meta_title_ph", "عنوان الصفحة لمحركات البحث")}
                           />
                         </div>
                         <div className={s.inputGroup}>
-                          <label>الكلمات الدلالية (Tags)</label>
+                          <label>{t("vendor.meta_tags", "الكلمات الدلالية (Tags)")}</label>
                           <input 
                               className={s.input}
                               value={formData.metaTags}
                               onChange={e => setFormData({...formData, metaTags: e.target.value})}
-                              placeholder="مفصولة بفواصل e.g. هاتف, ذكي"
+                              placeholder={t("vendor.meta_tags_ph", "مفصولة بفواصل e.g. هاتف, ذكي")}
                           />
                         </div>
                     </div>
@@ -308,7 +308,7 @@ const VendorAddProduct = () => {
                     ) : (
                       <>
                         <Save size={20} />
-                        {mode === 'dropship' ? 'تأكيد وإدراج' : 'حفظ ونشر'}
+                        {mode === 'dropship' ? t('vendor.confirm_list', 'تأكيد وإدراج') : t('vendor.save_publish', 'حفظ ونشر')}
                       </>
                     )}
                   </button>

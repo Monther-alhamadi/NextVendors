@@ -1,244 +1,211 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "../components/common/ToastProvider";
 import { useTranslation } from "react-i18next";
 import { listVendorCoupons, createVendorCoupon, deleteVendorCoupon } from "../services/couponService";
 import { getMySupplierInfo } from "../services/supplierService";
 import api from "../services/api";
-import { Copy, PlusCircle, Trash2, Lock, Share2, Tag, Percent } from "lucide-react";
+import { Copy, PlusCircle, Trash2, Tag, Percent } from "lucide-react";
 import s from "./VendorCoupons.module.css";
 
 export default function VendorCoupons() {
   const { t } = useTranslation();
   const toast = useToast();
   const [coupons, setCoupons] = useState([]);
-  const [features, setFeatures] = useState({});
   const [loading, setLoading] = useState(true);
   const [supplier, setSupplier] = useState(null);
   const [creating, setCreating] = useState(false);
   
   const [formData, setFormData] = useState({
-      code: "",
-      amount: "",
-      amount_type: "percentage", 
-      affiliate_email: ""      
+    code: "",
+    amount: "",
+    amount_type: "percentage", 
+    affiliate_email: ""
   });
 
-  useEffect(() => {
-      loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const info = await getMySupplierInfo().catch(() => null);
       setSupplier(info);
 
       if (info) {
-          const [cData, fData] = await Promise.all([
-             listVendorCoupons(),
-             api.get(`/vendor/features?vendor_id=${info.id}`).then(r => r.data)
-          ]);
-          setCoupons(cData || []);
-          setFeatures(fData || {});
+        const [cData] = await Promise.all([
+          listVendorCoupons()
+        ]);
+        setCoupons(cData || []);
       }
     } catch (e) {
-      console.error(e);
-      toast.push({ message: t('common.error', 'حدث خطأ'), type: "error" });
+      toast.push({ message: t("common.error", "فشل تحميل البيانات"), type: "error" });
     } finally {
       setLoading(false);
     }
+  }, [t, toast]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.code || !formData.amount) {
+      toast.push({ message: t("vendor.fill_all_fields", "يرجى ملء كافة الحقول"), type: "warning" });
+      return;
+    }
+
+    setCreating(true);
+    try {
+      await createVendorCoupon({
+        ...formData,
+        amount: parseFloat(formData.amount)
+      });
+      toast.push({ message: t("vendor.coupon_created", "تم إنشاء الكوبون بنجاح"), type: "success" });
+      setFormData({ code: "", amount: "", amount_type: "percentage", affiliate_email: "" });
+      loadData();
+    } catch (e) {
+      toast.push({ message: e.response?.data?.detail || t("common.error"), type: "error" });
+    } finally {
+      setCreating(false);
+    }
   };
 
-  const copyLink = () => {
-    if (!supplier || !supplier.code) return;
-    const url = `${window.location.origin}/?ref=${supplier.code}`;
+  const handleDelete = async (id) => {
+    if (!window.confirm(t("common.confirm_delete", "هل أنت متأكد من الحذف؟"))) return;
+    try {
+      await deleteVendorCoupon(id);
+      toast.push({ message: t("common.deleted", "تم الحذف بنجاح"), type: "success" });
+      loadData();
+    } catch (e) {
+      toast.push({ message: t("common.error"), type: "error" });
+    }
+  };
+
+  const copyReferralLink = (code) => {
+    const url = `${window.location.origin}/?ref=${code}`;
     navigator.clipboard.writeText(url);
-    toast.push({ message: t('vendor.affiliate_link_copied', 'تم نسخ رابط التسويق'), type: "success" });
+    toast.push({ message: t("vendor.affiliate_link_copied", "تم نسخ رابط الأفلييت"), type: "success" });
   };
 
-  async function handleCreate(e) {
-      e.preventDefault();
-      setCreating(true);
-      try {
-          await createVendorCoupon({
-              ...formData,
-              amount: parseFloat(formData.amount)
-          });
-          toast.push({ message: t('common.save_success', 'تم الحفظ بنجاح'), duration: 3000 });
-          setFormData({ code: "", amount: "", amount_type: "percentage", affiliate_email: "" });
-          loadData();
-      } catch (e) {
-          toast.push({ message: e.response?.data?.detail || t('common.error', 'حدث خطأ'), type: "error" });
-      } finally {
-          setCreating(false);
-      }
-  }
-
-  async function handleDelete(id) {
-      if(!window.confirm(t('common.confirm_action', 'هل أنت متأكد؟'))) return;
-      try {
-          await deleteVendorCoupon(id);
-          setCoupons(coupons.filter(c => c.id !== id));
-          toast.push({ message: t('common.delete_success', 'تم الحذف بنجاح'), duration: 2000 });
-      } catch (e) {
-          toast.push({ message: t('common.error', 'حدث خطأ'), type: "error" });
-      }
+  if (loading) {
+    return <div className={s.loading}>{t("common.loading", "جارٍ التحميل...")}</div>;
   }
 
   return (
-    <div className={s.page}>
-      <div className={s.header}>
-         <h1 className={s.title}>{t('vendor.marketing_tools', 'أدوات التسويق')}</h1>
-         <p className={s.subtitle}>إدارة أكواد الخصم ونظام التسويق بالعمولة لمتجرك.</p>
-      </div>
-
-      {/* Affiliate Link Section */}
-      <div className={s.affiliateHero}>
-          <div>
-            <h2 className={s.heroTitle}><Share2 size={24} /> {t('vendor.affiliate_link', 'رابط التسويق الخاص بك')}</h2>
-            <p className={s.heroDesc}>
-              شارك هذا الرابط مع عملائك أو مسوقيك. الزوار القادمون عبر هذا الرابط سيتم ربطهم بمتجرك مباشرة للحصول على عمولات إضافية.
-            </p>
-          </div>
-          <div className={s.linkBox}>
-                <span className={s.linkCode}>
-                    {supplier && supplier.code 
-                        ? `${window.location.origin}/?ref=${supplier.code}` 
-                        : "جاري التحميل..."}
-                </span>
-                <button onClick={copyLink} className={s.copyBtn}>
-                    <Copy size={16} />
-                    {t('common.copy', 'نسخ')}
-                </button>
-          </div>
-      </div>
+    <div className={s.container}>
+      <header className={s.header}>
+        <h1 className={s.title}>{t("vendor.coupons_title", "إدارة الكوبونات والأفلييت")}</h1>
+      </header>
 
       <div className={s.mainGrid}>
-          {/* Create Form */}
-          <div className={s.card}>
-              <h2 className={s.cardTitle}><PlusCircle size={20} /> {t('vendor.create_coupon', 'إنشاء كوبون جديد')}</h2>
-              
-              {!features.can_create_affiliate_coupons && (
-                  <div className={s.lockedOverlay}>
-                      <div className={s.lockIconWrap}><Lock size={32} /></div>
-                      <h3 className={s.lockedTitle}>{t('vendor.upgrade_required', 'ميزة احترافية')}</h3>
-                      <p className={s.lockedDesc}>احصل على نظام مسوقين متكامل عبر الترقية للباقة الاحترافية.</p>
-                      <Link to="/vendor/plans" className={s.upgradeBtn}>
-                          {t('vendor.upgrade_now', 'ترقية الآن')}
-                      </Link>
-                  </div>
-              )}
-
-              <form onSubmit={handleCreate}>
-                  <div className={s.inputGroup}>
-                      <label>{t('vendor.coupon_code', 'كود الخصم')} <span style={{color:'red'}}>*</span></label>
-                      <input 
-                          required
-                          className={`${s.input} ${s.uppercase}`}
-                          value={formData.code}
-                          onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})}
-                          placeholder="e.g. VIP2024"
-                      />
-                  </div>
-                  
-                  <div className={s.inputGroup}>
-                      <label>{t('vendor.affiliate_commission', 'قيمة الخصم/العمولة')} <span style={{color:'red'}}>*</span></label>
-                      <div className={s.dualField}>
-                          <input 
-                              required
-                              type="number"
-                              className={s.input}
-                              value={formData.amount}
-                              onChange={e => setFormData({...formData, amount: e.target.value})}
-                              placeholder="10"
-                          />
-                          <select 
-                            className={`${s.input} ${s.select}`}
-                            value={formData.amount_type}
-                            onChange={e => setFormData({...formData, amount_type: e.target.value})}
-                          >
-                              <option value="percentage">%</option>
-                              <option value="fixed">{t('common.currency', 'ر.س')}</option>
-                          </select>
-                      </div>
-                  </div>
-
-                  <div className={s.inputGroup}>
-                      <label>{t('vendor.affiliate_email', 'بريد المسوق (اختياري)')}</label>
-                      <input 
-                          type="email"
-                          className={s.input}
-                          value={formData.affiliate_email}
-                          onChange={e => setFormData({...formData, affiliate_email: e.target.value})}
-                          placeholder="marketer@example.com"
-                      />
-                      <span className={s.hint}>اتركه فارغاً إذا كان الكوبون عاماً لجميع العملاء.</span>
-                  </div>
-                  
-                  <button type="submit" disabled={creating} className={s.submitBtn}>
-                      {creating ? 'جاري الإنشاء...' : 'إنشاء الكوبون'}
-                  </button>
-              </form>
-          </div>
-
-          {/* List */}
-          <div className={s.card}>
-              <h2 className={s.cardTitle}><Tag size={20} /> {t('vendor.active_programs', 'الكوبونات النشطة وبرامج التسويق')}</h2>
-              <div className={s.tableWrap}>
-                  <table className={s.table}>
-                      <thead>
-                          <tr>
-                              <th>{t('vendor.coupon_code', 'الكود')}</th>
-                              <th>{t('vendor.discount', 'الخصم')}</th>
-                              <th>{t('vendor.marketer_name', 'البريد/المسوق')}</th>
-                              <th style={{textAlign: 'right'}}>{t('vendor.used_count', 'مرات الاستخدام')}</th>
-                              <th style={{textAlign: 'center'}}>{t('common.actions', 'إجراءات')}</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {loading ? (
-                              <tr><td colSpan="5" style={{textAlign: 'center'}}>جاري التحميل...</td></tr>
-                          ) : coupons.length === 0 ? (
-                              <tr><td colSpan="5" style={{textAlign: 'center', color: 'var(--text-muted)'}}>لا توجد كوبونات نشطة حالياً.</td></tr>
-                          ) : (
-                              coupons.map(c => (
-                                  <tr key={c.id}>
-                                      <td><span className={s.codeBadge}>{c.code}</span></td>
-                                      <td style={{fontWeight: 700}}>
-                                          {c.amount_type === 'fixed' ? `${c.amount} ${t('common.currency', 'ر.س')}` : `${c.amount}%`}
-                                      </td>
-                                      <td>{c.affiliate_email || c.marketer_name || "-"}</td>
-                                      <td style={{textAlign: 'right', fontWeight: 600}}>{c.used_count}</td>
-                                      <td>
-                                          <div className={s.flexActions}>
-                                              <button 
-                                                  onClick={() => {
-                                                      const url = `${window.location.origin}/?ref=${c.code}`;
-                                                      navigator.clipboard.writeText(url);
-                                                      toast.push({ message: t('vendor.affiliate_link_copied', 'تم النسخ'), type: "success" });
-                                                  }}
-                                                  className={s.copyActionBtn}
-                                                  title={t('common.copy', 'نسخ الرابط')}
-                                              >
-                                                  <Copy size={14} />
-                                              </button>
-                                              <button 
-                                                  onClick={() => handleDelete(c.id)}
-                                                  className={s.deleteBtn}
-                                                  title={t('common.delete', 'حذف')}
-                                              >
-                                                  <Trash2 size={14} />
-                                              </button>
-                                          </div>
-                                      </td>
-                                  </tr>
-                              ))
-                          )}
-                      </tbody>
-                  </table>
+        {/* Create Form */}
+        <div className={s.formCard}>
+          <h2 className={s.cardTitle}>{t("vendor.create_new_coupon", "إنشاء كوبون جديد")}</h2>
+          <form onSubmit={handleSubmit} className={s.form}>
+            <div className={s.fieldGroup}>
+              <label>{t("vendor.coupon_code", "رمز الكوبون")}</label>
+              <input 
+                className={s.input} 
+                value={formData.code} 
+                onChange={e => setFormData({...formData, code: e.target.value.toUpperCase()})}
+                placeholder="EX: SUMMER20"
+              />
+            </div>
+            
+            <div className={s.row}>
+              <div className={s.fieldGroup}>
+                <label>{t("vendor.discount_type", "نوع الخصم")}</label>
+                <select 
+                  className={s.select}
+                  value={formData.amount_type}
+                  onChange={e => setFormData({...formData, amount_type: e.target.value})}
+                >
+                  <option value="percentage">{t("common.percentage", "نسبة مئوية %")}</option>
+                  <option value="fixed">{t("common.fixed_amount", "مبلغ ثابت")}</option>
+                </select>
               </div>
+              <div className={s.fieldGroup}>
+                <label>{t("vendor.discount_value", "قيمة الخصم")}</label>
+                <input 
+                  type="number"
+                  className={s.input} 
+                  value={formData.amount} 
+                  onChange={e => setFormData({...formData, amount: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className={s.fieldGroup}>
+              <label>{t("vendor.affiliate_email", "بريد المسوق (اختياري)")}</label>
+              <input 
+                type="email"
+                className={s.input} 
+                value={formData.affiliate_email} 
+                onChange={e => setFormData({...formData, affiliate_email: e.target.value})}
+                placeholder="marketer@example.com"
+              />
+            </div>
+
+            <button type="submit" className={s.submitBtn} disabled={creating}>
+              <PlusCircle size={18} /> {creating ? t("common.saving", "جاري الحفظ...") : t("vendor.add_coupon", "إضافة الكوبون")}
+            </button>
+          </form>
+        </div>
+
+        {/* Coupons Table */}
+        <div className={s.tableCard}>
+          <h2 className={s.cardTitle}>{t("vendor.active_coupons", "الكوبونات النشطة")}</h2>
+          <div className={s.tableWrapper}>
+            <table className={s.table}>
+              <thead>
+                <tr>
+                  <th>{t("vendor.coupon_code", "الرمز")}</th>
+                  <th>{t("vendor.discount", "الخصم")}</th>
+                  <th>{t("vendor.affiliate", "المسوق")}</th>
+                  <th style={{textAlign: 'right'}}>{t("vendor.uses", "الاستخدامات")}</th>
+                  <th>{t("common.actions", "الإجراءات")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {coupons.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className={s.emptyCell}>{t("vendor.no_coupons", "لا يوجد كوبونات حالياً")}</td>
+                  </tr>
+                ) : (
+                  coupons.map((c) => (
+                    <tr key={c.id}>
+                      <td className={s.codeCell}><Tag size={14} /> {c.code}</td>
+                      <td>
+                        <span className={s.amountBadge}>
+                          {c.amount_type === 'percentage' ? `${c.amount}%` : `${c.amount} ${t('common.currency')}`}
+                        </span>
+                      </td>
+                      <td>{c.affiliate_email || c.marketer_name || '-'}</td>
+                      <td style={{textAlign: 'right', fontWeight: 600}}>{c.used_count || 0}</td>
+                      <td>
+                        <div className={s.actions}>
+                          <button 
+                            className={s.copyBtn} 
+                            onClick={() => copyReferralLink(c.code)}
+                            title={t("common.copy_link", "نسخ رابط المسوق")}
+                          >
+                            <Copy size={14} />
+                          </button>
+                          <button 
+                            className={s.deleteBtn} 
+                            onClick={() => handleDelete(c.id)}
+                            title={t("common.delete", "حذف")}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
+        </div>
       </div>
     </div>
   );

@@ -157,7 +157,7 @@ export default function Header() {
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((s) => !s)}
         >
-          <span className="sr-only">{t("common.view_details")}</span>
+          <span className="sr-only">{t("common.open_menu")}</span>
           {mobileOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
 
@@ -172,7 +172,7 @@ export default function Header() {
           </span>
           <span className={styles.brandText}>
             <span className={styles.brandName}>{t("app.name") || "المتجر"}</span>
-            <span className={styles.brandTag}>STORE</span>
+            <span className={styles.brandTag}>{t("home.store_tag", "STORE")}</span>
           </span>
         </Link>
 
@@ -197,7 +197,7 @@ export default function Header() {
         {/* ── Actions ── */}
         <div className={styles.actions}>
           {/* Language toggle */}
-          <button onClick={toggleLang} className={styles.langBtn} aria-label="Switch language">
+          <button onClick={toggleLang} className={styles.langBtn} aria-label={t("common.switch_language")}>
             {i18n.language === "ar" ? "EN" : "عربي"}
           </button>
 

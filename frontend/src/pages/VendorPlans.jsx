@@ -113,7 +113,7 @@ export default function VendorPlans() {
                         {supplierInfo.plan_limit > 0 
                             ? Math.round((supplierInfo.total_products || 0) / supplierInfo.plan_limit * 100)
                             : 0}
-                        <span>% مستخدم</span>
+                        <span>{t('auto_e81f4d', t('auto_e81f4d', '% مستخدم'))}</span>
                     </div>
                     <div className={s.barTrack}>
                         <div 
