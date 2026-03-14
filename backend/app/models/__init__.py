@@ -12,35 +12,39 @@ import importlib
 import traceback
 
 def _try_import(name: str):
+    # Prevent duplicate imports of the same module in one session
+    if name in globals() and name in __all__:
+        return True
+        
     try:
         module = importlib.import_module(f".{name}", package=__name__)
-        globals().update(
-            {
-                k: getattr(module, k)
-                for k in getattr(module, "__all__", [])
-                if hasattr(module, k)
-            }
-        )
+        # Update globals with exports from the module
+        if hasattr(module, "__all__"):
+            for k in module.__all__:
+                if hasattr(module, k):
+                    globals()[k] = getattr(module, k)
+                    if k not in __all__:
+                        __all__.append(k)
         return True
     except ModuleNotFoundError as e:
-        # If the specific model we're trying to import is missing, ignore it silently.
-        # This is expected for optional/new modules in local development.
+        # If the failure is specifically about the module itself, return False silently.
+        # This allows us to have optional modules without noisy logs.
         if name in str(e):
-             return False
-        print(f"ERROR importing {name}:")
-        traceback.print_exc()
+            return False
+            
+        # If it's a ModuleNotFoundError for some internal dependency, log it.
+        print(f"ERROR importing {name}: {e}")
         return False
     except Exception as e:
-        print(f"ERROR importing {name}:")
+        # Unexpected error (SyntaxError, AttributeError in model, etc.)
+        print(f"ERROR importing {name}: {e}")
         traceback.print_exc()
         return False
 
 
 # Core models we expect; import in an order that satisfies SQLAlchemy
-# relationship/back_populates resolution (dependent classes should be
-# imported before classes that reference them).
+# relationship/back_populates resolution.
 
-# -- New Module 1 Models --
 _try_import("plan_feature")
 _try_import("vendor_plan")
 _try_import("store")
@@ -49,107 +53,39 @@ _try_import("customer_group")
 _try_import("rbac")
 _try_import("wallet")
 _try_import("audit_log")
-# Module 3 (CMS/Visual Builder)
 _try_import("cms")
-
-# Module 2
 _try_import("master_product")
 _try_import("stock_reservation")
-
-# Module 4
 _try_import("tax_rate")
 _try_import("shipping_zone")
 _try_import("shipping_provider")
-
-_try_import("product_category")  # side-effect registration
+_try_import("product_category")
 _try_import("refresh_token")
 _try_import("refresh_token_audit")
+
 _try_import("affiliate")
-if _try_import("affiliate"):
-    __all__.append("Affiliate")
-
 _try_import("affiliate_coupon")
-if _try_import("affiliate_coupon"):
-    __all__.append("AffiliateCoupon")
-
 _try_import("affiliate_stats")
-if _try_import("affiliate_stats"):
-    __all__.append("AffiliateStats")
-
 _try_import("order_item")
 _try_import("order")
 _try_import("return_request")
-
-if _try_import("return_request"):
-    __all__.append("ReturnRequest")
-
-if _try_import("user"):
-    __all__.append("User")
-
-if _try_import("category"):
-    __all__.append("Category")
-
-# Import product images before product to reduce mapper ordering issues
-# where ProductImage tries to reference Product.images before it's defined.
-if _try_import("product_image"):
-    __all__.append("ProductImage")
-
-if _try_import("product"):
-    __all__.append("Product")
-
-# Import product variants after Product is available
-if _try_import("product_variant"):
-    __all__.append("ProductVariant")
-
-# Import variation models after Product is available
-if _try_import("product_variation"):
-    __all__.append("ProductVariationVariable")
-    __all__.append("ProductVariationVariableValue")
-    __all__.append("ProductVariationResult")
-
-if _try_import("review"):
-    __all__.append("Review")
-
-if _try_import("payment"):
-    __all__.append("Payment")
-
-if _try_import("shipping"):
-    __all__.append("Shipping")
-
-if _try_import("supplier"):
-    __all__.append("Supplier")
-if _try_import("fulfillment_order"):
-    __all__.append("FulfillmentOrder")
-
-
-if _try_import("supplier_product"):
-    __all__.append("SupplierProduct")
-
-# Background task model
-if _try_import("task"):
-    __all__.append("Task")
-
-# Tax rates are now in tax_rate.py
-if _try_import("tax_rate"):
-    __all__.append("TaxRate")
-
-if _try_import("coupon"):
-    __all__.append("Coupon")
-
-if _try_import("cart"):
-    __all__.append("Cart")
-
-if _try_import("wishlist"):
-    __all__.append("Wishlist")
-
-if _try_import("notification"):
-    __all__.append("Notification")
-
-if _try_import("refresh_token"):
-    __all__.append("RefreshToken")
-
-if _try_import("refresh_token_audit"):
-    __all__.append("RefreshTokenAudit")
+_try_import("user")
+_try_import("category")
+_try_import("product_image")
+_try_import("product")
+_try_import("product_variant")
+_try_import("product_variation")
+_try_import("review")
+_try_import("payment")
+_try_import("shipping")
+_try_import("supplier")
+_try_import("fulfillment_order")
+_try_import("supplier_product")
+_try_import("task")
+_try_import("coupon")
+_try_import("cart")
+_try_import("wishlist")
+_try_import("notification")
 
 # Ensure aliasing of module names so imports like `app.models` and
 # `backend.app.models` reference the same module object. This prevents
