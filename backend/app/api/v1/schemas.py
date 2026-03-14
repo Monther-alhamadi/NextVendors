@@ -35,15 +35,38 @@ class UserResponse(BaseModel):
     role: str
     is_vendor: bool = False
     vendor_status: Optional[str] = None
+    is_verified: bool = False
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserVerifyEmailRequest(BaseModel):
+    email: EmailStr
+    code: str
+
+
+class UserResendOTPRequest(BaseModel):
+    email: EmailStr
+
+
+class UserUpdateEmailRequest(BaseModel):
+    old_email: EmailStr
+    new_email: EmailStr
+
+
+class UserUpdateUnverifiedEmailRequest(BaseModel):
+    old_email: EmailStr
+    new_email: EmailStr
 
 
 class ProductCreate(BaseModel):
     name: str
+    name_en: Optional[str] = None
     description: Optional[str] = None
+    description_en: Optional[str] = None
     price: float
     inventory: int = 0
     category: Optional[str] = None
+    category_en: Optional[str] = None
     status: str = "published" # draft, published
     # Images may be provided as a list of URL strings
     # Use None as the default so model_dump(exclude_none=True) will omit
@@ -142,10 +165,13 @@ class SupplierProductResponse(BaseModel):
 class ProductResponse(BaseModel):
     id: int
     name: str
+    name_en: Optional[str] = None
     description: Optional[str]
+    description_en: Optional[str] = None
     price: float
     inventory: int
     category: Optional[str] = None
+    category_en: Optional[str] = None
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     images: List[ProductImageResponse] = []
@@ -232,11 +258,9 @@ class OrderCreate(BaseModel):
             return v
 
         # Try to obtain raw input data
-        raw = (
-            info.data
-            if isinstance(info, dict) or hasattr(info, "data")
-            else getattr(info, "data", None)
-        )
+        raw = getattr(info, "data", None)
+        if raw is None and isinstance(info, dict):
+            raw = info
         if isinstance(raw, dict):
             addr = raw.get("address")
         else:
