@@ -26,7 +26,7 @@ def send_email(
         mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
     )
 
-    smtp_options = {"host": settings.SMTP_HOST, "port": settings.SMTP_PORT}
+    smtp_options = {"host": str(settings.SMTP_HOST).strip(), "port": settings.SMTP_PORT}
 
     if settings.SMTP_TLS:
         smtp_options["tls"] = True
@@ -75,12 +75,16 @@ def send_otp_email(email_to: str, username: str, otp: str) -> None:
         </body>
     </html>
     """
-    send_email(
-        email_to=email_to,
-        subject_template=subject,
-        html_template=html_content,
-        environment={"project_name": settings.APP_NAME, "username": username, "otp": otp},
-    )
+    try:
+        send_email(
+            email_to=email_to,
+            subject_template=subject,
+            html_template=html_content,
+            environment={"project_name": settings.APP_NAME, "username": username, "otp": otp},
+        )
+    except Exception as e:
+        logger.error(f"Error in send_otp_email to {email_to}: {e}", exc_info=True)
+        raise
 
 def send_welcome_email(email_to: str, username: str) -> None:
     subject = f"Welcome to {settings.APP_NAME} - Account Created"

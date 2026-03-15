@@ -32,7 +32,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
             detail="كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
         )
     # Check for existing username/email
-    from sqlalchemy import select
+    from sqlalchemy import select, delete as sa_delete
     stmt = (
         select(User)
         .where((User.username == user_in.username) | (User.email == user_in.email))
@@ -46,10 +46,21 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
                 detail="اسم المستخدم أو البريد الإلكتروني مستخدم مسبقًا.",
             )
         else:
-            # Allow re-registration for unverified users by clearing the old record
-            db.delete(existing)
+            # Allow re-registration for unverified users by clearing the old record.
+            # Use raw SQL DELETE to avoid SQLAlchemy lazy-loading related tables
+            # (e.g. support_tickets) which may have missing columns and crash.
+            existing_id = existing.id
+            db.expunge(existing)
+            # Delete related records first to avoid FK constraints
+            try:
+                from sqlalchemy import text as sa_text
+                db.execute(sa_text("DELETE FROM support_messages WHERE ticket_id IN (SELECT id FROM support_tickets WHERE user_id = :uid)"), {"uid": existing_id})
+                db.execute(sa_text("DELETE FROM support_tickets WHERE user_id = :uid"), {"uid": existing_id})
+                db.execute(sa_text("DELETE FROM user_wallets WHERE user_id = :uid"), {"uid": existing_id})
+            except Exception:
+                pass  # Tables may not exist yet
+            db.execute(sa_delete(User).where(User.id == existing_id))
             db.commit()
-            db.flush()
         
     user = service.register_user(
         username=user_in.username, email=user_in.email, password=user_in.password
@@ -60,11 +71,21 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     try:
         from app.services.email_service import send_otp_email
         import threading
-        # We need the OTP code from the user object (now saved in DB)
-        threading.Thread(target=send_otp_email, args=(user.email, user.username, user.otp_code)).start()
+        # Ensure we have the latest user data (including relations/OTP)
+        db.refresh(user)
+        # Capture variables for the closure to avoid thread issues with stale sessions
+        email_to = user.email
+        username = user.username
+        otp_code = user.otp_code
+        
+        if otp_code:
+            threading.Thread(target=send_otp_email, args=(email_to, username, otp_code)).start()
+        else:
+            import logging
+            logging.getLogger("auth").error(f"No OTP code found for user {user.username}")
     except Exception as e:
         import logging
-        logging.getLogger("auth").error(f"Failed to send OTP email: {e}")
+        logging.getLogger("auth").error(f"Failed to trigger OTP email thread: {e}")
 
     return user
 

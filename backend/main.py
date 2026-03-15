@@ -608,6 +608,84 @@ def _ensure_schema_migrations(db, logger):
             except Exception:
                 db.rollback()
 
+        # 8.2 Add missing OTP columns to users table
+        otp_cols = [
+            ("otp_code", "VARCHAR(6)"),
+            ("otp_expires_at", "DATETIME"),
+            ("otp_failed_attempts", "INTEGER DEFAULT 0"),
+            ("otp_last_sent_at", "DATETIME"),
+            ("is_verified", "BOOLEAN DEFAULT 0")
+        ]
+        for col_name, col_type in otp_cols:
+            try:
+                db.execute(text(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}"))
+                db.commit()
+            except Exception:
+                db.rollback()
+
+        # 8.3 Fix missing user_wallets table and columns
+        try:
+            db.execute(text("SELECT id FROM user_wallets LIMIT 1"))
+        except Exception:
+            logger.info("Auto-migration: Creating user_wallets table")
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS user_wallets (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER UNIQUE NOT NULL,
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    balance FLOAT DEFAULT 0.0,
+                    pending_balance FLOAT DEFAULT 0.0,
+                    loyalty_points INTEGER DEFAULT 0,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY(user_id) REFERENCES users(id)
+                )
+            """))
+            db.commit()
+
+        # 8.4 Ensure pending_balance exists (emergency fix for crash)
+        try:
+            db.execute(text("SELECT pending_balance FROM user_wallets LIMIT 1"))
+        except Exception:
+            try:
+                db.execute(text("ALTER TABLE user_wallets ADD COLUMN pending_balance FLOAT DEFAULT 0.0"))
+                db.commit()
+            except Exception:
+                db.rollback()
+
+        # 8.5 Fix missing wallet_transactions table
+        try:
+            db.execute(text("SELECT id FROM wallet_transactions LIMIT 1"))
+        except Exception:
+            logger.info("Auto-migration: Creating wallet_transactions table")
+            db.execute(text("""
+                CREATE TABLE IF NOT EXISTS wallet_transactions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    wallet_id INTEGER NOT NULL,
+                    amount FLOAT NOT NULL,
+                    transaction_type VARCHAR(20) NOT NULL,
+                    reference_id VARCHAR(100),
+                    reference_type VARCHAR(50),
+                    description VARCHAR(255),
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY(wallet_id) REFERENCES user_wallets(id)
+                )
+            """))
+            db.commit()
+
+        # 8.6 Fix missing columns in support_tickets table
+        support_ticket_cols = [
+            ("order_id", "INTEGER"),
+            ("category", "VARCHAR(100)")
+        ]
+        for col_name, col_type in support_ticket_cols:
+            try:
+                db.execute(text(f"ALTER TABLE support_tickets ADD COLUMN {col_name} {col_type}"))
+                db.commit()
+                logger.info(f"Auto-migration: Added {col_name} to support_tickets")
+            except Exception:
+                db.rollback()
+
         # 9. Fix missing columns in products table (Robust)
         logger.info("Auto-migration: Checking products table for missing columns...")
         product_cols = [
