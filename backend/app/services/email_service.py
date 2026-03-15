@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict, Optional
 import emails
-from emails.template import JinjaTemplate
 
 from app.core.config import settings
 
@@ -19,10 +18,10 @@ def send_email(
     """
     assert settings.EMAILS_FROM_EMAIL, "no provider configured for EMAILS_FROM_EMAIL"
     
-    # Construct the message
+    # Construct the message using plain strings (no Jinja2 dependency needed)
     message = emails.Message(
-        subject=JinjaTemplate(subject_template),
-        html=JinjaTemplate(html_template),
+        subject=subject_template,
+        html=html_template,
         mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
     )
 
@@ -37,8 +36,9 @@ def send_email(
 
     # If SMTP is configured, send the email
     if settings.SMTP_HOST and settings.SMTP_PORT:
-        response = message.send(to=email_to, render=environment, smtp=smtp_options)
+        response = message.send(to=email_to, smtp=smtp_options)
         logger.info(f"send email result: {response}")
+
     else:
         # Development fallback
         logger.warning(
