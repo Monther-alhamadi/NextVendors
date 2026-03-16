@@ -56,7 +56,6 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - VITE_API_BASE_URL=/api/v1
       - DOCKER_ENV=true
     networks:
       - ecommerce-network
