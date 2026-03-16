@@ -66,22 +66,44 @@ export default function Profile() {
 
       {/* ── Vendor Lifecycle Quick Action ── */}
       {!user?.is_vendor ? (
-        <div className={styles.vendorPromo}>
-          <div className={styles.promoContent}>
-            <h3>{t("profile.start_selling") || "هل تريد البدء في البيع؟"}</h3>
-            <p>{t("profile.start_selling_desc") || "انضم إلى آلاف التجار وابدأ في تنمية تجارتك معنا اليوم."}</p>
+        user?.vendor_status === "pending" ? (
+          <div className={`${styles.vendorPromo} ${styles.vendorPending}`}>
+            <div className={styles.promoContent}>
+              <h3>{t("profile.vendor_status_pending")}</h3>
+              <p>{t("profile.vendor_status_pending_desc")}</p>
+            </div>
+            <span className={styles.pendingBadge}>⏳</span>
           </div>
-          <Link to="/become-vendor">
-            <CustomButton variant="accent" size="lg">
-              {t("nav.become_vendor") || "كن بائعاً الآن"}
-            </CustomButton>
-          </Link>
-        </div>
+        ) : user?.vendor_status === "rejected" ? (
+          <div className={`${styles.vendorPromo} ${styles.vendorRejected}`}>
+            <div className={styles.promoContent}>
+              <h3>{t("profile.vendor_status_rejected")}</h3>
+              <p>{t("profile.vendor_status_rejected_desc")}</p>
+            </div>
+            <Link to="/become-vendor">
+              <CustomButton variant="accent" size="lg">
+                {t("vendor.submit_application")}
+              </CustomButton>
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.vendorPromo}>
+            <div className={styles.promoContent}>
+              <h3>{t("profile.start_selling")}</h3>
+              <p>{t("profile.start_selling_desc")}</p>
+            </div>
+            <Link to="/become-vendor">
+              <CustomButton variant="accent" size="lg">
+                {t("vendor.become_seller")}
+              </CustomButton>
+            </Link>
+          </div>
+        )
       ) : (
         <div className={`${styles.vendorPromo} ${styles.vendorActive}`}>
           <div className={styles.promoContent}>
-            <h3>{t("profile.vendor_hub") || "مركز التاجر"}</h3>
-            <p>{t("profile.vendor_hub_desc") || "إدارة منتجاتك، طلباتك، وتقارير أرباحك من مكان واحد."}</p>
+            <h3>{t("profile.vendor_hub")}</h3>
+            <p>{t("profile.vendor_hub_desc")}</p>
           </div>
           <Link to="/vendor">
             <CustomButton variant="primary" size="lg">

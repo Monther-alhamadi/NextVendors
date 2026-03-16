@@ -107,6 +107,21 @@
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
+.vendorPending {
+  background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+  box-shadow: 0 10px 25px -5px rgba(146, 64, 14, 0.3);
+}
+
+.vendorRejected {
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+  box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.3);
+}
+
+.pendingBadge {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
 .promoContent h3 {
   font-family: var(--font-heading);
   font-size: 1.4rem;
