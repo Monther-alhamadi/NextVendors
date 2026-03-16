@@ -485,7 +485,7 @@
     "store_logo_url": "شعار المتجر",
     "store_logo_hint": "ارفع شعاراً احترافياً لمتجرك (PNG أو JPG).",
     "verification_document": "وثيقة التحقق",
-    "verification_document_hint": "ارفع نسخة من السجل التجاري أو أي وثيقة رسمية تثبت هوية نشاطك التجاري.",
+    "verification_document_hint": "ارفع نسخة من السجل التجاري، بطاقة الهوية الوطنية، أو جواز السفر. يُفضّل السجل التجاري لتسريع عملية القبول. (PDF، JPG، أو PNG)",
     "phone_number": "رقم الهاتف للتواصل",
     "phone_number_placeholder": "+966 5XX XXX XXXX",
     "phone_number_hint": "رقم هاتف يمكننا التواصل معك عليه.",

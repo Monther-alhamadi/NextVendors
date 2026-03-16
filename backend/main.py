@@ -858,7 +858,7 @@ def health() -> Dict[str, Any]:
 async def upload_image(
     request: Request,
     file: UploadFile = File(...),
-    _user=Depends(require_role("admin", "vendor")),
+    _user=Depends(require_role("admin", "vendor", "customer")),
 ) -> Dict[str, str]:
     """Upload an image file.
 

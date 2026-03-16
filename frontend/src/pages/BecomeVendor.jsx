@@ -151,6 +151,7 @@ export default function BecomeVendor() {
               <label>{t('vendor.verification_document')} <span className="req">*</span></label>
               <input 
                 type="file"
+                accept="image/*,.pdf"
                 className="field-input field-file"
                 onChange={async (e) => {
                   const file = e.target.files[0];

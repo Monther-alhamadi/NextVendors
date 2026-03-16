@@ -7,7 +7,7 @@ function _getCookie(name) {
 }
 
 const api = axios.create({
-  baseURL: "/api/v1",
+  baseURL: (import.meta.env.VITE_API_BASE_URL || "") + "/api/v1",
   withCredentials: true, // include cookies (refresh_token)
 });
 

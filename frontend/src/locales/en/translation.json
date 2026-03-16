@@ -458,7 +458,7 @@
     "store_logo_url": "Store Logo",
     "store_logo_hint": "Upload a professional logo for your store (PNG or JPG).",
     "verification_document": "Verification Document",
-    "verification_document_hint": "Upload a copy of your business license or any official document verifying your business identity.",
+    "verification_document_hint": "Upload a copy of your business license, national ID, or passport. A business license is preferred for faster approval. (PDF, JPG, or PNG)",
     "phone_number": "Contact Phone Number",
     "phone_number_placeholder": "+1 XXX XXX XXXX",
     "phone_number_hint": "A phone number we can reach you on.",
