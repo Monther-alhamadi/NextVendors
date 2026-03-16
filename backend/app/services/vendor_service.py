@@ -148,16 +148,21 @@ class VendorService(CRUDService[Supplier]):
         import uuid
         code = str(uuid.uuid4())[:8].upper() # Temp code
         
-        vendor = Supplier(
-            name=data["name"],
-            description=data.get("description"),
-            logo_url=data.get("logo_url"),
-            owner_id=user_id,
-            status="pending",
-            code=code,
-            is_verified=False,
-            verification_document_url=data.get("verification_document_url")
-        )
+        # Filter to only valid Supplier model columns
+        valid_keys = {c.key for c in Supplier.__table__.columns}
+        vendor_data = {
+            "name": data["name"],
+            "owner_id": user_id,
+            "status": "pending",
+            "code": code,
+            "is_verified": False,
+        }
+        # Safely add optional fields only if they exist in the model
+        for key in ["description", "logo_url", "verification_document_url", "email", "phone", "contact_email"]:
+            if key in data and data[key] and key in valid_keys:
+                vendor_data[key] = data[key]
+
+        vendor = Supplier(**vendor_data)
         self.db.add(vendor)
         self.db.commit()
         return vendor
