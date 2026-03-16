@@ -87,7 +87,7 @@ const VendorPayoutRequests = React.lazy(() => import("./pages/VendorPayoutReques
 const VendorAds = React.lazy(() => import("./pages/VendorAds"));
 const VendorSupport = React.lazy(() => import("./pages/VendorSupport"));
 const VendorDropshipping = React.lazy(() => import("./pages/VendorDropshipping"));
-const SupplierDashboard = React.lazy(() => import("./pages/SupplierDashboard"));
+
 import ToastProvider from "./components/common/ToastProvider";
 import ConfirmProvider from "./components/common/ConfirmProvider";
 const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -432,16 +432,7 @@ function AppContent() {
           <Route path="/terms" element={<Suspense fallback={<GlobalLoader />}><Terms /></Suspense>} />
           <Route path="/privacy" element={<Suspense fallback={<GlobalLoader />}><Privacy /></Suspense>} />
           
-          <Route
-            path="/supplier"
-            element={
-              <ProtectedRoute>
-                <Suspense fallback={<GlobalLoader />}>
-                  <SupplierDashboard />
-                </Suspense>
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/support"
             element={

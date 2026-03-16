@@ -209,7 +209,7 @@ export default function Header() {
             <Link to="/admin" className={`${styles.navLink} ${styles.accentLink}`}>{t("nav.dashboard")}</Link>
           )}
           {user?.is_vendor && (
-            <Link to="/supplier" className={`${styles.navLink} ${styles.accentLink}`}>{t("nav.vendor_dashboard")}</Link>
+            <Link to="/vendor" className={`${styles.navLink} ${styles.accentLink}`}>{t("nav.vendor_dashboard")}</Link>
           )}
 
           {/* Messages */}
@@ -281,7 +281,7 @@ export default function Header() {
                         <SettingsIcon /> {t("nav.dashboard")}
                       </Link>
                     ) : user?.is_vendor ? (
-                      <Link to="/supplier" className={styles.menuItem}>
+                      <Link to="/vendor" className={styles.menuItem}>
                         <StoreIcon /> {t("nav.vendor_dashboard")}
                       </Link>
                     ) : (
@@ -369,7 +369,7 @@ export default function Header() {
                 </Link>
               )}
               {user?.is_vendor && (
-                <Link to="/supplier" className={styles.mobileSpecialLink} onClick={() => setMobileOpen(false)}>
+                <Link to="/vendor" className={styles.mobileSpecialLink} onClick={() => setMobileOpen(false)}>
                   🏪 {t("nav.vendor_dashboard")}
                 </Link>
               )}

@@ -3,16 +3,38 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
 
-// Import translation files directly for bundling (simpler for now)
-import translationAR from './locales/ar/translation.json';
-import translationEN from './locales/en/translation.json';
+// Arabic namespaces
+import commonAR from './locales/ar/common.json';
+import authAR from './locales/ar/auth.json';
+import productAR from './locales/ar/product.json';
+import adminAR from './locales/ar/admin.json';
+import vendorAR from './locales/ar/vendor.json';
+
+// English namespaces
+import commonEN from './locales/en/common.json';
+import authEN from './locales/en/auth.json';
+import productEN from './locales/en/product.json';
+import adminEN from './locales/en/admin.json';
+import vendorEN from './locales/en/vendor.json';
 
 const resources = {
   ar: {
-    translation: translationAR,
+    translation: {
+      ...commonAR,
+      ...authAR,
+      ...productAR,
+      ...adminAR,
+      ...vendorAR
+    },
   },
   en: {
-    translation: translationEN,
+    translation: {
+      ...commonEN,
+      ...authEN,
+      ...productEN,
+      ...adminEN,
+      ...vendorEN
+    },
   },
 };
 
