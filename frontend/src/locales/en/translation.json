@@ -79,7 +79,18 @@
     "about": "About Us",
     "quick_links": "Quick Links",
     "contact": "Contact Us",
-    "copyright": "All Rights Reserved © 2025"
+    "copyright": "All Rights Reserved © 2025",
+    "newsletter_title": "Join our Newsletter",
+    "newsletter_desc": "Get the latest offers and news directly in your inbox.",
+    "email_placeholder": "Your email address...",
+    "subscribe": "Subscribe",
+    "subscribed": "Successfully Subscribed!",
+    "support": "Support & Help",
+    "help_center": "Help Center",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "payment_methods": "Supported Payment Methods",
+    "rights": "All rights reserved."
   },
   "product": {
     "add_to_cart": "Add to Cart",
