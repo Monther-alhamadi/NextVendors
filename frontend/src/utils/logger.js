@@ -1,7 +1,7 @@
 import Sentry from "../sentry";
 import axios from "axios";
 
-const API_LOG_ENDPOINT = ""; // Always use relative path to route through proxy
+const API_LOG_ENDPOINT = import.meta.env.VITE_API_BASE_URL || "";
 
 export function logToServer(payload){
   try {
