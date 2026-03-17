@@ -149,6 +149,25 @@
     "shipping_policy": "Shipping Policy",
     "return_policy": "Return Policy",
     "login_to_message": "Please login to message this store",
-    "sale": "Sale"
+    "login_to_follow": "Please login to follow this store",
+    "follow_store": "Follow Store",
+    "following": "Following",
+    "followers": "Follower",
+    "followed_success": "Store followed successfully",
+    "unfollowed_success": "Store unfollowed",
+    "product_limit_reached": "You have reached your product limit. Upgrade to add more!",
+    "sale": "Sale",
+    "visit_store": "Visit Store",
+    "stores": {
+      "title": "Store Directory",
+      "subtitle": "Discover the best verified stores and enjoy an exceptional shopping experience",
+      "search_placeholder": "Search for a store...",
+      "sort_newest": "Newest",
+      "sort_popular": "Most Followed",
+      "sort_name": "Name",
+      "results": "stores",
+      "empty_title": "No Stores Found",
+      "empty_desc": "No stores match your search criteria."
+    }
   }
 }

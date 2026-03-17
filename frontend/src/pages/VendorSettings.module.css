@@ -1,186 +1,214 @@
 @import "../styles/design-tokens.css";
 
 .page {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .header {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .title {
   font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
+  font-weight: 900;
+  font-size: 2.25rem;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
   color: var(--text-muted);
-  font-size: var(--text-sm);
+  font-size: 1.05rem;
+  font-weight: 500;
 }
 
 .formWrap {
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
-  max-width: 800px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 15px rgba(0,0,0,0.01);
+  max-width: 900px;
   overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.formWrap:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .formSection {
-  padding: 2.5rem;
+  padding: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .inputGroup label {
-  font-weight: 700;
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
 }
 
 .input, .textarea {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.25rem;
   border: 1px solid var(--border-med);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   background: var(--bg-body);
   color: var(--text-primary);
-  font-size: var(--text-sm);
-  transition: all var(--dur-fast);
+  font-size: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
 }
 
 .input:focus, .textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-subtle);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
   background: var(--bg-surface);
 }
 
 .textarea {
-  min-height: 120px;
+  min-height: 140px;
   resize: vertical;
+  line-height: 1.5;
 }
 
 .dualInputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .logoPreview {
   margin-top: 0.5rem;
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border-light);
+  width: 96px;
+  height: 96px;
+  border-radius: 16px;
+  border: 2px dashed var(--border-med);
   overflow: hidden;
   background: var(--bg-body);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.logoPreview:hover {
+  border-color: var(--primary);
+  background: var(--bg-page);
 }
 
 .logoPreview img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .formActions {
-  background: var(--bg-body);
+  background: var(--bg-page);
   border-top: 1px solid var(--border-light);
-  padding: 1.5rem 2.5rem;
+  padding: 1.5rem 3rem;
   display: flex;
   justify-content: flex-end;
 }
 
 .submitBtn {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: white;
   border: none;
-  padding: 0.8rem 2rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: var(--text-sm);
+  padding: 0.875rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all var(--dur-fast);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
 }
 
 .submitBtn:disabled {
-  opacity: 0.6;
+  background: var(--bg-body);
+  color: var(--text-disabled);
+  box-shadow: none;
+  border: 1px solid var(--border-med);
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
 /* Hybrid Commerce Additions */
 .sectionTitle {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-  padding-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--border-light);
+  letter-spacing: -0.02em;
 }
 
 .sectionDesc {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 .toggleGroup {
   background: var(--bg-body);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-  margin: 0.5rem 0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  margin: 0.75rem 0;
+  transition: all 0.3s ease;
+}
+
+.toggleGroup:hover {
+  border-color: var(--border-med);
+  background: var(--bg-surface);
 }
 
 .toggleLabel {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
   cursor: pointer;
 }
 
 .toggleHint {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  margin-top: 0.2rem;
+  margin-top: 0.35rem;
+  line-height: 1.4;
 }
 
 .toggleSwitch {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 48px;
+  height: 26px;
 }
 
 .toggleSwitch input {
@@ -197,28 +225,41 @@
   right: 0;
   bottom: 0;
   background-color: var(--border-med);
-  transition: .4s;
+  transition: .4s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: 24px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 20px;
+  width: 20px;
   left: 3px;
   bottom: 3px;
   background-color: white;
-  transition: .4s;
+  transition: .4s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 input:checked + .slider { background-color: var(--primary); }
-input:focus + .slider { box-shadow: 0 0 1px var(--primary); }
-input:checked + .slider:before { transform: translateX(20px); }
+input:focus + .slider { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); }
+input:checked + .slider:before { transform: translateX(22px); }
 
 @media (max-width: 640px) {
   .dualInputs {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .formSection {
+    padding: 1.5rem;
+  }
+  .formActions {
+    padding: 1.5rem;
+    justify-content: stretch;
+  }
+  .submitBtn {
+    width: 100%;
+    justify-content: center;
   }
 }

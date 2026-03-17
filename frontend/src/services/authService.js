@@ -18,6 +18,11 @@ export async function login(username, password) {
   return resp.data;
 }
 
+export async function googleLogin(credential) {
+  const resp = await api.post("/auth/google", { credential });
+  return resp.data;
+}
+
 // refresh uses cookie + CSRF header
 export async function refreshAccessToken(csrfToken) {
   const headers = {};

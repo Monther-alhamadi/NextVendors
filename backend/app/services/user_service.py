@@ -39,7 +39,7 @@ class UserService(CRUDService[User]):
         user = q.first()
         if not user:
             # المستخدم غير موجود
-            return None
+            raise ValueError("الحساب غير مسجل في النظام. يرجى إنشاء حساب جديد.")
         if not user.is_active:
             # المستخدم غير نشط
             raise ValueError("الحساب غير نشط، يرجى التواصل مع الدعم.")

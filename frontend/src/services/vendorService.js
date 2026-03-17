@@ -109,7 +109,21 @@ export async function getMyCapabilities() {
     return res.data;
 }
 
+export async function adminUpdateVendor(vendorId, data) {
+    const res = await api.put(`/admin/vendors/${vendorId}`, data);
+    return res.data;
+}
 export async function requestVendorAd(data) {
     const res = await api.post("/supplier/ads/request", data);
+    return res.data;
+}
+
+export async function followStoreApi(vendorId) {
+    const res = await api.post(`/vendors/${vendorId}/follow`);
+    return res.data;
+}
+
+export async function unfollowStoreApi(vendorId) {
+    const res = await api.delete(`/vendors/${vendorId}/unfollow`);
     return res.data;
 }

@@ -162,11 +162,13 @@ export default function VendorSettings() {
                 <p className={s.sectionDesc}>{t("vendor.hybrid_desc")}</p>
                 
                 {capabilities && capabilities.allow_whatsapp_checkout === false && (
-                    <div style={{ position: 'absolute', top: '70px', left: 0, right: 0, bottom: 0, background: 'rgba(255,255,255,0.85)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', backdropFilter: 'blur(2px)' }}>
-                        <Lock size={40} color="var(--primary-color)" style={{ marginBottom: '1rem', opacity: 0.8 }} />
-                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>{t("vendor.elite_feature")}</h4>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{t("vendor.elite_desc")}</p>
-                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>{t("vendor.upgrade_now")}</Link>
+                    <div className={s.lockedOverlay}>
+                        <div className={s.lockIconWrap}>
+                            <Lock size={32} />
+                        </div>
+                        <h4 className={s.lockedTitle}>{t("vendor.elite_feature", "ميزة حصرية للمتاجر المتقدمة")}</h4>
+                        <p className={s.lockedDesc}>{t("vendor.elite_desc", "قم بترقية باقتك لتفعيل نظام الطلب المباشر عبر واتساب وأدوات التجارة الهجينة")}</p>
+                        <Link to="/vendor/plans" className={s.upgradeBtn}>{t("vendor.upgrade_now", "ترقية الباقة الآن")}</Link>
                     </div>
                 )}
                 
@@ -178,6 +180,7 @@ export default function VendorSettings() {
                         value={formData.whatsapp_number}
                         onChange={e => setFormData({...formData, whatsapp_number: e.target.value})}
                         placeholder="+966xxxxxxxxx"
+                        disabled={capabilities && capabilities.allow_whatsapp_checkout === false}
                     />
                 </div>
 
@@ -188,6 +191,7 @@ export default function VendorSettings() {
                                 type="checkbox"
                                 checked={formData.allow_direct_orders}
                                 onChange={e => setFormData({...formData, allow_direct_orders: e.target.checked})}
+                                disabled={capabilities && capabilities.allow_whatsapp_checkout === false}
                             />
                             <span className={s.slider}></span>
                         </div>
@@ -204,6 +208,7 @@ export default function VendorSettings() {
                         className={s.input}
                         value={formData.preferred_settlement_method}
                         onChange={e => setFormData({...formData, preferred_settlement_method: e.target.value})}
+                        disabled={capabilities && capabilities.allow_whatsapp_checkout === false}
                     >
                         <option value="platform">{t("vendor.settle_platform")}</option>
                         <option value="post_billing">{t("vendor.settle_invoice")}</option>
@@ -217,11 +222,13 @@ export default function VendorSettings() {
                 <p className={s.sectionDesc}>{t("vendor.appearance_desc")}</p>
                 
                 {capabilities && capabilities.can_customize_store === false && (
-                    <div style={{ position: 'absolute', top: '70px', left: 0, right: 0, bottom: 0, background: 'rgba(255, 255, 255, 0.85)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', backdropFilter: 'blur(2px)' }}>
-                        <Lock size={40} color="var(--primary-color)" style={{ marginBottom: '1rem', opacity: 0.8 }} />
-                        <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>{t("vendor.elite_appearance_title")}</h4>
-                        <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{t("vendor.elite_appearance_desc")}</p>
-                        <Link to="/vendor/plans" style={{ background: 'var(--primary-color)', color: 'white', padding: '0.5rem 1rem', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}>{t("vendor.upgrade_now")}</Link>
+                    <div className={s.lockedOverlay}>
+                        <div className={s.lockIconWrap}>
+                            <Lock size={32} />
+                        </div>
+                        <h4 className={s.lockedTitle}>{t("vendor.elite_appearance_title", "تخصيص هوية المتجر")}</h4>
+                        <p className={s.lockedDesc}>{t("vendor.elite_appearance_desc", "ارتقِ بعلامتك التجارية مع ألوان مخصصة، خلفيات، وإعلانات ضمن متجرك")}</p>
+                        <Link to="/vendor/plans" className={s.upgradeBtn}>{t("vendor.upgrade_now", "ترقية الباقة الآن")}</Link>
                     </div>
                 )}
                 
@@ -233,6 +240,7 @@ export default function VendorSettings() {
                             style={{ height: '40px', width: '60px', padding: '0', cursor: 'pointer', border: '1px solid #ddd', borderRadius: '4px' }}
                             value={formData.theme_color || "#2563eb"}
                             onChange={e => setFormData({...formData, theme_color: e.target.value})}
+                            disabled={capabilities && capabilities.can_customize_store === false}
                         />
                         <span style={{ fontFamily: 'monospace', color: '#666' }}>{formData.theme_color || "#2563eb"}</span>
                     </div>
@@ -245,6 +253,7 @@ export default function VendorSettings() {
                         value={formData.background_image_url || ""}
                         onChange={e => setFormData({...formData, background_image_url: e.target.value})}
                         placeholder="https://example.com/bg.jpg"
+                        disabled={capabilities && capabilities.can_customize_store === false}
                     />
                 </div>
 

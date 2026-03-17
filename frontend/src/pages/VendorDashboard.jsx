@@ -62,7 +62,7 @@ export default function VendorDashboard() {
 
   const KpiCard = ({ title, value, prefix = '', suffix = '', icon: Icon, colorClass }) => {
     return (
-      <div className={s.kpiCard}>
+      <div className={s.kpiCard} style={{ '--card-color': colorClass }}>
         <div className={s.kpiHeader}>
           <span className={s.kpiTitle}>{title}</span>
         </div>

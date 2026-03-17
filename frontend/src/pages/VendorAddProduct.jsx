@@ -60,11 +60,11 @@ const VendorAddProduct = () => {
               const productData = new FormData();
               productData.append('name', formData.name);
               productData.append('description', formData.description);
-              productData.append('price', formData.price);
+              productData.append('cost_price', formData.price);
               productData.append('category', formData.category);
               productData.append('inventory', formData.stock); 
               productData.append('inventory_threshold', formData.inventory_threshold);
-              if(formData.sku) productData.append('sku', formData.sku);
+              if(formData.sku) productData.append('sku_vendor', formData.sku);
               
               if (images && images.length > 0) {
                   images.forEach((file) => {

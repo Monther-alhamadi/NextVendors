@@ -164,6 +164,27 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* ── OR Divider (Google Auth separator) ────────────── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-light), transparent);
+}
+
 /* ── Form ──────────────────────────────────────────── */
 .authForm {
   display: flex;

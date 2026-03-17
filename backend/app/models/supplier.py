@@ -58,6 +58,29 @@ class Supplier(SQLAlchemyBaseModel, Base):
     products = relationship("SupplierProduct", back_populates="supplier")
 
     @property
+    def capabilities(self):
+        """
+        Merge the vendor's plan limits with any vendor-specific overrides.
+        This provides a unified dict of all capabilities and limits for the frontend.
+        """
+        base_capabilities = {}
+        if self.plan:
+            base_capabilities = {
+                "max_products": self.plan.max_products,
+                "can_customize_store": self.plan.can_customize_store,
+                "can_access_advanced_analytics": self.plan.can_access_advanced_analytics,
+                "can_use_priority_support": self.plan.can_use_priority_support,
+                "auto_approve_products": self.plan.auto_approve_products,
+                "max_coupons": self.plan.max_coupons,
+                "allow_whatsapp_checkout": self.plan.allow_whatsapp_checkout,
+            }
+        
+        # Merge with overrides
+        overrides = self.override_limits or {}
+        merged = {**base_capabilities, **overrides}
+        return merged
+
+    @property
     def theme_color(self):
         return self.store.theme_color if self.store else None
 

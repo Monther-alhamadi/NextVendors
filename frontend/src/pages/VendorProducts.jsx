@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Search, Plus, Edit2, Trash2, Tag, Archive } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Tag, Archive, Lock } from "lucide-react";
 import s from "./VendorProducts.module.css";
 import { getMyProducts } from "../services/supplierService";
+import { getMyCapabilities } from "../services/vendorService";
 import { useToast } from "../components/common/ToastProvider";
 import Skeleton from "../components/common/Skeleton";
 
 export default function VendorProducts() {
   const { t } = useTranslation();
   const toast = useToast();
+  const navigate = useNavigate();
   
   const [products, setProducts] = useState([]);
+  const [capabilities, setCapabilities] = useState(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -23,8 +26,12 @@ export default function VendorProducts() {
   async function loadProducts() {
     try {
       setLoading(true);
-      const data = await getMyProducts();
+      const [data, caps] = await Promise.all([
+        getMyProducts(),
+        getMyCapabilities().catch(() => null)
+      ]);
       setProducts(data || []);
+      if(caps) setCapabilities(caps);
     } catch (e) {
       console.error(e);
       toast.push({ message: t('common.error_loading_data'), type: "error" });
@@ -53,6 +60,8 @@ export default function VendorProducts() {
     outOfStock: products.filter(p => p.inventory <= 0).length,
   };
 
+  const isLimitReached = capabilities && capabilities.max_products <= products.length;
+
   return (
     <div className={s.page}>
       {/* Header */}
@@ -61,10 +70,24 @@ export default function VendorProducts() {
           <h1 className={s.title}>{t('vendor.my_products', 'منتجاتي')}</h1>
           <p className={s.subtitle}>{t('vendor.products_subtitle', 'إدارة الكتالوج الخاص بك والمخزون والتسعير.')}</p>
         </div>
-        <Link to="/vendor/products/add" className={s.addBtn}>
-          <Plus size={18} />
-          {t('vendor.add_new', 'إضافة منتج')}
-        </Link>
+        {isLimitReached ? (
+           <button 
+             className={s.addBtn} 
+             style={{ backgroundColor: 'var(--bg-body)', color: 'var(--text-muted)', border: '1px solid var(--border-light)', cursor: 'not-allowed' }}
+             onClick={() => {
+                toast.push({ message: t('vendor.product_limit_reached', 'تم الوصول للحد الأقصى للمنتجات. قم بالترقية لإضافة المزيد!'), type: 'warning' });
+                navigate('/vendor/plans');
+             }}
+           >
+             <Lock size={18} />
+             {t('vendor.add_new', 'إضافة منتج')}
+           </button>
+        ) : (
+          <Link to="/vendor/products/add" className={s.addBtn}>
+            <Plus size={18} />
+            {t('vendor.add_new', 'إضافة منتج')}
+          </Link>
+        )}
       </div>
 
       {/* Stats Cards */}

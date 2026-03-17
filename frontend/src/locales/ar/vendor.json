@@ -149,6 +149,25 @@
     "shipping_policy": "سياسة الشحن",
     "return_policy": "سياسة الاسترجاع",
     "login_to_message": "الرجاء تسجيل الدخول لمراسلة المتجر",
-    "sale": "تخفيض"
+    "login_to_follow": "الرجاء تسجيل الدخول لمتابعة المتجر",
+    "follow_store": "متابعة المتجر",
+    "following": "مُتابَع",
+    "followers": "متابع",
+    "followed_success": "تمت متابعة المتجر بنجاح",
+    "unfollowed_success": "تم إلغاء متابعة المتجر",
+    "product_limit_reached": "تم الوصول للحد الأقصى للمنتجات. قم بالترقية لإضافة المزيد!",
+    "sale": "تخفيض",
+    "visit_store": "زيارة المتجر",
+    "stores": {
+      "title": "دليل المتاجر",
+      "subtitle": "اكتشف أفضل المتاجر الموثقة واستمتع بتجربة تسوق استثنائية",
+      "search_placeholder": "ابحث عن متجر...",
+      "sort_newest": "الأحدث",
+      "sort_popular": "الأكثر متابعة",
+      "sort_name": "الاسم",
+      "results": "متجر",
+      "empty_title": "لا توجد متاجر",
+      "empty_desc": "لم يتم العثور على متاجر مطابقة لبحثك."
+    }
   }
 }

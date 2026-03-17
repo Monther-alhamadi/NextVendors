@@ -73,7 +73,8 @@
     "login_required": "يجب تسجيل الدخول",
     "quick_nav": "روابط سريعة",
     "vendor": "تاجر",
-    "wishlist": "قائمة الأمنيات"
+    "wishlist": "قائمة الأمنيات",
+    "stores": "المتاجر"
   },
   "footer": {
     "about": "من نحن",

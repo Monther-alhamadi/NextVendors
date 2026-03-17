@@ -6,8 +6,9 @@ import { listProducts } from "../services/productService";
 import { useToast } from "../components/common/ToastProvider";
 import { isAuthenticated } from "../services/authService";
 import { startChat } from "../services/messagingService";
-import { MessageCircle, ShieldCheck, Mail, Truck, Store as StoreIcon } from "lucide-react";
+import { MessageCircle, ShieldCheck, Mail, Truck, Store as StoreIcon, Heart } from "lucide-react";
 import s from "./VendorStore.module.css";
+import { followStoreApi, unfollowStoreApi } from "../services/vendorService";
 
 export default function VendorStore() {
   const { id } = useParams();
@@ -19,6 +20,8 @@ export default function VendorStore() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("products");
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -32,6 +35,8 @@ export default function VendorStore() {
         listProducts("", 20, { supplier_id: id })
       ]);
       setVendor(v);
+      setIsFollowing(v?.is_following || false);
+      setFollowerCount(v?.followers_count || 0);
       setProducts(p || []);
     } catch (e) {
       console.error(e);
@@ -51,6 +56,28 @@ export default function VendorStore() {
         navigate("/messages");
     } catch (e) {
         navigate("/messages");
+    }
+  };
+
+  const toggleFollow = async () => {
+    if (!isAuthenticated()) {
+      toast.push({ message: t('vendor.login_to_follow', 'الرجاء تسجيل الدخول لمتابعة المتجر'), type: "warning" });
+      return navigate("/login");
+    }
+    try {
+      if (isFollowing) {
+        await unfollowStoreApi(id);
+        setIsFollowing(false);
+        setFollowerCount(prev => Math.max(0, prev - 1));
+        toast.push({ message: t('vendor.unfollowed_success', 'تم إلغاء متابعة المتجر'), type: "success" });
+      } else {
+        await followStoreApi(id);
+        setIsFollowing(true);
+        setFollowerCount(prev => prev + 1);
+        toast.push({ message: t('vendor.followed_success', 'تمت متابعة المتجر بنجاح'), type: "success" });
+      }
+    } catch (e) {
+      toast.push({ message: t('common.error', 'حدث خطأ غير متوقع'), type: "error" });
     }
   };
 
@@ -117,10 +144,27 @@ export default function VendorStore() {
                             <ShieldCheck size={14} />
                             {t('vendor.verified', 'متجر موثوق')}
                         </span>
+                        <span className={s.badge} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-light)', color: 'var(--text-secondary)' }}>
+                            <Heart size={12} style={{ fill: isFollowing ? 'var(--clr-red-500)' : 'transparent', color: isFollowing ? 'var(--clr-red-500)' : 'inherit' }} />
+                            {followerCount} {t('vendor.followers', 'متابع')}
+                        </span>
                     </div>
                 </div>
             </div>
             <div className={s.vendorActions}>
+                <button 
+                    className={s.followBtn} 
+                    onClick={toggleFollow}
+                    style={{ 
+                      backgroundColor: isFollowing ? 'var(--bg-surface)' : 'var(--primary)',
+                      color: isFollowing ? 'var(--text-main)' : 'white',
+                      border: isFollowing ? '1px solid var(--border-med)' : 'none',
+                      display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer'
+                    }}
+                >
+                    <Heart size={18} style={{ fill: isFollowing ? 'var(--clr-red-500)' : 'transparent', color: isFollowing ? 'var(--clr-red-500)' : 'inherit' }} />
+                    {isFollowing ? t('vendor.following', 'مُتابَع') : t('vendor.follow_store', 'متابعة المتجر')}
+                </button>
                 <button className={s.messageBtn} onClick={handleMessage}>
                     <MessageCircle size={18} />
                     {t('common.message_vendor', 'تواصل مع البائع')}

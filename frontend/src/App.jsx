@@ -33,6 +33,7 @@ const About = React.lazy(() => import("./pages/About"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const SearchResults = React.lazy(() => import("./pages/SearchResults"));
 const Wishlist = React.lazy(() => import("./pages/Wishlist"));
+const StoresDirectory = React.lazy(() => import("./pages/StoresDirectory"));
 const Compare = React.lazy(() => import("./pages/Compare"));
 const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
@@ -87,6 +88,7 @@ const VendorPayoutRequests = React.lazy(() => import("./pages/VendorPayoutReques
 const VendorAds = React.lazy(() => import("./pages/VendorAds"));
 const VendorSupport = React.lazy(() => import("./pages/VendorSupport"));
 const VendorDropshipping = React.lazy(() => import("./pages/VendorDropshipping"));
+const StorefrontEditor = React.lazy(() => import("./pages/vendor/StorefrontEditor"));
 
 import ToastProvider from "./components/common/ToastProvider";
 import ConfirmProvider from "./components/common/ConfirmProvider";
@@ -139,6 +141,7 @@ function AppContent() {
               </Suspense>
             }
           />
+          <Route path="/stores" element={<Suspense fallback={<GlobalLoader />}><StoresDirectory /></Suspense>} />
           <Route path="/cart" element={<Suspense fallback={<GlobalLoader />}><Cart /></Suspense>} />
           <Route
             path="/order-review"
@@ -273,6 +276,16 @@ function AppContent() {
               <VendorRoute>
                  <Suspense fallback={<GlobalLoader />}>
                    <VendorAds />
+                 </Suspense>
+              </VendorRoute>
+            }
+          />
+          <Route
+            path="/vendor/editor"
+            element={
+              <VendorRoute>
+                 <Suspense fallback={<GlobalLoader />}>
+                   <StorefrontEditor />
                  </Suspense>
               </VendorRoute>
             }

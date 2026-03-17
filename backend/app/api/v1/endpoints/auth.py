@@ -24,12 +24,13 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @sanitize_inputs
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     service = UserService(db)
-    # تحقق من قوة كلمة المرور
+    import re
     password = user_in.password
-    if len(password) < 8:
+    # Minimum 8 characters, at least one letter and one number
+    if len(password) < 8 or not re.search(r"[a-zA-Z]", password) or not re.search(r"\d", password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
+            detail="كلمة المرور ضعيفة. يجب أن تحتوي على 8 أحرف على الأقل، تتضمن حروفاً وأرقاماً.",
         )
     # Check for existing username/email
     from sqlalchemy import select, delete as sa_delete
@@ -183,12 +184,14 @@ def login(
         try:
             user = service.login_user(username, password)
         except ValueError as ve:
+            if "غير موجود" in str(ve):
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ve))
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(ve))
         
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="بيانات الدخول غير صحيحة",
+                detail="كلمة المرور غير صحيحة.",
             )
         
         # Verification Check
@@ -585,4 +588,124 @@ def reset_password(
 
     logger.info("Password reset successful for user: %s", user.email)
     return {"status": "ok", "message": "تم تحديث كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن."}
+
+
+@router.post("/google")
+@audit("user.google_login")
+@log_and_time
+def google_login(
+    response: Response,
+    request: Request,
+    data: schemas.GoogleLoginRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        from google.oauth2 import id_token
+        from google.auth.transport import requests as google_requests
+        import secrets
+        import string
+        from app.core.security import get_password_hash
+        
+        # Verify the token
+        token = data.credential
+        client_id = getattr(settings, "GOOGLE_CLIENT_ID", None)
+        if not client_id:
+            raise HTTPException(status_code=500, detail="Google authentication is not configured.")
+            
+        idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), client_id)
+        
+        email = idinfo.get('email')
+        name = idinfo.get('name', '')
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="لم يتم الحصول على البريد الإلكتروني من جوجل.")
+            
+        # Find or create user
+        from sqlalchemy import select
+        stmt = select(User).where(User.email == email)
+        user = db.scalars(stmt).first()
+        
+        if not user:
+            # Generate a random password for OAuth users and a unique username
+            alphabet = string.ascii_letters + string.digits + string.punctuation
+            temp_password = ''.join(secrets.choice(alphabet) for i in range(16))
+            hashed = get_password_hash(temp_password)
+            
+            base_username = email.split('@')[0]
+            username = base_username
+            counter = 1
+            while db.scalars(select(User).where(User.username == username)).first():
+                username = f"{base_username}{counter}"
+                counter += 1
+                
+            user = User(
+                username=username, 
+                email=email, 
+                password_hash=hashed, 
+                is_active=True, 
+                is_verified=True # Auto-verify Google users
+            )
+            db.add(user)
+            db.flush()
+            
+        elif getattr(user, "is_suspended", False):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="تم حظر حسابك من قبل الإدارة.")
+            
+        # Guarantee verification for existing OAuth users
+        if not user.is_verified:
+            user.is_verified = True
+            
+        db.commit()
+        
+        # Create tokens
+        token_str = create_access_token(subject=str(user.id))
+        if isinstance(token_str, bytes):
+            token_str = token_str.decode("utf-8")
+            
+        auth_service = AuthService(db)
+        refresh = auth_service.create_refresh_token(user.id)
+        secure = settings.SESSION_COOKIE_SECURE or (not settings.DEBUG)
+        max_age = 7 * 24 * 60 * 60
+        
+        response.set_cookie(
+            "refresh_token",
+            refresh.token,
+            httponly=True,
+            secure=secure,
+            samesite=settings.SESSION_COOKIE_SAMESITE,
+            domain=settings.SESSION_COOKIE_DOMAIN,
+            max_age=max_age,
+        )
+        csrf = create_csrf_token()
+        response.set_cookie(
+            "csrf_token",
+            csrf,
+            httponly=False,
+            secure=secure,
+            samesite=settings.SESSION_COOKIE_SAMESITE,
+            domain=settings.SESSION_COOKIE_DOMAIN,
+            max_age=max_age,
+        )
+        
+        return {
+            "access_token": token_str,
+            "token_type": "bearer",
+            "csrf_token": csrf,
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "role": user.role,
+                "is_active": user.is_active,
+                "is_vendor": user.is_vendor,
+                "vendor_status": user.vendor_status,
+            },
+        }
+
+    except ValueError:
+        raise HTTPException(status_code=400, detail="بيانات الدخول عبر جوجل غير صالحة.")
+    except Exception as e:
+        import logging
+        logging.getLogger("auth").error(f"Google login error: {str(e)}")
+        raise HTTPException(status_code=400, detail="تعذر إتمام تسجيل الدخول باستخدام جوجل.")
 

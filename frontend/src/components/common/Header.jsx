@@ -68,6 +68,7 @@ const StoreIcon = () => (
 const MOBILE_NAV = [
   { to: "/", icon: "🏠", labelKey: "nav.home" },
   { to: "/products", icon: "🛍️", labelKey: "nav.products" },
+  { to: "/stores", icon: "🏪", labelKey: "nav.stores" },
   { to: "/cart", icon: "🛒", labelKey: "nav.cart", isCart: true },
   { to: "/wishlist", icon: "❤️", labelKey: "nav.wishlist" },
   { to: "/orders", icon: "📦", labelKey: "nav.orders", auth: true },
@@ -204,6 +205,7 @@ export default function Header() {
           {/* Desktop nav links */}
           <Link to="/" className={styles.navLink}>{t("nav.home")}</Link>
           <Link to="/products" className={styles.navLink}>{t("nav.products")}</Link>
+          <Link to="/stores" className={styles.navLink}>{t("nav.stores")}</Link>
 
           {user?.role === "admin" && (
             <Link to="/admin" className={`${styles.navLink} ${styles.accentLink}`}>{t("nav.dashboard")}</Link>

@@ -73,7 +73,8 @@
     "login_required": "Login Required",
     "quick_nav": "Quick Nav",
     "vendor": "Vendor",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "stores": "Stores"
   },
   "footer": {
     "about": "About Us",

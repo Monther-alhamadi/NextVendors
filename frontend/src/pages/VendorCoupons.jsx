@@ -4,8 +4,9 @@ import { useToast } from "../components/common/ToastProvider";
 import { useTranslation } from "react-i18next";
 import { listVendorCoupons, createVendorCoupon, deleteVendorCoupon } from "../services/couponService";
 import { getMySupplierInfo } from "../services/supplierService";
+import { getMyCapabilities } from "../services/vendorService";
 import api from "../services/api";
-import { Copy, PlusCircle, Trash2, Tag, Percent } from "lucide-react";
+import { Copy, PlusCircle, Trash2, Tag, Percent, Lock } from "lucide-react";
 import s from "./VendorCoupons.module.css";
 
 export default function VendorCoupons() {
@@ -14,6 +15,7 @@ export default function VendorCoupons() {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [supplier, setSupplier] = useState(null);
+  const [capabilities, setCapabilities] = useState(null);
   const [creating, setCreating] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -26,8 +28,12 @@ export default function VendorCoupons() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const info = await getMySupplierInfo().catch(() => null);
+      const [info, caps] = await Promise.all([
+        getMySupplierInfo().catch(() => null),
+        getMyCapabilities().catch(() => null)
+      ]);
       setSupplier(info);
+      if (caps) setCapabilities(caps);
 
       if (info) {
         const [cData] = await Promise.all([
@@ -98,8 +104,20 @@ export default function VendorCoupons() {
 
       <div className={s.mainGrid}>
         {/* Create Form */}
-        <div className={s.formCard}>
+        <div className={s.formCard} style={{ position: 'relative', minHeight: '300px' }}>
           <h2 className={s.cardTitle}>{t("vendor.create_new_coupon", "إنشاء كوبون جديد")}</h2>
+          
+          {capabilities && capabilities.max_coupons <= coupons.length && (
+              <div className={s.lockedOverlay}>
+                  <div className={s.lockIconWrap}>
+                      <Lock size={32} />
+                  </div>
+                  <h4 className={s.lockedTitle}>{t("vendor.coupon_limit_reached", "تم الوصول للحد الأقصى للكوبونات")}</h4>
+                  <p className={s.lockedDesc}>{t("vendor.coupon_limit_desc", "قمت بإنشاء العدد الأقصى من الكوبونات المسموح به في باقتك الحالية. قم بالترقية لإنشاء المزيد.")}</p>
+                  <Link to="/vendor/plans" className={s.upgradeBtn}>{t("vendor.upgrade_now", "ترقية الباقة الآن")}</Link>
+              </div>
+          )}
+
           <form onSubmit={handleSubmit} className={s.form}>
             <div className={s.fieldGroup}>
               <label>{t("vendor.coupon_code", "رمز الكوبون")}</label>

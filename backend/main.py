@@ -310,6 +310,15 @@ def _register_middlewares(app: FastAPI) -> None:
     origins = []
     if settings.FRONTEND_URLS:
         origins = [u.strip() for u in settings.FRONTEND_URLS.split(",") if u.strip()]
+    # Always allow production frontend domains to avoid CORS blocked errors on Vercel
+    prod_domains = [
+        "https://next-vendors.vercel.app",
+        "https://nextvendors.onrender.com"
+    ]
+    for domain in prod_domains:
+        if domain not in origins:
+            origins.append(domain)
+
     if settings.DEBUG:
         for u in [
             "http://127.0.0.1:3000",
@@ -319,6 +328,7 @@ def _register_middlewares(app: FastAPI) -> None:
         ]:
             if u not in origins:
                 origins.append(u)
+
     # SECURITY: Never fall back to '*' — require explicit FRONTEND_URLS in production.
     if not origins:
         try:

@@ -58,6 +58,10 @@ class UserUpdateUnverifiedEmailRequest(BaseModel):
     new_email: EmailStr
 
 
+class GoogleLoginRequest(BaseModel):
+    credential: str
+
+
 class ProductCreate(BaseModel):
     name: str
     name_en: Optional[str] = None
@@ -349,6 +353,7 @@ class VendorResponse(BaseModel):
     
     # Capabilities mapping
     override_limits: Optional[dict] = None
+    capabilities: Optional[dict] = None
     
     # Elite Customization & Visuals
     theme_color: Optional[str] = None

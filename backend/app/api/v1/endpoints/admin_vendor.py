@@ -45,6 +45,27 @@ def ban_vendor(
 ):
     return AdminVendorService.toggle_ban(db, vendor_id, request.ban, current_user.id)
 
+class AdminVendorUpdate(BaseModel):
+    override_limits: dict = None
+
+@router.put("/{vendor_id}")
+def admin_update_vendor(
+    vendor_id: int,
+    request: AdminVendorUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("manage_vendors"))
+):
+    from app.models.supplier import Supplier
+    vendor = db.query(Supplier).filter(Supplier.id == vendor_id).first()
+    if not vendor:
+        raise HTTPException(status_code=404, detail="Vendor not found")
+    
+    if request.override_limits is not None:
+        vendor.override_limits = request.override_limits
+    
+    db.commit()
+    return {"message": "Vendor updated successfully"}
+
 @router.get("/{vendor_id}/audit-logs")
 def get_vendor_audit_logs(
     vendor_id: int,

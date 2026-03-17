@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ProductGrid from "../components/product/ProductGrid";
 import CustomButton from "../components/common/CustomButton";
 import { listProducts, listFeaturedProducts, getCategories } from "../services/productService";
+import { listVendors } from "../services/vendorService";
 import { useToast } from "../components/common/ToastProvider";
 import { useTranslation, Trans } from "react-i18next";
 import governanceService from "../services/governanceService";
@@ -82,6 +83,7 @@ export default function Landing() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("");
   const [email, setEmail] = useState("");
+  const [topStores, setTopStores] = useState([]);
   const toast = useToast();
   const { t, i18n } = useTranslation();
 
@@ -116,6 +118,14 @@ export default function Landing() {
         setCategories(catData || []);
         setLegacyWidgets(Array.isArray(widgetData) ? widgetData : []);
         setVendorAds(Array.isArray(adsData) ? adsData : []);
+        
+        // Load top stores
+        try {
+          const storesData = await listVendors({ sort_by: "followers" });
+          setTopStores(Array.isArray(storesData) ? storesData.slice(0, 6) : []);
+        } catch (e) {
+          console.log("Could not load top stores");
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -295,6 +305,70 @@ export default function Landing() {
           ))}
         </div>
       </section>
+
+      {/* ─── TOP STORES ──────────────────────────────────────── */}
+      {topStores.length > 0 && (
+        <section className="container" style={{ paddingTop: "1.5rem", paddingBottom: "0.5rem" }}>
+          <div className="section-header" style={{ marginBottom: "1.25rem" }}>
+            <div>
+              <div className="section-eyebrow">{t("home.top_stores.eyebrow", "متاجر مميزة")}</div>
+              <h2 className="section-title">{t("home.top_stores.title", "أفضل المتاجر")}</h2>
+            </div>
+            <Link to="/stores" style={{
+              color: "var(--primary)", fontWeight: 700, fontSize: "var(--text-sm)",
+              display: "inline-flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap",
+            }}>
+              {t("home.top_stores.view_all", "عرض الكل")} →
+            </Link>
+          </div>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+            gap: "1rem",
+          }}>
+            {topStores.map(store => {
+              const themeColor = store.theme_color || "#6366f1";
+              return (
+                <Link
+                  key={store.id}
+                  to={`/store/${store.code || store.id}`}
+                  className="card"
+                  style={{
+                    textAlign: "center", padding: "1.25rem 0.75rem",
+                    textDecoration: "none", transition: "all 0.25s",
+                    borderRadius: "var(--radius-xl)",
+                  }}
+                >
+                  {store.logo_url ? (
+                    <img src={store.logo_url} alt={store.name} style={{
+                      width: 56, height: 56, borderRadius: 14, objectFit: "cover",
+                      margin: "0 auto 10px", display: "block",
+                      border: `2px solid ${themeColor}22`,
+                    }} />
+                  ) : (
+                    <div style={{
+                      width: 56, height: 56, borderRadius: 14,
+                      background: themeColor, color: "white",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "1.5rem", fontWeight: 800,
+                      margin: "0 auto 10px",
+                    }}>
+                      {store.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                  )}
+                  <div style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: "var(--text-primary)" }}>
+                    {store.name}
+                  </div>
+                  <div style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)", marginTop: 4 }}>
+                    ❤️ {store.followers_count || 0} {t("vendor.followers", "متابع")}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ─── FEATURED PRODUCTS ─────────────────────────────────── */}
       <section className="container section-pad">

@@ -2,11 +2,13 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Lock } from 'lucide-react';
+import { usePermissions } from '../../hooks/usePermissions';
 import s from './VendorSidebar.module.css';
 
-export default function VendorSidebar({ vendorPlan = 'basic', collapsed, setCollapsed }) {
+export default function VendorSidebar({ collapsed, setCollapsed }) {
   const { t } = useTranslation();
   const location = useLocation();
+  const { can } = usePermissions();
 
   const menuGroups = [
     {
@@ -33,7 +35,7 @@ export default function VendorSidebar({ vendorPlan = 'basic', collapsed, setColl
           path: '/vendor/affiliate', 
           icon: '🤝', 
           label: t('vendor.affiliate_program', 'نظام المسوقين'),
-          locked: vendorPlan === 'basic',
+          locked: !can('access_advanced_analytics'), // Or maybe another permission
           tooltip: t('vendor.upgrade_to_pro', 'قم بالترقية للباقة الاحترافية')
         }
       ]
@@ -56,7 +58,7 @@ export default function VendorSidebar({ vendorPlan = 'basic', collapsed, setColl
     {
       title: t('vendor.settings', 'الإعدادات'),
       items: [
-        { path: '/vendor/store', icon: '🏪', label: t('vendor.store_profile', 'ملف المتجر') },
+        { path: '/vendor/editor', icon: '🏪', label: t('vendor.store_profile', 'ملف المتجر') },
         { path: '/vendor/plans', icon: '📋', label: t('vendor.subscription', 'الاشتراك') },
         { path: '/vendor/settings', icon: '⚙️', label: t('vendor.account_settings', 'إعدادات الحساب') }
       ]

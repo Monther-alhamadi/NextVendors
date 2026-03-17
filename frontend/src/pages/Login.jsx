@@ -10,6 +10,7 @@ import Input from "../components/common/Input";
 import api from "../services/api";
 import * as authService from "../services/authService";
 import styles from "./Auth.module.css";
+import GoogleAuthButton from "../components/auth/GoogleAuthButton";
 
 function AuthPage() {
   const { t } = useTranslation();
@@ -109,6 +110,20 @@ function AuthPage() {
       } else {
         setError(detail || t("common.error"));
       }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credential) {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await authService.googleLogin(credential);
+      completeLogin(data);
+    } catch (err) {
+      logError("Google Login failed", { err: err?.response?.data || err?.message || String(err) });
+      setError(err?.response?.data?.detail || t("auth.google_login_failed"));
     } finally {
       setLoading(false);
     }
@@ -339,6 +354,15 @@ function AuthPage() {
                 >
                   {t("auth.register_now")}
                 </button>
+              </div>
+
+              <GoogleAuthButton 
+                onSuccess={handleGoogleSuccess} 
+                onError={(msg) => setError(msg)}
+                text={mode === 'login' ? "auth.signin_with" : "auth.signup_with"} 
+              />
+              <div className={styles.divider}>
+                <span>{t("auth.or_email")}</span>
               </div>
 
               <form onSubmit={mode === 'login' ? handleLogin : handleRegister} className={styles.authForm}>
