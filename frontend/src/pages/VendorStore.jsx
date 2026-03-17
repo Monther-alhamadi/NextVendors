@@ -22,17 +22,18 @@ export default function VendorStore() {
   const [activeTab, setActiveTab] = useState("products");
   const [isFollowing, setIsFollowing] = useState(false);
   const [followerCount, setFollowerCount] = useState(0);
+  const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
     loadData();
-  }, [id]);
+  }, [id, sortBy]);
 
   const loadData = async () => {
     setLoading(true);
     try {
       const [v, p] = await Promise.all([
         getVendorById(id),
-        listProducts("", 20, { supplier_id: id })
+        listProducts("", 20, { supplier_id: id, sort_by: sortBy })
       ]);
       setVendor(v);
       setIsFollowing(v?.is_following || false);
@@ -207,27 +208,58 @@ export default function VendorStore() {
         <div className={s.tabContent}>
             {activeTab === 'products' && (
                 <div className={s.productsView}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h3 style={{ margin: 0 }}>{t('common.products', 'المنتجات')}</h3>
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="input" style={{ width: 'auto', padding: '0.4rem 2rem 0.4rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border-med)' }}>
+                            <option value="newest">{t('vendor.sort_newest', 'الأحدث')}</option>
+                            <option value="sales_desc">{t('vendor.sort_best_sellers', 'الأكثر مبيعاً')}</option>
+                            <option value="rating_desc">{t('vendor.sort_highest_rated', 'الأعلى تقييماً')}</option>
+                            <option value="price_asc">{t('vendor.sort_price_low', 'السعر: من الأقل')}</option>
+                            <option value="price_desc">{t('vendor.sort_price_high', 'السعر: من الأعلى')}</option>
+                        </select>
+                    </div>
                     {products.length === 0 ? (
                         <p className={s.emptyMsg}>{t('common.no_products', 'لا توجد منتجات')}</p>
                     ) : (
                         <div className={s.productGrid}>
-                            {products.map(p => {
-                                const isSale = p.compare_at_price && p.compare_at_price > p.price;
-                                const discountPercent = isSale ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100) : 0;
-                                
-                                return (
-                                <Link to={`/products/${p.id}`} key={p.id} className={s.productCard} style={{ position: 'relative' }}>
+                            {(() => {
+                                const displayProducts = [...products];
+                                if (vendor?.pinned_product_id) {
+                                    const pIdx = displayProducts.findIndex(p => p.id === vendor.pinned_product_id);
+                                    if (pIdx > -1) {
+                                        const [pinned] = displayProducts.splice(pIdx, 1);
+                                        displayProducts.unshift(pinned);
+                                    }
+                                }
+                                return displayProducts.map(p => {
+                                    const isSale = p.compare_at_price && p.compare_at_price > p.price;
+                                    const discountPercent = isSale ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100) : 0;
+                                    const isPinned = vendor?.pinned_product_id === p.id;
                                     
-                                    {isSale && (
-                                        <div style={{
-                                            position: 'absolute', top: '10px', right: '10px', zIndex: 2,
-                                            background: 'linear-gradient(45deg, #ef4444, #f43f5e)', color: 'white',
-                                            padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold',
-                                            boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)'
-                                        }}>
-                                            {t('vendor.sale', 'تخفيض')} {discountPercent}%
-                                        </div>
-                                    )}
+                                    return (
+                                    <Link to={`/products/${p.id}`} key={p.id} className={s.productCard} style={{ position: 'relative', border: isPinned ? '2px solid var(--primary)' : undefined }}>
+                                        
+                                        {isPinned && (
+                                            <div style={{
+                                                position: 'absolute', top: '10px', left: '10px', zIndex: 2,
+                                                background: 'var(--primary)', color: 'white',
+                                                padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold',
+                                                boxShadow: '0 2px 4px rgba(0,0,0, 0.2)'
+                                            }}>
+                                                📌 {t('vendor.pinned', 'مثبت')}
+                                            </div>
+                                        )}
+
+                                        {isSale && (
+                                            <div style={{
+                                                position: 'absolute', top: '10px', right: '10px', zIndex: 2,
+                                                background: 'linear-gradient(45deg, #ef4444, #f43f5e)', color: 'white',
+                                                padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold',
+                                                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)'
+                                            }}>
+                                                {t('vendor.sale', 'تخفيض')} {discountPercent}%
+                                            </div>
+                                        )}
 
                                     <div className={s.imgWrapper}>
                                         {p.images && p.images.length > 0 ? (
@@ -255,8 +287,9 @@ export default function VendorStore() {
                                     </div>
                                 </Link>
                                 );
-                            })}
-                        </div>
+                            });
+                        })()}
+                    </div>
                     )}
                 </div>
             )}

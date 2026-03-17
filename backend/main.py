@@ -609,7 +609,10 @@ def _ensure_schema_migrations(db, logger):
             ("return_policy", "VARCHAR(2048)"),
             ("shipping_policy", "VARCHAR(2048)"),
             ("allow_direct_orders", "BOOLEAN DEFAULT 0"),
-            ("preferred_settlement_method", "VARCHAR(50) DEFAULT 'platform'")
+            ("preferred_settlement_method", "VARCHAR(50) DEFAULT 'platform'"),
+            ("total_sales", "INTEGER DEFAULT 0"),
+            ("rating", "FLOAT DEFAULT 0.0"),
+            ("pinned_product_id", "INTEGER")
         ]
         for col_name, col_type in supplier_cols:
             try:
@@ -702,7 +705,9 @@ def _ensure_schema_migrations(db, logger):
             ("seo_title", "VARCHAR(255)"),
             ("seo_description", "VARCHAR(512)"),
             ("status", "VARCHAR(50) DEFAULT 'published'"),
-            ("vendor_notes", "VARCHAR(512)")
+            ("vendor_notes", "VARCHAR(512)"),
+            ("total_sales", "INTEGER DEFAULT 0"),
+            ("rating", "FLOAT DEFAULT 0.0")
         ]
         for col_name, col_type in product_cols:
             try:

@@ -71,13 +71,7 @@ export async function updateVendor(vendorId, data) {
   return r.data;
 }
 
-export async function adminUpdateVendor(vendorId, data) {
-  // Use a more permissive update for admin if needed, 
-  // currently put /vendors/{id} doesn't exist but we'll add it or use status.
-  // Actually let's use a generic update if we add it to backend.
-  const r = await api.put(`/vendors/${vendorId}`, data);
-  return r.data;
-}
+
 
 export async function listSubscriptionPlans() {
   const r = await api.get("/subscription-plans/");

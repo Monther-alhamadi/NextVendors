@@ -202,14 +202,17 @@ class ProductService(CRUDService[Product]):
 
         # --- Sorting ---
         sort_map = {
-            "newest":     Product.id.desc(),
-            "price_asc":  Product.price.asc(),
-            "price_desc": Product.price.desc(),
-            "popular":    Product.is_sponsored.desc(),
+            "newest":      Product.id.desc(),
+            "price_asc":   Product.price.asc(),
+            "price_desc":  Product.price.desc(),
+            "popular":     Product.is_sponsored.desc(),
+            "sales_desc":  Product.total_sales.desc(),
+            "rating_desc": Product.rating.desc(),
+            "rating_asc":  Product.rating.asc(),
         }
         order_clause = sort_map.get(sort_by, Product.id.desc())
-        # Always put sponsored products first unless sorting by price
-        if sort_by not in ("price_asc", "price_desc"):
+        # Always put sponsored products first unless sorting by price or explicitly by other non-sponsored metrics
+        if sort_by not in ("price_asc", "price_desc", "sales_desc", "rating_desc", "rating_asc"):
             base = base.order_by(Product.is_sponsored.desc(), order_clause)
         else:
             base = base.order_by(order_clause)

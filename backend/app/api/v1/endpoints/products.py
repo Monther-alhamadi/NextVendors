@@ -80,7 +80,7 @@ def list_products(
     category: str = Query(None, description="Filter by category name"),
     min_price: float = Query(None, ge=0, description="Minimum price"),
     max_price: float = Query(None, ge=0, description="Maximum price"),
-    sort_by: str = Query("newest", description="Sort order: newest | price_asc | price_desc | popular"),
+    sort_by: str = Query("newest", description="newest | price_asc | price_desc | popular | sales_desc | rating_desc | rating_asc"),
     in_stock: bool = Query(None, description="Only show products with inventory > 0"),
     supplier_id: int = Query(None, description="Filter by supplier"),
     page: int = Query(1, ge=1, description="Page number (1-indexed)"),

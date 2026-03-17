@@ -25,6 +25,11 @@ class Supplier(SQLAlchemyBaseModel, Base):
     is_banned = Column(Boolean, default=False)
     is_verified = Column(Boolean, default=False) # Helper for quick check
     
+    # Storefront Flexibility metrics
+    total_sales = Column(Integer, default=0)
+    rating = Column(Float, default=0.0)
+    pinned_product_id = Column(Integer, ForeignKey("products.id"), nullable=True)
+    
     # Dropshipping Integration
     is_dropshipping = Column(Boolean, default=False)
     api_connector_code = Column(String(50), nullable=True) # e.g. 'aliexpress', 'dsers'

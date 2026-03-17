@@ -10,6 +10,12 @@ import governanceService from "../services/governanceService";
 import { getPage } from "../services/cmsService";
 import DynamicWidget from "../components/DynamicWidget";
 import WidgetRenderer from "../components/cms/WidgetRenderer";
+import api from "../services/api";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import { getLocalizedField } from "../utils/localization";
 
@@ -84,6 +90,7 @@ export default function Landing() {
   const [activeCategory, setActiveCategory] = useState("");
   const [email, setEmail] = useState("");
   const [topStores, setTopStores] = useState([]);
+  const [adRotationInterval, setAdRotationInterval] = useState(5000);
   const toast = useToast();
   const { t, i18n } = useTranslation();
 
@@ -108,21 +115,23 @@ export default function Landing() {
         }
 
         // Load necessary data for fallback components
-        const [prodData, catData, widgetData, adsData] = await Promise.all([
+        const [prodData, catData, widgetData, adsData, configData] = await Promise.all([
           listProducts("", 8),
           getCategories().catch(() => []), 
           governanceService.getActiveWidgets().catch(() => []),
-          governanceService.getPublicVendorAds().catch(() => [])
+          governanceService.getPublicVendorAds().catch(() => []),
+          api.get("/public-config").catch(() => ({ data: { ad_rotation_interval: 5000 } }))
         ]);
         setFeatured(Array.isArray(prodData) ? prodData : (prodData?.products || []));
         setCategories(catData || []);
         setLegacyWidgets(Array.isArray(widgetData) ? widgetData : []);
         setVendorAds(Array.isArray(adsData) ? adsData : []);
+        setAdRotationInterval(configData?.data?.ad_rotation_interval || 5000);
         
         // Load top stores
         try {
-          const storesData = await listVendors({ sort_by: "followers" });
-          setTopStores(Array.isArray(storesData) ? storesData.slice(0, 6) : []);
+          const storesData = await listVendors({ sort_by: "sales" });
+          setTopStores(Array.isArray(storesData) ? storesData.slice(0, 10) : []);
         } catch (e) {
           console.log("Could not load top stores");
         }
@@ -250,13 +259,28 @@ export default function Landing() {
       {/* ─── GLOBAL VENDOR ADS ─────────────────────────────────── */}
       {vendorAds && vendorAds.length > 0 && (
         <section style={{ padding: "2rem 0 1rem" }}>
-          <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-            {vendorAds.map(ad => (
-              <a key={ad.id} href={ad.target_url} target="_blank" rel="noreferrer" style={{ display: 'block', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'transform 0.2s', background: '#f8fafc', position: 'relative' }}>
-                 <div style={{ position: 'absolute', top: 10, left: 10, background: 'rgba(0,0,0,0.5)', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', backdropFilter: 'blur(2px)' }}>{t("home.sponsored_ad", "إعلان ممول")}</div>
-                 <img src={ad.image_url} alt="Vendor Advertisement" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} onError={(e) => { e.target.style.display='none'; }} />
-              </a>
-            ))}
+          <div className="container">
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              autoplay={{ delay: adRotationInterval, disableOnInteraction: false }}
+              pagination={{ clickable: true }}
+              style={{ paddingBottom: '3rem' }}
+            >
+              {vendorAds.map(ad => (
+                <SwiperSlide key={ad.id}>
+                  <a href={ad.target_url} target="_blank" rel="noreferrer" style={{ display: 'block', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 30px rgba(0,0,0,0.12)', transition: 'transform 0.3s', background: '#f8fafc', position: 'relative' }}>
+                     <div style={{ position: 'absolute', top: 12, left: 12, background: 'rgba(0,0,0,0.6)', color: 'white', padding: '4px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, backdropFilter: 'blur(4px)', zIndex: 10 }}>{t("home.sponsored_ad", "إعلان ممول")}</div>
+                     <img src={ad.image_url} alt="Vendor Advertisement" style={{ width: '100%', height: '240px', objectFit: 'cover', display: 'block', pointerEvents: 'none' }} onError={(e) => { e.target.style.display='none'; }} />
+                  </a>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </section>
       )}
@@ -322,51 +346,63 @@ export default function Landing() {
             </Link>
           </div>
 
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-            gap: "1rem",
-          }}>
+          <Swiper
+            modules={[Autoplay, Navigation]}
+            spaceBetween={20}
+            slidesPerView={2}
+            breakpoints={{
+              640: { slidesPerView: 3 },
+              768: { slidesPerView: 4 },
+              1024: { slidesPerView: 6 },
+            }}
+            autoplay={{ delay: 3500, disableOnInteraction: false }}
+            navigation
+            style={{ padding: '0.5rem 1rem' }}
+          >
             {topStores.map(store => {
               const themeColor = store.theme_color || "#6366f1";
               return (
-                <Link
-                  key={store.id}
-                  to={`/store/${store.code || store.id}`}
-                  className="card"
-                  style={{
-                    textAlign: "center", padding: "1.25rem 0.75rem",
-                    textDecoration: "none", transition: "all 0.25s",
-                    borderRadius: "var(--radius-xl)",
-                  }}
-                >
-                  {store.logo_url ? (
-                    <img src={store.logo_url} alt={store.name} style={{
-                      width: 56, height: 56, borderRadius: 14, objectFit: "cover",
-                      margin: "0 auto 10px", display: "block",
-                      border: `2px solid ${themeColor}22`,
-                    }} />
-                  ) : (
-                    <div style={{
-                      width: 56, height: 56, borderRadius: 14,
-                      background: themeColor, color: "white",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "1.5rem", fontWeight: 800,
-                      margin: "0 auto 10px",
-                    }}>
-                      {store.name?.charAt(0)?.toUpperCase()}
+                <SwiperSlide key={store.id}>
+                  <Link
+                    to={`/store/${store.code || store.id}`}
+                    className="card"
+                    style={{
+                      display: "block",
+                      textAlign: "center", padding: "1.25rem 0.75rem",
+                      textDecoration: "none", transition: "all 0.25s",
+                      borderRadius: "var(--radius-xl)",
+                      height: "100%",
+                    }}
+                  >
+                    {store.logo_url ? (
+                      <img src={store.logo_url} alt={store.name} style={{
+                        width: 64, height: 64, borderRadius: 16, objectFit: "cover",
+                        margin: "0 auto 12px", display: "block",
+                        border: `2px solid ${themeColor}22`,
+                      }} />
+                    ) : (
+                      <div style={{
+                        width: 64, height: 64, borderRadius: 16,
+                        background: themeColor, color: "white",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "1.75rem", fontWeight: 800,
+                        margin: "0 auto 12px",
+                      }}>
+                        {store.name?.charAt(0)?.toUpperCase()}
+                      </div>
+                    )}
+                    <div style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {store.name}
                     </div>
-                  )}
-                  <div style={{ fontWeight: 700, fontSize: "var(--text-sm)", color: "var(--text-primary)" }}>
-                    {store.name}
-                  </div>
-                  <div style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)", marginTop: 4 }}>
-                    ❤️ {store.followers_count || 0} {t("vendor.followers", "متابع")}
-                  </div>
-                </Link>
+                    <div style={{ fontSize: "var(--text-xs)", color: "var(--text-muted)", marginTop: 4 }}>
+                      <span style={{color: 'var(--success)', fontWeight: 600}}>↗ {store.total_sales || 0}</span> {t("vendor.sales", "مبيعات")}
+                      <br/>⭐ {store.rating ? store.rating.toFixed(1) : "0.0"}
+                    </div>
+                  </Link>
+                </SwiperSlide>
               );
             })}
-          </div>
+          </Swiper>
         </section>
       )}
 

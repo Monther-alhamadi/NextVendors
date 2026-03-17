@@ -88,13 +88,19 @@ def list_vendors(
             "status": v.status,
             "is_verified": getattr(v, "is_verified", False),
             "followers_count": followers,
+            "total_sales": getattr(v, "total_sales", 0),
+            "rating": getattr(v, "rating", 0.0),
         })
 
     # Sort
     if sort_by == "followers":
-        result.sort(key=lambda x: x["followers_count"], reverse=True)
+        result.sort(key=lambda x: x.get("followers_count", 0), reverse=True)
+    elif sort_by == "sales":
+        result.sort(key=lambda x: x.get("total_sales", 0), reverse=True)
+    elif sort_by == "rating":
+        result.sort(key=lambda x: x.get("rating", 0.0), reverse=True)
     elif sort_by == "name":
-        result.sort(key=lambda x: x["name"])
+        result.sort(key=lambda x: x.get("name", ""))
     # default "newest" is DB insertion order (already correct)
 
     return result

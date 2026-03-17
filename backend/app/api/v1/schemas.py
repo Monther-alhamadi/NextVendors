@@ -181,6 +181,10 @@ class ProductResponse(BaseModel):
     images: List[ProductImageResponse] = []
     variants: List[VariantResponse] = []
     supplier_products: List[SupplierProductResponse] = []
+    
+    total_sales: int = 0
+    rating: float = 0.0
+    
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -361,6 +365,11 @@ class VendorResponse(BaseModel):
     store_ads: Optional[str] = None
     announcement_text: Optional[str] = None
     currency_display: Optional[str] = "SAR"
+    
+    # Homepage & Storefront Additions
+    total_sales: int = 0
+    rating: float = 0.0
+    pinned_product_id: Optional[int] = None
     
     model_config = ConfigDict(from_attributes=True)
 

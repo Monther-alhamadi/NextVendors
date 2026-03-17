@@ -42,19 +42,28 @@ def get_public_config(db: Session = Depends(get_db)):
     # Expose only safe keys
     SAFE_KEYS = [
         "site_name", "currency", "maintenance_mode", "allow_registrations",
-        "announcement_text", "announcement_active", "announcement_variant"
+        "announcement_text", "announcement_active", "announcement_variant",
+        "ad_rotation_interval"
     ]
     settings = db.query(Setting).filter(Setting.key.in_(SAFE_KEYS)).all()
     
     config = {s.key: s.value for s in settings}
     
-    # Cast booleans
+    # Cast booleans and integers
     if "maintenance_mode" in config:
         config["maintenance_mode"] = config["maintenance_mode"].lower() == "true"
     if "allow_registrations" in config:
         config["allow_registrations"] = config["allow_registrations"].lower() == "true"
     if "announcement_active" in config:
         config["announcement_active"] = config["announcement_active"].lower() == "true"
+        
+    if "ad_rotation_interval" in config:
+        try:
+            config["ad_rotation_interval"] = int(config["ad_rotation_interval"])
+        except ValueError:
+            config["ad_rotation_interval"] = 5000
+    else:
+        config["ad_rotation_interval"] = 5000
         
     return config
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "../components/common/ToastProvider";
 import { useTranslation } from "react-i18next";
 import { getMySupplierInfo } from "../services/supplierService";
-import { updateMyVendorProfile, getMyCapabilities } from "../services/vendorService";
+import { updateMyVendorProfile, getMyCapabilities, getVendorProducts } from "../services/vendorService";
 import { Store, Save, Lock } from "lucide-react";
 import s from "./VendorSettings.module.css";
 
@@ -13,6 +13,7 @@ export default function VendorSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [capabilities, setCapabilities] = useState(null);
+  const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
       name: "",
       description: "",
@@ -26,6 +27,7 @@ export default function VendorSettings() {
       background_image_url: "",
       announcement_text: "",
       store_ads: "",
+      pinned_product_id: "",
       currency_display: "SAR"
   });
 
@@ -43,6 +45,15 @@ export default function VendorSettings() {
         if (caps) setCapabilities(caps);
 
         if (info) {
+            let prods = [];
+            try {
+                const prodsResp = await getVendorProducts(info.id);
+                prods = Array.isArray(prodsResp) ? prodsResp : (prodsResp.items || []);
+            } catch (e) {
+                console.error("Could not load vendor products for pinning", e);
+            }
+            setProducts(prods);
+
             setFormData({
                 name: info.name || "",
                 description: info.description || "",
@@ -56,6 +67,7 @@ export default function VendorSettings() {
                 background_image_url: info.background_image_url || "",
                 announcement_text: info.announcement_text || "",
                 store_ads: info.store_ads || "",
+                pinned_product_id: info.pinned_product_id || "",
                 currency_display: info.currency_display || "SAR"
             });
         }
@@ -285,6 +297,22 @@ export default function VendorSettings() {
                 </div>
                 
                 <div className={s.inputGroup}>
+                    <label>{t("vendor.pinned_product", "المنتج المثبت في أعلى المتجر")}</label>
+                    <select 
+                        className={s.input}
+                        value={formData.pinned_product_id || ""}
+                        onChange={e => setFormData({...formData, pinned_product_id: Object.assign({}, e).target.value === "" ? null : Number(e.target.value)})}
+                        disabled={capabilities && capabilities.can_customize_store === false}
+                    >
+                        <option value="">{t("vendor.none", "لا يوجد (بدون تثبيت)")}</option>
+                        {products.map(p => (
+                            <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                    </select>
+                    <small style={{color: '#666', marginTop: '4px', display: 'block'}}>{t("vendor.pinned_desc", "سيعرض هذا المنتج دائماً في أعلى صفحة المتجر.")}</small>
+                </div>
+                
+                <div className={s.inputGroup}>
                     <label>{t("vendor.store_ads")}</label>
                     <textarea 
                         className={s.textarea}
@@ -292,6 +320,7 @@ export default function VendorSettings() {
                         onChange={e => setFormData({...formData, store_ads: e.target.value})}
                         placeholder='["https://example.com/ad1.jpg", "https://example.com/ad2.jpg"]'
                         style={{direction: 'ltr', textAlign: 'left'}}
+                        disabled={capabilities && capabilities.can_customize_store === false}
                     />
                     <small style={{color: '#666', marginTop: '4px', display: 'block'}}>{t("vendor.store_ads_hint")}</small>
                 </div>

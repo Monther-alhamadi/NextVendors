@@ -24,6 +24,10 @@ class Product(SQLAlchemyBaseModel, Base):
     description_en: Optional[str] = Column(String(1024), nullable=True)
     price: float = Column(Float, nullable=False, default=0.0)
     
+    # Sales & Ratings
+    total_sales = Column(Integer, default=0)
+    rating = Column(Float, default=0.0)
+    
     # Inventory is now a CACHED TOTAL of all SupplierProduct.inventory or Store inventory. 
     inventory = Column(Integer, default=0)
     
