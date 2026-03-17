@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean, JSON, Text
 from sqlalchemy.orm import relationship
 from app.models.base import SQLAlchemyBaseModel
 from app.core.database import Base
@@ -35,6 +35,13 @@ class Supplier(SQLAlchemyBaseModel, Base):
     phone = Column(String(50), nullable=True)
     whatsapp_number = Column(String(50), nullable=True) # For Hybrid Commerce WhatsApp Routing
     address = Column(String(512), nullable=True)
+
+    # Store Profile (vendor-level, not per-store)
+    description = Column(Text, nullable=True)
+    logo_url = Column(String(512), nullable=True)
+    verification_document_url = Column(String(512), nullable=True)
+    return_policy = Column(Text, nullable=True)
+    shipping_policy = Column(Text, nullable=True)
     
     # Hybrid Commerce Options
     allow_direct_orders = Column(Boolean, default=False)

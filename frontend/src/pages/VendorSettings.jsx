@@ -216,7 +216,7 @@ export default function VendorSettings() {
                 <h3 className={s.sectionTitle}>{t("vendor.store_appearance")}</h3>
                 <p className={s.sectionDesc}>{t("vendor.appearance_desc")}</p>
                 
-                {capabilities && capabilities.allow_store_customization === false && (
+                {capabilities && capabilities.can_customize_store === false && (
                     <div style={{ position: 'absolute', top: '70px', left: 0, right: 0, bottom: 0, background: 'rgba(255, 255, 255, 0.85)', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', backdropFilter: 'blur(2px)' }}>
                         <Lock size={40} color="var(--primary-color)" style={{ marginBottom: '1rem', opacity: 0.8 }} />
                         <h4 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.2rem' }}>{t("vendor.elite_appearance_title")}</h4>

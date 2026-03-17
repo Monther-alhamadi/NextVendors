@@ -308,6 +308,16 @@ function AppContent() {
             }
           />
           <Route
+            path="/vendor/store"
+            element={
+              <VendorRoute>
+                 <Suspense fallback={<GlobalLoader />}>
+                   <VendorSettings />
+                 </Suspense>
+              </VendorRoute>
+            }
+          />
+          <Route
             path="/vendor/reviews"
             element={
               <VendorRoute>

@@ -9,6 +9,7 @@ from app.api.v1.dependencies import get_current_user
 from app.models.user import User
 from app.services.discount_service import DiscountService
 from app.services.vendor_service import VendorService
+from app.services.capability_service import CapabilityService
 
 router = APIRouter(prefix="/vendor/affiliate-coupons", tags=["vendor-coupons"])
 
@@ -61,10 +62,17 @@ def create_coupon(
     
     if not vendor:
         raise HTTPException(status_code=403, detail="User is not a vendor")
-        
+
+    # Check capability: can this vendor create coupons?
+    cap_service = CapabilityService(db)
     ds = DiscountService(db)
-    # Check uniqueness? DB constraints handle it, but we can check specifically for this vendor namespace if needed.
-    # Actually code is unique globally in current model.
+    current_coupons = len(ds.list_coupons(supplier_id=vendor.id))
+    if not cap_service.check_can_add_coupon(vendor.id, current_coupons):
+        raise HTTPException(
+            status_code=403,
+            detail="Coupon limit reached for your current plan. Please upgrade to create more coupons."
+        )
+
     existing = ds.get_by_code(data.code)
     if existing:
          raise HTTPException(status_code=400, detail="Coupon code already taken")

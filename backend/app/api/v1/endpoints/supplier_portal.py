@@ -402,6 +402,7 @@ def get_my_fulfillment_orders(
     supplier: Supplier = Depends(get_current_supplier)
 ):
     from app.models.fulfillment_order import FulfillmentOrder
+    from app.models.order_item import OrderItem
     from sqlalchemy.orm import joinedload
     
     orders = (

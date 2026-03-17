@@ -63,7 +63,7 @@ export async function updateVendorStatus(vendorId, status) {
 }
 
 export async function updateMyVendorProfile(data) {
-  const r = await api.put("/vendors/me/", data);
+  const r = await api.put("/supplier/me", data);
   return r.data;
 }
 export async function updateVendor(vendorId, data) {
@@ -105,11 +105,11 @@ export async function updateAdStatus(adId, status, isPaid = null) {
 }
 
 export async function getMyCapabilities() {
-    const res = await api.get("/supplier-portal/capabilities");
+    const res = await api.get("/supplier/capabilities");
     return res.data;
 }
 
 export async function requestVendorAd(data) {
-    const res = await api.post("/supplier-portal/ads/request", data);
+    const res = await api.post("/supplier/ads/request", data);
     return res.data;
 }
