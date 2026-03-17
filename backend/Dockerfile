@@ -18,16 +18,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-RUN mkdir -p /app/static/uploads /app/logs
+RUN mkdir -p /app/static/uploads /app/logs && \
+    chmod +x /app/scripts/start.sh
 
 EXPOSE 8000
 
-# Production: Gunicorn with 4 Uvicorn workers (adjust -w based on CPU cores)
-# Formula: workers = 2 * CPU_CORES + 1
-CMD ["gunicorn", "main:app", \
-     "-k", "uvicorn.workers.UvicornWorker", \
-     "-w", "4", \
-     "--bind", "0.0.0.0:8000", \
-     "--timeout", "120", \
-     "--graceful-timeout", "30", \
-     "--access-logfile", "-"]
+# Production: Use the startup script to run migrations and then start gunicorn
+CMD ["/app/scripts/start.sh"]
