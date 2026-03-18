@@ -70,6 +70,12 @@ class Settings(BaseSettings):
 def _create_settings() -> Settings:
     """Create settings with security validation."""
     s = Settings()
+
+    # Normalize DATABASE_URL: Render provides 'postgres://' but
+    # SQLAlchemy 1.4+ and psycopg2 require 'postgresql://'.
+    if s.DATABASE_URL.startswith("postgres://"):
+        s.DATABASE_URL = s.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
     _insecure_defaults = ("", "super-secret-key", "secret", "changeme")
     if s.JWT_SECRET_KEY in _insecure_defaults:
         if s.DEBUG:

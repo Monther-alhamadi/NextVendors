@@ -760,21 +760,22 @@ def _ensure_schema_migrations(db, logger):
 
 
 def _maybe_init_db(app: FastAPI, logger) -> None:
-    if not (settings.DEBUG or settings.AUTO_CREATE_DB):
-        return
-
+    # Always attempt to initialize database tables as a safety net.
+    # On production, Alembic migrations in start.sh are the primary mechanism,
+    # but this serves as a fallback if migrations missed something.
     try:
         from app.core.database import init_db, SessionLocal # type: ignore
         from app.services.user_service import UserService # type: ignore
 
         init_db()
         
-        # Run auto-migrations
+        # Run auto-migrations (schema patches) in debug mode
         if settings.DEBUG:
             db_mig = SessionLocal()
             _ensure_schema_migrations(db_mig, logger)
             db_mig.close()
             
+            # Create a dev admin user in debug mode only
             db = SessionLocal()
             svc = UserService(db)
             from app.models.user import User # type: ignore

@@ -2,9 +2,21 @@ from logging.config import fileConfig
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from backend.app.core.config import settings
-from backend.app.core.database import Base
+# Ensure the backend root is on sys.path so both 'app' and 'backend.app'
+# import paths resolve correctly regardless of the working directory.
+_backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if _backend_dir not in sys.path:
+    sys.path.insert(0, _backend_dir)
+
+# Import with fallback: inside Docker/Render the package is 'app',
+# but locally it may be 'backend.app'.
+try:
+    from app.core.config import settings
+    from app.core.database import Base
+except ImportError:
+    from backend.app.core.config import settings
+    from backend.app.core.database import Base
+
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
@@ -16,17 +28,10 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-
 # target metadata for 'autogenerate'
 target_metadata = Base.metadata
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-
-# override sqlalchemy.url from settings
+# Override sqlalchemy.url from settings (already normalized in config.py)
 config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
 
 

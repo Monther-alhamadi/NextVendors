@@ -4,9 +4,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from .config import settings
 
 db_url = settings.DATABASE_URL
-# SQLAlchemy 1.4+ requires 'postgresql://' instead of 'postgres://'
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 # Only add 'check_same_thread' for SQLite
 connect_args = {}
@@ -176,8 +173,6 @@ def init_db():
     try:
         current_url = str(engine.url)
         target_url = settings.DATABASE_URL
-        if target_url.startswith("postgres://"):
-            target_url = target_url.replace("postgres://", "postgresql://", 1)
 
         if current_url != target_url:
             # recreate engine and SessionLocal bound to the new URL
