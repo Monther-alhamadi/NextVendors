@@ -761,37 +761,42 @@ def _ensure_schema_migrations(db, logger):
 
 def _maybe_init_db(app: FastAPI, logger) -> None:
     # Always attempt to initialize database tables as a safety net.
-    # On production, Alembic migrations in start.sh are the primary mechanism,
-    # but this serves as a fallback if migrations missed something.
+    # On production, Alembic migrations in start.sh are the primary mechanism.
+    
+    if not settings.DEBUG:
+        # In production, DO NOT run create_all(). Rely exclusively on Alembic migrations.
+        # This prevents IntegrityErrors with PostgreSQL ENUMs.
+        return
+
     try:
         from app.core.database import init_db, SessionLocal # type: ignore
         from app.services.user_service import UserService # type: ignore
 
+        # Only create tables in debug mode
         init_db()
         
         # Run auto-migrations (schema patches) in debug mode
-        if settings.DEBUG:
-            db_mig = SessionLocal()
-            _ensure_schema_migrations(db_mig, logger)
-            db_mig.close()
-            
-            # Create a dev admin user in debug mode only
-            db = SessionLocal()
-            svc = UserService(db)
-            from app.models.user import User # type: ignore
+        db_mig = SessionLocal()
+        _ensure_schema_migrations(db_mig, logger)
+        db_mig.close()
+        
+        # Create a dev admin user in debug mode only
+        db = SessionLocal()
+        svc = UserService(db)
+        from app.models.user import User # type: ignore
 
-            existing = db.query(User).filter(User.username == "devadmin").first()
-            if not existing:
-                svc.register_user(
-                    username="devadmin",
-                    email="devadmin@example.com",
-                    password="password",
-                )
-                user = db.query(User).filter(User.username == "devadmin").first()
-                if user:
-                    user.role = "admin"
-                    db.commit()
-            db.close()
+        existing = db.query(User).filter(User.username == "devadmin").first()
+        if not existing:
+            svc.register_user(
+                username="devadmin",
+                email="devadmin@example.com",
+                password="password",
+            )
+            user = db.query(User).filter(User.username == "devadmin").first()
+            if user:
+                user.role = "admin"
+                db.commit()
+        db.close()
     except Exception:
         logger.exception("Auto DB init failed")
 

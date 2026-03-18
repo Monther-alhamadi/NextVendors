@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
+from sqlalchemy.dialects.postgresql import ENUM as SQLEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import enum
@@ -22,8 +23,8 @@ class SupportTicket(SQLAlchemyBaseModel, Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     subject = Column(String(255), nullable=False)
-    status = Column(SQLEnum(TicketStatus), default=TicketStatus.open)
-    priority = Column(SQLEnum(TicketPriority), default=TicketPriority.medium)
+    status = Column(SQLEnum(TicketStatus, name="ticketstatus", create_type=False), default=TicketStatus.open)
+    priority = Column(SQLEnum(TicketPriority, name="ticketpriority", create_type=False), default=TicketPriority.medium)
     category = Column(String(100), nullable=True) # e.g. "Order Issue", "Technical", "Billing"
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True, index=True)
     

@@ -1,6 +1,7 @@
 from enum import Enum
 import json
-from sqlalchemy import Column, Integer, Float, String, Enum as SQLEnum, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy.dialects.postgresql import ENUM as SQLEnum
 from sqlalchemy.orm import relationship
 from app.models.base import SQLAlchemyBaseModel
 from app.core.database import Base
@@ -24,7 +25,7 @@ class Order(SQLAlchemyBaseModel, Base):
     shipping_cost = Column(Float, nullable=False, default=0.0)
     discount_total = Column(Float, nullable=False, default=0.0)
     status = Column(
-        SQLEnum(OrderStatus), nullable=False, default=OrderStatus.pending
+        SQLEnum(OrderStatus, name="orderstatus", create_type=False), nullable=False, default=OrderStatus.pending
     )
     
     # Affiliate tracking
