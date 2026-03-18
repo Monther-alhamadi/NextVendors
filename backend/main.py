@@ -401,8 +401,18 @@ def _register_exception_handlers(app: FastAPI) -> None:
             content={"detail": errors},
         )
 
+    async def _unhandled_exception_handler(_: Request, exc: Exception) -> JSONResponse:
+        import traceback
+        # Log the full traceback so we can debug in Render logs
+        logging.getLogger("fastapi").error(f"Unhandled exception: {exc}\n{traceback.format_exc()}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"detail": "حدث خطأ داخلي في الخادم. يرجى المحاولة لاحقاً."},
+        )
+
     app.add_exception_handler(StarletteHTTPException, _starlette_to_http)
     app.add_exception_handler(RequestValidationError, _validation_to_http)
+    app.add_exception_handler(Exception, _unhandled_exception_handler)
 
 
 def _import_models_for_metadata(logger) -> None:

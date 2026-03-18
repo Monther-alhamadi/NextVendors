@@ -3,7 +3,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from .config import settings
 
-engine = create_engine(settings.DATABASE_URL, connect_args={"check_same_thread": False})
+db_url = settings.DATABASE_URL
+# SQLAlchemy 1.4+ requires 'postgresql://' instead of 'postgres://'
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+# Only add 'check_same_thread' for SQLite
+connect_args = {}
+if db_url.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
+
+engine = create_engine(db_url, connect_args=connect_args)
 SessionLocal = sessionmaker(
     bind=engine, autoflush=False, autocommit=False, future=True, expire_on_commit=False
 )
@@ -164,11 +174,18 @@ def init_db():
     # the engine/SessionLocal to match the current settings so that
     # `init_db()` always creates tables on the intended database.
     try:
-        current_url = engine.url
+        current_url = str(engine.url)
         target_url = settings.DATABASE_URL
-        if str(current_url) != str(target_url):
+        if target_url.startswith("postgres://"):
+            target_url = target_url.replace("postgres://", "postgresql://", 1)
+
+        if current_url != target_url:
             # recreate engine and SessionLocal bound to the new URL
-            new_engine = create_engine(target_url, connect_args={"check_same_thread": False})
+            new_connect_args = {}
+            if target_url.startswith("sqlite"):
+                new_connect_args["check_same_thread"] = False
+
+            new_engine = create_engine(target_url, connect_args=new_connect_args)
             globals()["engine"] = new_engine
             globals()["SessionLocal"] = sessionmaker(
                 bind=new_engine,
