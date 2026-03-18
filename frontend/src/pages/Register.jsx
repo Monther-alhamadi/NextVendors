@@ -21,6 +21,7 @@ function getPasswordStrength(pw) {
 
 export default function Register() {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export default function Register() {
         setError(t("auth.registration_unavailable"));
         return;
       }
-      await authService.register(username, password);
+      await authService.register(username, email, password);
       toast.push({ message: `${t("auth.join_us")}! 🎉`, duration: 3500 });
       navigate("/login");
     } catch (err) {
@@ -75,6 +76,16 @@ export default function Register() {
               onChange={(e) => setUsername(e.target.value)}
               required
               containerClassName={styles.formGroup}
+              placeholder="johndoe"
+            />
+            <Input
+              label={t("auth.email")}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              containerClassName={styles.formGroup}
+              placeholder="name@example.com"
             />
             <Input
               label={t("auth.password")}

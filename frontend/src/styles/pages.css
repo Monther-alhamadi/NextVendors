@@ -163,6 +163,68 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══ Mobile-First: 768px and below ═══════════════════════ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+    margin: 12px auto;
+  }
+
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.25rem; }
+
+  .form-grid {
+    gap: 8px;
+  }
+
+  .form-control,
+  input,
+  select,
+  textarea {
+    padding: 12px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .product-detail {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .product-thumbs {
+    flex-wrap: wrap;
+  }
+
+  .product-thumb {
+    width: 60px;
+    height: 48px;
+  }
+
+  .product-price {
+    font-size: 18px;
+  }
+
+  .cart-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* ═══ Small phones: 480px and below ═══════════════════════ */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 8px;
+    margin: 8px auto;
+  }
+
+  h1 { font-size: 1.3rem; }
+  h2 { font-size: 1.1rem; }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+}
+
 h1,
 h2 {
   color: #0f172a;

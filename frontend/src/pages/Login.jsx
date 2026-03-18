@@ -379,12 +379,12 @@ function AuthPage() {
                 
                 <Input
                   label={t("auth.email_username")}
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   containerClassName={styles.formGroup}
-                  placeholder="name@example.com"
+                  placeholder={mode === 'login' ? t("auth.email_or_username_placeholder") : "name@example.com"}
                 />
 
                 <Input
