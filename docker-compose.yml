@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: ecommerce-frontend
     ports:
-      - "5173:3000"
+      - "3030:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules

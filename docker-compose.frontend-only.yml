@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: ecommerce-frontend
     ports:
-      - "5173:5173"
+      - "3030:3000"
     volumes:
       # Mount source code for hot reload
       - ./frontend:/app
