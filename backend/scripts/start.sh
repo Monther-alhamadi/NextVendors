@@ -11,6 +11,9 @@ alembic upgrade head
 echo "Seeding initial data..."
 python scripts/seed_data.py
 
+echo "Checking for Superuser auto-creation variables..."
+python scripts/manage_admin.py
+
 # ── Step 3: Start the application ───────────────────────────────────
 echo "Starting Gunicorn server..."
 exec gunicorn main:app \

@@ -1,6 +1,7 @@
 import logging
 from typing import Any, Dict, Optional
 import emails
+import httpx
 
 from app.core.config import settings
 
@@ -25,6 +26,34 @@ def send_email(
         mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
     )
 
+    # 1. Try Resend HTTP API first (Bypasses Render SMTP port blocking)
+    if settings.RESEND_API_KEY:
+        try:
+            resend_url = "https://api.resend.com/emails"
+            headers = {
+                "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                "Content-Type": "application/json"
+            }
+            # For free tier, Resend prefers or forces onboarding@resend.dev unless a custom domain is verified
+            from_str = f"{settings.EMAILS_FROM_NAME or settings.APP_NAME} <{settings.EMAILS_FROM_EMAIL}>" if settings.EMAILS_FROM_EMAIL else "onboarding@resend.dev"
+            payload = {
+                "from": from_str,
+                "to": [email_to],
+                "subject": subject_template,
+                "html": html_template
+            }
+            with httpx.Client() as client:
+                resp = client.post(resend_url, headers=headers, json=payload, timeout=10.0)
+                if resp.status_code >= 400:
+                    logger.error(f"Resend API FAILED: {resp.text}")
+                else:
+                    logger.info(f"Resend API SUCCESS: sent to {email_to}")
+            return  # Successfully triggered Resend, skip SMTP
+        except Exception as e:
+            logger.error(f"Resend API Exception: {e}")
+            logger.warning("Falling back to standard SMTP due to Resend API failure.")
+
+    # 2. Fallback to standard SMTP
     smtp_options = {"host": str(settings.SMTP_HOST).strip(), "port": settings.SMTP_PORT}
 
     # Auto-enable TLS for standard secure ports even if settings.SMTP_TLS is False
