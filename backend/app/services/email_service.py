@@ -27,7 +27,8 @@ def send_email(
 
     smtp_options = {"host": str(settings.SMTP_HOST).strip(), "port": settings.SMTP_PORT}
 
-    if settings.SMTP_TLS:
+    # Auto-enable TLS for standard secure ports even if settings.SMTP_TLS is False
+    if settings.SMTP_TLS or settings.SMTP_PORT in [587, 465, "587", "465"]:
         smtp_options["tls"] = True
     if settings.SMTP_USER:
         smtp_options["user"] = settings.SMTP_USER
@@ -37,7 +38,12 @@ def send_email(
     # If SMTP is configured, send the email
     if settings.SMTP_HOST and settings.SMTP_PORT:
         response = message.send(to=email_to, smtp=smtp_options)
-        logger.info(f"send email result: {response}")
+        if response.status_code is None or response.status_code >= 400:
+            error_details = getattr(response, "error", getattr(response, "status_text", "Unknown connection error/timeout"))
+            logger.error(f"SMTP FAILED to {email_to} -> {response}. Error Details: {error_details}")
+            logger.error(f"Used Host: {smtp_options['host']} | Port: {smtp_options['port']} | TLS: {smtp_options.get('tls', False)}")
+        else:
+            logger.info(f"send email result: SUCCESS ({response.status_code})")
 
     else:
         # Development fallback
@@ -76,6 +82,9 @@ def send_otp_email(email_to: str, username: str, otp: str) -> None:
     </html>
     """
     try:
+        # Development / Debugging aid: Always log the OTP so it can be seen even if SMTP fails
+        logger.warning(f"⭐⭐⭐ SECURITY OTP FOR {email_to} IS: {otp} ⭐⭐⭐")
+        
         send_email(
             email_to=email_to,
             subject_template=subject,
