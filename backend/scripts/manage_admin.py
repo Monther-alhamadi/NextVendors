@@ -15,7 +15,7 @@ def create_admin(email: str = None, username: str = None, password: str = None):
         if not email:
             email = os.getenv("SUPERUSER_EMAIL")
         if not username:
-            username = os.getenv("SUPERUSER_USERNAME", "admin")
+            username = os.getenv("SUPERUSER_USERNAME") # Changed from os.getenv("SUPERUSER_USERNAME", "admin")
         if not password:
             password = os.getenv("SUPERUSER_PASSWORD")
 
@@ -23,7 +23,7 @@ def create_admin(email: str = None, username: str = None, password: str = None):
         if not email:
             email = input("Admin Email: ").strip()
         if not username:
-            username = input(f"Admin Username [admin]: ").strip() or "admin"
+            username = input("Admin Username [admin]: ").strip() or "admin" # Removed f-string
         if not password:
             password = getpass.getpass("Admin Password: ")
             confirm = getpass.getpass("Confirm Password: ")
