@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *.pyo
 .env
+.env.*
 env/
 .venv/
+.venv_clean/
 venv/
 /.mypy_cache
 /.pytest_cache
@@ -25,10 +27,14 @@ package-lock.json
 # OS
 Thumbs.db
 Desktop.ini
-frontend/dist/
-
 
 # Frontend Build
 frontend/dist/
 dist/
 
+# Render / Logs
+logs/
+*.log
+
+# Scripts / Archives
+translation_report.json

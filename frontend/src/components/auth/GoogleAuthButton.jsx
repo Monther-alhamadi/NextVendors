@@ -52,11 +52,7 @@ const GoogleAuthButton = ({ onSuccess, onError, text = "signin_with" }) => {
     }
   };
 
-  return (
-    <div className="w-full mt-4 filter drop-shadow-sm hover:drop-shadow transition-all duration-300">
-      <div ref={buttonRef} className="w-full flex justify-center"></div>
-    </div>
-  );
+  return null; // Temporarily disabled
 };
 
 export default GoogleAuthButton;

@@ -184,14 +184,24 @@ def login(
         try:
             user = service.login_user(username, password)
         except ValueError as ve:
-            if "غير موجود" in str(ve):
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(ve))
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(ve))
+            # If ValueError is about unregistered or inactive, handle accordingly.
+            if "غير مسجل" in str(ve) or "غير موجود" in str(ve):
+                # Professional practice: prevent enum by returning generic 401
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+                )
+            if "غير نشط" in str(ve):
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN, 
+                    detail="الحساب غير نشط، يرجى التواصل مع الدعم."
+                )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
         
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="كلمة المرور غير صحيحة.",
+                detail="البريد الإلكتروني أو كلمة المرور غير صحيحة.",
             )
         
         # Verification Check
