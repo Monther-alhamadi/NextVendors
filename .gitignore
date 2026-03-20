@@ -38,3 +38,8 @@ logs/
 
 # Scripts / Archives
 translation_report.json
+
+# Temporary / Scratchpad / Uploads
+seed_out*.txt
+backend/test_*.py
+backend/static/uploads/

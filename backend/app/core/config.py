@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     SMTP_USER: Optional[str] = None
     SMTP_PASSWORD: Optional[str] = None
     RESEND_API_KEY: Optional[str] = None
+    BREVO_API_KEY: Optional[str] = None
     EMAILS_FROM_EMAIL: Optional[EmailStr] = None
     EMAILS_FROM_NAME: Optional[str] = None
 

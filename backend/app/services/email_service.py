@@ -51,7 +51,41 @@ def send_email(
             return  # Successfully triggered Resend, skip SMTP
         except Exception as e:
             logger.error(f"Resend API Exception: {e}")
-            logger.warning("Falling back to standard SMTP due to Resend API failure.")
+            logger.warning("Falling back to next provider due to Resend API failure.")
+
+    # 1.5 Try Brevo (Sendinblue) HTTP API (Bypasses SMTP port blocking AND supports unverified domains via Single Sender)
+    if settings.BREVO_API_KEY:
+        try:
+            brevo_url = "https://api.brevo.com/v3/smtp/email"
+            headers = {
+                "accept": "application/json",
+                "api-key": settings.BREVO_API_KEY,
+                "content-type": "application/json"
+            }
+            sender_email = settings.EMAILS_FROM_EMAIL or "noreply@nextvendors.com"
+            sender_name = settings.EMAILS_FROM_NAME or settings.APP_NAME
+            
+            payload = {
+                "sender": {
+                    "name": sender_name,
+                    "email": sender_email
+                },
+                "to": [
+                    {"email": email_to}
+                ],
+                "subject": subject_template,
+                "htmlContent": html_template
+            }
+            with httpx.Client() as client:
+                resp = client.post(brevo_url, headers=headers, json=payload, timeout=10.0)
+                if resp.status_code >= 400:
+                    logger.error(f"Brevo API FAILED: {resp.text}")
+                else:
+                    logger.info(f"Brevo API SUCCESS: sent to {email_to}")
+            return  # Successfully triggered Brevo, skip SMTP
+        except Exception as e:
+            logger.error(f"Brevo API Exception: {e}")
+            logger.warning("Falling back to standard SMTP due to Brevo API failure.")
 
     # 2. Fallback to standard SMTP
     smtp_options = {"host": str(settings.SMTP_HOST).strip(), "port": settings.SMTP_PORT}
